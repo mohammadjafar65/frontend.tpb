@@ -14,16 +14,19 @@ function HomePage() {
     const categories = ["POPULAR PACKAGES", "DUBAI PACKAGES", "KASHMIR FAMILY PACKAGES"];
 
     useEffect(() => {
-        axios.get('https://thepilgrimbeez.com/packages')
-            .then(response => {
+        setIsLoading(true); // Start loading
+        axios
+            .get(`${process.env.REACT_APP_API_URL}/packages`)
+            .then((response) => {
                 setPackages(response.data);
-                // After setting the packages, categorize them
-                categorizePackages(response.data);
+                categorizePackages(response.data); // Check here for any incorrect usage of filter
+                setIsLoading(false); // End loading
             })
-            .catch(error => {
-                console.error('Error fetching packages:', error);
+            .catch((error) => {
+                console.error("Error fetching packages:", error);
+                setIsLoading(false); // End loading
             });
-    }, []);  
+    }, []);    
 
     // Function to categorize packages
     const categorizePackages = (packagesArray) => {
