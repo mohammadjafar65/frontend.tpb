@@ -55,7 +55,7 @@ app.use((err, req, res, next) => {
 });
 
 require('./travelPackages')(app, db, upload, uuidv4);
-require('./users')(app, db);
+// require('./users')(app, db);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
