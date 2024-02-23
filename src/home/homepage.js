@@ -19,24 +19,30 @@ function HomePage() {
             .get(`${process.env.REACT_APP_API_URL}/packages`)
             .then((response) => {
                 setPackages(response.data);
-                categorizePackages(response.data);
+                categorizePackages(response.data); // Check here for any incorrect usage of filter
                 setIsLoading(false); // End loading
             })
             .catch((error) => {
                 console.error("Error fetching packages:", error);
                 setIsLoading(false); // End loading
             });
-    }, []);
+    }, []);    
 
     // Function to categorize packages
     const categorizePackages = (packagesArray) => {
-        const categorized = categories.reduce((acc, category) => {
-            acc[category] = packagesArray.filter((pkg) => pkg.category === category);
-            return acc;
-        }, {});
-
-        setPackagesByCategory(categorized);
+        const categorized = {}; // Initialize an empty object to store categorized packages
+    
+        categories.forEach((category) => {
+            // Filter packages based on category
+            const filteredPackages = packagesArray.filter((pkg) => pkg.category === category);
+            
+            // Store filtered packages under the corresponding category
+            categorized[category] = filteredPackages;
+        });
+    
+        setPackagesByCategory(categorized); // Update state with categorized packages
     };
+    
 
     if (isLoading) {
         return <div>Loading...</div>; // Show loading indicator
@@ -114,7 +120,7 @@ function HomePage() {
                                         },
                                     }}
                                 >
-                                    {packagesByCategory[category] && packagesByCategory[category].length > 0 ? (
+                                    {packagesByCategory[category] && Array.isArray(packagesByCategory[category]) && packagesByCategory[category].length > 0 ? (
                                         packagesByCategory[category].map((pkg) => (
                                             <div className="item" key={pkg.id}>
                                                 <Link to={`/package/id/${pkg.id}`}>
