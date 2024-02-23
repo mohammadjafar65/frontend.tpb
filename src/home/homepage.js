@@ -30,18 +30,27 @@ function HomePage() {
 
     // Function to categorize packages
     const categorizePackages = (packagesArray) => {
+        console.log("Packages array:", packagesArray); // Log packagesArray to inspect its structure
+    
+        // Ensure packagesArray is an array before proceeding
+        if (!Array.isArray(packagesArray)) {
+            console.error("Packages array is not an array:", packagesArray);
+            return;
+        }
+    
         const categorized = {}; // Initialize an empty object to store categorized packages
     
         categories.forEach((category) => {
             // Filter packages based on category
             const filteredPackages = packagesArray.filter((pkg) => pkg.category === category);
-            
+    
             // Store filtered packages under the corresponding category
             categorized[category] = filteredPackages;
         });
     
         setPackagesByCategory(categorized); // Update state with categorized packages
     };
+    
     
 
     if (isLoading) {
