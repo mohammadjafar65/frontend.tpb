@@ -11,7 +11,7 @@ module.exports = (app, db, upload, uuidv4) => {
     }
 
     // Route to get all travel packages
-    app.get("/travel_packages", (req, res) => {
+    app.get("/packages", (req, res) => {
         const sql = "SELECT * FROM travel_packages";
         db.query(sql, (err, data) => {
             if (err) {
@@ -21,6 +21,7 @@ module.exports = (app, db, upload, uuidv4) => {
             return res.json(data);
         });
     });
+
 
     // POST route to create a new travel package
     app.post(
