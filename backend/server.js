@@ -9,6 +9,7 @@ const { v4: uuidv4 } = require("uuid");
 const app = express();
 const corsOptions = {
   origin: 'https://admin.thepilgrimbeez.com',
+  origin: 'https://thepilgrimbeez.com',
   // You can set other CORS options here if needed
 };
 
