@@ -10,7 +10,6 @@ function Dashboard() {
     useEffect(() => {
         const fetchPackages = async () => {
             try {
-                // Make sure the REACT_APP_API_URL is set in your .env file and points to your server's domain
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/packages`);
                 setPackages(response.data);
             } catch (err) {
@@ -27,17 +26,14 @@ function Dashboard() {
         const confirmDelete = window.confirm("Are you sure you want to delete this package?");
         if (confirmDelete) {
             axios
-                .delete(`${process.env.REACT_APP_API_URL}/packages/id/${packageId}`)
+                .delete(`${process.env.REACT_APP_API_URL}/packages/delete/${packageId}`)
                 .then((response) => {
-                    // Log the response for debugging
                     console.log("Delete response:", response);
-                    // Update the state only if the response is successful
                     if (response.status === 200 || response.status === 204) {
                         setPackages(packages.filter((packageItem) => packageItem.id !== packageId));
                     }
                 })
                 .catch((error) => {
-                    // Log the error for debugging
                     console.error("Error deleting package:", error.response || error.message);
                 });
         }
@@ -51,8 +47,7 @@ function Dashboard() {
             data.append("gallery", fileItem.file);
         });
 
-        // Correct endpoint
-        const endpoint = "https://thepilgrimbeez.com/create";
+        const endpoint = `${process.env.REACT_APP_API_URL}/packages/create`;
 
         axios
             .post(endpoint, data, {
@@ -86,15 +81,13 @@ function Dashboard() {
                 filePreviews.push({
                     name: file.name,
                     src: e.target.result,
-                    file: file, // Include the file itself here
+                    file: file,
                 });
-                // It's better to set the state outside of the loop
             };
 
             fileReader.readAsDataURL(file);
         }
 
-        // Set the state here after the loop
         setFiles([...filePreviews]);
     };
 
@@ -127,63 +120,6 @@ function Dashboard() {
                         <nav className="navbar navbar-header navbar-expand-lg">
                             <div className="container-fluid">
                                 <ul className="navbar-nav topbar-nav ml-md-auto align-items-center">
-                                    {/* <li className="nav-item dropdown hidden-caret">
-                                        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i className="la la-bell"></i>
-                                            <span className="notification">3</span>
-                                        </a>
-                                        <ul className="dropdown-menu notif-box" aria-labelledby="navbarDropdown">
-                                            <li>
-                                                <div className="dropdown-title">You have 4 new notification</div>
-                                            </li>
-                                            <li>
-                                                <div className="notif-center">
-                                                    <a href="#">
-                                                        <div className="notif-icon notif-primary">
-                                                            <i className="la la-user-plus"></i>
-                                                        </div>
-                                                        <div className="notif-content">
-                                                            <span className="block">New user registered</span>
-                                                            <span className="time">5 minutes ago</span>
-                                                        </div>
-                                                    </a>
-                                                    <a href="#">
-                                                        <div className="notif-icon notif-success">
-                                                            <i className="la la-comment"></i>
-                                                        </div>
-                                                        <div className="notif-content">
-                                                            <span className="block">Rahmad commented on Admin</span>
-                                                            <span className="time">12 minutes ago</span>
-                                                        </div>
-                                                    </a>
-                                                    <a href="#">
-                                                        <div className="notif-img">
-                                                            <img src="assets/img/profile2.jpg" alt="Img Profile" />
-                                                        </div>
-                                                        <div className="notif-content">
-                                                            <span className="block">Reza send messages to you</span>
-                                                            <span className="time">12 minutes ago</span>
-                                                        </div>
-                                                    </a>
-                                                    <a href="#">
-                                                        <div className="notif-icon notif-danger">
-                                                            <i className="la la-heart"></i>
-                                                        </div>
-                                                        <div className="notif-content">
-                                                            <span className="block">Farrah liked Admin</span>
-                                                            <span className="time">17 minutes ago</span>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <a className="see-all" href="javascript:void(0);">
-                                                    {" "}
-                                                    <strong>See all notifications</strong> <i className="la la-angle-right"></i>{" "}
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li> */}
                                     <li className="nav-item dropdown">
                                         <a className="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                                             {" "}
@@ -242,7 +178,7 @@ function Dashboard() {
                                 <div className="mini_header">
                                     <h4 className="page-title">Dashboard</h4>
                                     <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPackageModel">
-                                        <i class="la la-plus"></i> Add New Package
+                                        <i className="la la-plus"></i> Add New Package
                                     </button>
                                 </div>
                                 <div className="row">
@@ -268,10 +204,7 @@ function Dashboard() {
                                                     <tbody>
                                                         {packages.map((packageItem) => (
                                                             <tr key={packageItem.id}>
-                                                                {" "}
-                                                                {/* Replace 'id' with the actual identifier property */}
                                                                 <td>
-                                                                    {/* Display the image if available */}
                                                                     <div className="avatar avatar-blue mr-3">
                                                                         {packageItem.imageUrl ? <img src={`${process.env.REACT_APP_UPLOAD_API_URL}/${packageItem.imageUrl}`} alt="Package" /> : "No Image"}
                                                                     </div>
@@ -288,9 +221,6 @@ function Dashboard() {
                                                                             <i className="bx bx-dots-horizontal-rounded"></i>
                                                                         </button>
                                                                         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                                            {/* <a className="dropdown-item" href="#">
-                                                                                <i className="bx bxs-pencil mr-2"></i> Edit Profile
-                                                                            </a> */}
                                                                             <a className="dropdown-item text-danger" href="#" onClick={() => handleDeletePackage(packageItem.id)}>
                                                                                 <i className="bx bxs-trash mr-2"></i> Remove
                                                                             </a>
@@ -309,7 +239,7 @@ function Dashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="modal fade" id="addPackageModel" tabindex="-1" aria-labelledby="addPackageModelLabel" aria-hidden="true">
+                <div className="modal fade" id="addPackageModel" tabIndex="-1" aria-labelledby="addPackageModelLabel" aria-hidden="true">
                     <form className="row g-3" onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div className="modal-content">
@@ -323,78 +253,77 @@ function Dashboard() {
                                     <div className="row">
                                         <div className="col-lg-12 col-md-12 col-12">
                                             <div className="ctcp_form_inp">
-                                                <label for="Image">UPLOAD IMAGE</label>
+                                                <label htmlFor="Image">UPLOAD IMAGE</label>
                                                 <input type="file" name="avatar" />
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
                                             <div className="ctcp_form_inp">
-                                                <label for="Package Name">PACKAGE NAME</label>
+                                                <label htmlFor="Package Name">PACKAGE NAME</label>
                                                 <input type="text" className="form-control" placeholder="Enter your package name" name="packageName" />
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
                                             <div className="ctcp_form_inp">
-                                                <label for="Package Name">CATEGORY</label>
+                                                <label htmlFor="Package Name">CATEGORY</label>
                                                 <select name="packageCategory" required>
                                                     <option value="">Select a Category</option>
                                                     <option value="POPULAR PACKAGES">POPULAR PACKAGES</option>
                                                     <option value="DUBAI PACKAGES">DUBAI PACKAGES</option>
                                                     <option value="KASHMIR FAMILY PACKAGES">KASHMIR FAMILY PACKAGES</option>
                                                 </select>
-                                                {/* <input type="text" className="form-control" placeholder="Enter your package name" name="packageCategory" /> */}
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
-                                            <label for="Location">LOCATION</label>
+                                            <label htmlFor="Location">LOCATION</label>
                                             <div className="ctcp_form_inp">
                                                 <input type="text" className="form-control" id="inputPassword4" placeholder="Enter your location" name="packageLocation" />
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
                                             <div className="ctcp_form_inp">
-                                                <label for="Price">TOTAL PRICE</label>
+                                                <label htmlFor="Price">TOTAL PRICE</label>
                                                 <input type="text" className="form-control" placeholder="Enter your price" name="packagePrice" />
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
-                                            <label for="Date">START DATE</label>
+                                            <label htmlFor="Date">START DATE</label>
                                             <div className="ctcp_form_inp">
                                                 <input type="date" className="form-control" id="inputPassword4" name="packageDate" />
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
-                                            <label for="text">DURATION</label>
+                                            <label htmlFor="text">DURATION</label>
                                             <div className="ctcp_form_inp">
                                                 <input type="text" className="form-control" id="inputPassword4" placeholder="Duration" name="packageDurationDate" />
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
-                                            <label for="text">PACKAGE DISCRIPTION</label>
+                                            <label htmlFor="text">PACKAGE DESCRIPTION</label>
                                             <div className="ctcp_form_inp">
                                                 <textarea id="w3review" name="packageDescription" rows="5" cols="51"></textarea>
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
-                                            <label for="text">AMINITIES IN HOTEL</label>
+                                            <label htmlFor="text">AMINITIES IN HOTEL</label>
                                             <div className="ctcp_form_inp">
                                                 <textarea id="w3review" name="amenitiesInHotel" rows="5" cols="51"></textarea>
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
                                             <div className="ctcp_form_inp">
-                                                <label for="text">AGENT NAME</label>
+                                                <label htmlFor="text">AGENT NAME</label>
                                                 <input type="text" className="form-control" placeholder="Enter your Name" name="agentName" />
                                             </div>
                                         </div>
                                         <div className="col-lg-6 col-md-6 col-12">
-                                            <label for="number">AGENT NUMBER</label>
+                                            <label htmlFor="number">AGENT NUMBER</label>
                                             <div className="ctcp_form_inp">
                                                 <input type="tel" className="form-control" id="inputPassword4" placeholder="Enter your number" name="agentNumber" />
                                             </div>
                                         </div>
                                         <div className="col-lg-12 col-md-12 col-12">
-                                            <label for="number">GALLERY IMAGES</label>
+                                            <label htmlFor="number">GALLERY IMAGES</label>
                                             <input type="file" id="files" name="gallery" onChange={handleFileChange} multiple />
                                             <div className="setAlign">
                                                 {files.map((file, index) => (
@@ -411,7 +340,7 @@ function Dashboard() {
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <div class="ctcp_form_btn">
+                                    <div className="ctcp_form_btn">
                                         <button type="submit">Publish</button>
                                     </div>
                                 </div>
