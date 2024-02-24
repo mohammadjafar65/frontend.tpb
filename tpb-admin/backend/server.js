@@ -7,12 +7,7 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
-const corsOptions = {
-  origin: ['https://admin.thepilgrimbeez.com', 'https://thepilgrimbeez.com'],
-  // You can set other CORS options here if needed
-};
-
-app.use(cors(corsOptions)); // CORS middleware applied here
+app.use(cors()); // CORS middleware applied here
 app.use(express.json());
 
 require('dotenv').config();
