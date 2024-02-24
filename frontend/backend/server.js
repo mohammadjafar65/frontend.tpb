@@ -8,6 +8,13 @@ const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 app.use(cors()); // CORS middleware applied here
+// Set up CORS headers
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 app.use(express.json());
 
 require('dotenv').config();
@@ -217,15 +224,6 @@ app.get("/packages/id/:id", async (req, res) => {
 });
 
 // Other routes and logic...
-
-// Set up CORS headers
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
-
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
