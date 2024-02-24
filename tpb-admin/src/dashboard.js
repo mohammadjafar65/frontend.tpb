@@ -10,13 +10,13 @@ function Dashboard() {
     useEffect(() => {
         const fetchPackages = async () => {
             try {
-                const response = await axios.get(`https://admin.thepilgrimbeez.com/packages`);
+                const response = await axios.get(`https://thepilgrimbeez.com:3001/packages`);
                 setPackages(response.data);
             } catch (err) {
                 setError("An error occurred while fetching the packages.");
                 console.error(err);
             }
-            setLoading(false);
+            setLoading(false); // Moved outside try-catch block
         };
 
         fetchPackages();
@@ -30,7 +30,7 @@ function Dashboard() {
             data.append("gallery", fileItem.file);
         });
 
-        const endpoint = `https://admin.thepilgrimbeez.com/packages/create`;
+        const endpoint = `https://thepilgrimbeez.com:3001/packages/create`;
 
         axios
             .post(endpoint, data, {
@@ -78,7 +78,7 @@ function Dashboard() {
         const confirmDelete = window.confirm("Are you sure you want to delete this package?");
         if (confirmDelete) {
             axios
-                .delete(`https://admin.thepilgrimbeez.com/packages/delete/${packageId}`)
+                .delete(`https://thepilgrimbeez.com:3001/packages/delete/${packageId}`)
                 .then((response) => {
                     console.log("Delete response:", response);
                     if (response.status === 200 || response.status === 204) {
@@ -87,6 +87,7 @@ function Dashboard() {
                 })
                 .catch((error) => {
                     console.error("Error deleting package:", error.response || error.message);
+                    alert("Error deleting package: " + error.message); // Informative message
                 });
         }
     };    
