@@ -99,9 +99,9 @@ function Dashboard() {
         return <div>Loading packages...</div>;
     }
 
-    if (error) {
-        return <div>{error}</div>;
-    }
+    // if (error) {
+    //     return <div>{error}</div>;
+    // }
 
     return (
         <>
