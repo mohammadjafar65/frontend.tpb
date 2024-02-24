@@ -10,7 +10,7 @@ function Dashboard() {
     useEffect(() => {
         const fetchPackages = async () => {
             try {
-                const response = await axios.get(`http://thepilgrimbeez.com/packages`);
+                const response = await axios.get(`https://thepilgrimbeez.com/packages`);
                 setPackages(response.data);
             } catch (err) {
                 setError("An error occurred while fetching the packages.");
@@ -30,7 +30,7 @@ function Dashboard() {
             data.append("gallery", fileItem.file);
         });
 
-        const endpoint = `http://thepilgrimbeez.com/packages/create`;
+        const endpoint = `https://thepilgrimbeez.com/packages/create`;
 
         axios
             .post(endpoint, data, {
@@ -78,7 +78,7 @@ function Dashboard() {
         const confirmDelete = window.confirm("Are you sure you want to delete this package?");
         if (confirmDelete) {
             axios
-                .delete(`http://thepilgrimbeez.com/packages/delete/${packageId}`)
+                .delete(`https://thepilgrimbeez.com/packages/delete/${packageId}`)
                 .then((response) => {
                     console.log("Delete response:", response);
                     if (response.status === 200 || response.status === 204) {
