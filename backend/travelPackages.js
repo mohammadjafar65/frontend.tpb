@@ -131,7 +131,7 @@ module.exports = (app, db, upload, uuidv4) => {
     };
 
     // Route to get a package by id
-    app.get("/packages/:id", async (req, res) => {
+    app.get("/packages/id/:id", async (req, res) => {
         try {
             // Query to fetch package details and associated images
             const packageDetailsSql = `
