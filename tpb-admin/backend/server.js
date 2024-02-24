@@ -65,11 +65,11 @@ app.get("/packages", (req, res) => {
   // Logic to fetch all travel packages from the database
   const sql = "SELECT * FROM travel_packages";
   db.query(sql, (err, data) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).json({ error: "Error fetching travel packages" });
-      }
-      return res.json(data);
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Error fetching travel packages" });
+    }
+    return res.json(data);
   });
 });
 
@@ -194,32 +194,50 @@ const getAllPackages = () => {
 // Route to get a package by id
 app.get("/packages/id/:id", async (req, res) => {
   try {
-      // Query to fetch package details and associated images
-      const packageDetailsSql = `
-    SELECT p.*, GROUP_CONCAT(i.image_url) as imageUrls
-    FROM travel_packages p
-    LEFT JOIN package_images i ON p.id = i.package_id
-    WHERE p.id = ?
-    GROUP BY p.id
-  `;
-
-      db.query(packageDetailsSql, [req.params.id], (err, results) => {
-          if (err) {
-              console.error(err);
-              return res.status(500).json({ error: "Internal server error" });
-          }
-          if (results.length === 0) {
-              return res.status(404).json({ message: "Package not found" });
-          }
-          // Format the response
-          const packageData = results[0];
-          packageData.imageUrls = packageData.imageUrls ? packageData.imageUrls.split(",") : [];
-          res.json(packageData);
-      });
+    const packageId = req.params.id;
+    const sql = "SELECT * FROM travel_packages WHERE id = ?";
+    db.query(sql, [packageId], (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Package not found" });
+      }
+      return res.json(results[0]);
+    });
   } catch (error) {
-      res.status(500).send({ error: error.message });
+    res.status(500).send({ error: error.message });
   }
 });
+// app.get("/packages/id/:id", async (req, res) => {
+//   try {
+//       // Query to fetch package details and associated images
+//       const packageDetailsSql = `
+//     SELECT p.*, GROUP_CONCAT(i.image_url) as imageUrls
+//     FROM travel_packages p
+//     LEFT JOIN package_images i ON p.id = i.package_id
+//     WHERE p.id = ?
+//     GROUP BY p.id
+//   `;
+
+//       db.query(packageDetailsSql, [req.params.id], (err, results) => {
+//           if (err) {
+//               console.error(err);
+//               return res.status(500).json({ error: "Internal server error" });
+//           }
+//           if (results.length === 0) {
+//               return res.status(404).json({ message: "Package not found" });
+//           }
+//           // Format the response
+//           const packageData = results[0];
+//           packageData.imageUrls = packageData.imageUrls ? packageData.imageUrls.split(",") : [];
+//           res.json(packageData);
+//       });
+//   } catch (error) {
+//       res.status(500).send({ error: error.message });
+//   }
+// });
 
 // Other routes and logic...
 
