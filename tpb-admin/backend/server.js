@@ -8,12 +8,12 @@ const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 const corsOptions = {
-  origin: 'https://admin.thepilgrimbeez.com',
+  origin: ['https://admin.thepilgrimbeez.com', 'https://thepilgrimbeez.com'],
   // You can set other CORS options here if needed
 };
 
-app.use(cors(corsOptions));
-app.use(express.json()); // Add this line to parse JSON requests
+app.use(cors(corsOptions)); // CORS middleware applied here
+app.use(express.json());
 
 require('dotenv').config();
 
@@ -59,8 +59,16 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
+// Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
-// require('./users')(app, db);
+
+// Set up CORS headers
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

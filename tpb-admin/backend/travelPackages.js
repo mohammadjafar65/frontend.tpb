@@ -1,17 +1,7 @@
-// routes/travelPackages.js
-// routes/travelPackages.js
-const path = require("path");
-const fs = require("fs");
-
 module.exports = (app, db, upload, uuidv4) => {
-    // Ensure the uploads directory exists
-    const uploadDir = path.join(__dirname, "..", "uploads");
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
     // Route to get all travel packages
     app.get("/packages", (req, res) => {
+        // Logic to fetch all travel packages from the database
         const sql = "SELECT * FROM travel_packages";
         db.query(sql, (err, data) => {
             if (err) {
@@ -22,10 +12,9 @@ module.exports = (app, db, upload, uuidv4) => {
         });
     });
 
-
     // POST route to create a new travel package
     app.post(
-        "/create",
+        "/packages/create",
         upload.fields([
             { name: "avatar", maxCount: 1 },
             { name: "gallery", maxCount: 10 },
@@ -90,7 +79,7 @@ module.exports = (app, db, upload, uuidv4) => {
     );
 
     // Update a package
-    app.put("/update/:id", (req, res) => {
+    app.put("/packages/update/:id", (req, res) => {
         // Ensure field names match those in the package table
         const sql = "UPDATE travel_packages SET `imageUrl` = ?, `packageName` = ?, `packageLocation` = ?, `packagePrice` = ?  WHERE `id` = ?";
         const values = [req.body.imageUrl, req.body.packageName, req.body.packageLocation, req.body.packagePrice]; // Add other fields as necessary
@@ -103,7 +92,7 @@ module.exports = (app, db, upload, uuidv4) => {
     });
 
     // Delete a package
-    app.delete("/packages/id/:id", (req, res) => {
+    app.delete("/packages/delete/:id", (req, res) => {
         const sql = "DELETE FROM travel_packages WHERE `id` = ?";
         const id = req.params.id;
 
@@ -115,6 +104,17 @@ module.exports = (app, db, upload, uuidv4) => {
             }
             return res.json({ message: "Package deleted successfully", data });
         });
+    });
+
+    // Route to get packages by category
+    app.get("/packages/category/:category", async (req, res) => {
+        try {
+            const allPackages = await getAllPackages();
+            const filteredPackages = allPackages.filter((pkg) => pkg.category === req.params.category);
+            res.json(filteredPackages);
+        } catch (error) {
+            res.status(500).send({ error: error.message });
+        }
     });
 
     // Function to get all packages
@@ -129,41 +129,6 @@ module.exports = (app, db, upload, uuidv4) => {
             });
         });
     };
-
-    // Function to find package by id
-    const findPackageById = (id) => {
-        return new Promise((resolve, reject) => {
-            const sql = "SELECT * FROM travel_packages WHERE `id` = ?";
-            db.query(sql, [id], (err, results) => {
-                if (err) {
-                    return reject(err);
-                }
-                // Assuming that the ID is unique, there should only be one result
-                resolve(results[0]);
-            });
-        });
-    };
-
-    // Route to get all packages
-    app.get("/packages", async (req, res) => {
-        try {
-            const packages = await getAllPackages();
-            res.json(packages);
-        } catch (error) {
-            res.status(500).send({ error: error.message });
-        }
-    });
-
-    // Route to get packages by category
-    app.get("/packages/:category", async (req, res) => {
-        try {
-            const allPackages = await getAllPackages();
-            const filteredPackages = allPackages.filter((pkg) => pkg.category === req.params.category);
-            res.json(filteredPackages);
-        } catch (error) {
-            res.status(500).send({ error: error.message });
-        }
-    });
 
     // Route to get a package by id
     app.get("/packages/id/:id", async (req, res) => {
@@ -195,5 +160,5 @@ module.exports = (app, db, upload, uuidv4) => {
         }
     });
 
-    // Other function declarations and route handlers...
+    // Other routes and logic...
 };
