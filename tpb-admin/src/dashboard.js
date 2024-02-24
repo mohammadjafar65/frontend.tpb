@@ -22,23 +22,6 @@ function Dashboard() {
         fetchPackages();
     }, []);
 
-    const handleDeletePackage = (packageId) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this package?");
-        if (confirmDelete) {
-            axios
-                .delete(`${process.env.REACT_APP_API_URL}/packages/delete/${packageId}`)
-                .then((response) => {
-                    console.log("Delete response:", response);
-                    if (response.status === 200 || response.status === 204) {
-                        setPackages(packages.filter((packageItem) => packageItem.id !== packageId));
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error deleting package:", error.response || error.message);
-                });
-        }
-    };
-
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
@@ -47,7 +30,7 @@ function Dashboard() {
             data.append("gallery", fileItem.file);
         });
 
-        const endpoint = `${process.env.REACT_APP_API_URL}/packages/create`;
+        const endpoint = `https://thepilgrimbeez.com/packages/create`;
 
         axios
             .post(endpoint, data, {
@@ -90,6 +73,23 @@ function Dashboard() {
 
         setFiles([...filePreviews]);
     };
+
+    const handleDeletePackage = (packageId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this package?");
+        if (confirmDelete) {
+            axios
+                .delete(`https://thepilgrimbeez.com/packages/delete/${packageId}`)
+                .then((response) => {
+                    console.log("Delete response:", response);
+                    if (response.status === 200 || response.status === 204) {
+                        setPackages(prevPackages => prevPackages.filter((packageItem) => packageItem.id !== packageId));
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error deleting package:", error.response || error.message);
+                });
+        }
+    };    
 
     const removeFile = (fileName) => {
         setFiles(files.filter((file) => file.name !== fileName));
