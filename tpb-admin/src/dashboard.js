@@ -10,7 +10,7 @@ function Dashboard() {
     useEffect(() => {
         const fetchPackages = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/packages`);
+                const response = await axios.get(`https://thepilgrimbeez.com/packages`);
                 setPackages(response.data);
             } catch (err) {
                 setError("An error occurred while fetching the packages.");
