@@ -4,14 +4,14 @@ module.exports = (app, db, upload, uuidv4) => {
         // Logic to fetch all travel packages from the database
         const sql = "SELECT * FROM travel_packages";
         db.query(sql, (err, data) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).json({ error: "Error fetching travel packages" });
-            }
-            return res.json(data);
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Error fetching travel packages" });
+        }
+        return res.json(data);
         });
     });
-
+    
     // POST route to create a new travel package
     app.post(
         "/packages/create",
@@ -25,7 +25,7 @@ module.exports = (app, db, upload, uuidv4) => {
             if (!req.files["avatar"] || req.files["avatar"].length === 0) {
                 return res.status(400).json({ error: "Avatar image is required" });
             }
-
+    
             const avatarImage = req.files["avatar"][0].filename;
             const packageId = uuidv4();
             const sql =
@@ -44,7 +44,7 @@ module.exports = (app, db, upload, uuidv4) => {
                 req.body.agentName,
                 req.body.agentNumber,
             ];
-
+    
             db.query(sql, values, (err, packageInsertData) => {
                 if (err) {
                     console.error(err);
@@ -56,7 +56,7 @@ module.exports = (app, db, upload, uuidv4) => {
                     const galleryImages = req.files["gallery"].map((file) => file.filename);
                     const imageInsertSql = "INSERT INTO package_images (`package_id`, `image_url`) VALUES ?";
                     const imageValues = galleryImages.map((image) => [packageId, image]); // Ensure packageId is correct
-
+    
                     db.query(imageInsertSql, [imageValues], (err, imagesInsertData) => {
                         if (err) {
                             console.error(err);
@@ -77,25 +77,25 @@ module.exports = (app, db, upload, uuidv4) => {
             });
         }
     );
-
+    
     // Update a package
     app.put("/packages/update/:id", (req, res) => {
         // Ensure field names match those in the package table
         const sql = "UPDATE travel_packages SET `imageUrl` = ?, `packageName` = ?, `packageLocation` = ?, `packagePrice` = ?  WHERE `id` = ?";
         const values = [req.body.imageUrl, req.body.packageName, req.body.packageLocation, req.body.packagePrice]; // Add other fields as necessary
         const id = req.params.id;
-
+    
         db.query(sql, [...values, id], (err, data) => {
             if (err) return res.status(500).json({ error: err.message });
             return res.json(data);
         });
     });
-
+    
     // Delete a package
     app.delete("/packages/delete/:id", (req, res) => {
         const sql = "DELETE FROM travel_packages WHERE `id` = ?";
         const id = req.params.id;
-
+    
         db.query(sql, [id], (err, data) => {
             if (err) return res.status(500).json({ error: err.message });
             // It might be good to check if the delete was actually performed (affected rows)
@@ -105,7 +105,7 @@ module.exports = (app, db, upload, uuidv4) => {
             return res.json({ message: "Package deleted successfully", data });
         });
     });
-
+    
     // Route to get packages by category
     app.get("/packages/category/:category", async (req, res) => {
         try {
@@ -116,7 +116,7 @@ module.exports = (app, db, upload, uuidv4) => {
             res.status(500).send({ error: error.message });
         }
     });
-
+    
     // Function to get all packages
     const getAllPackages = () => {
         return new Promise((resolve, reject) => {
@@ -129,7 +129,7 @@ module.exports = (app, db, upload, uuidv4) => {
             });
         });
     };
-
+    
     // Route to get a package by id
     app.get("/packages/id/:id", async (req, res) => {
         try {
@@ -140,8 +140,8 @@ module.exports = (app, db, upload, uuidv4) => {
         LEFT JOIN package_images i ON p.id = i.package_id
         WHERE p.id = ?
         GROUP BY p.id
-      `;
-
+        `;
+    
             db.query(packageDetailsSql, [req.params.id], (err, results) => {
                 if (err) {
                     console.error(err);
@@ -159,6 +159,5 @@ module.exports = (app, db, upload, uuidv4) => {
             res.status(500).send({ error: error.message });
         }
     });
-
     // Other routes and logic...
 };
