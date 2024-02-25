@@ -15,7 +15,6 @@
     RewriteCond %{HTTP_HOST} ^api\.thepilgrimbeez\.com$ [NC]
     RewriteCond %{REQUEST_URI} !^/backend/
     RewriteRule ^(.*)$ http://api.thepilgrimbeez.com:3000/$1 [P,L]
-    DirectoryIndex disabled
 
     # If the request is for a file or directory that exists, serve it directly
     RewriteCond %{REQUEST_FILENAME} -f [OR]
