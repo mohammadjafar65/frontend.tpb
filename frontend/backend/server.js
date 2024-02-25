@@ -19,7 +19,7 @@ app.use(express.json());
 
 require('dotenv').config();
 
-const port = process.env.PORT || 443;
+const port = process.env.PORT || 80;
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
