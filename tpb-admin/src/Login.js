@@ -10,14 +10,14 @@ function Login() {
     e.preventDefault();
     try {
       // Send login credentials to the server for authentication
-      const response = await fetch("/api.thepilgrimbeez.com/users", {
+      const response = await fetch("/api.thepilgrimbeez.com/login", { // Update the endpoint
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       if (response.ok) {
         // If authentication is successful, redirect to the dashboard page
         history.push("/dashboard");
@@ -28,7 +28,7 @@ function Login() {
     } catch (error) {
       console.error("Error:", error);
     }
-  };
+  };  
 
   return (
     <div>
