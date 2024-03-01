@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom"; // Import useHistory for redirection
+import { useHistory } from "react-router-dom";
 
 function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -9,26 +9,23 @@ function LoginScreen() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send login credentials to the server for authentication
-      const response = await fetch("/api.thepilgrimbeez.com/login", { // Update the endpoint
+      const response = await fetch("/api.thepilgrimbeez.com/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
-        // If authentication is successful, redirect to the dashboard page
         history.push("/dashboard");
       } else {
-        // Handle authentication failure (e.g., display an error message)
         console.error("Authentication failed");
       }
     } catch (error) {
       console.error("Error:", error);
     }
-  };  
+  };
 
   return (
     <div>
