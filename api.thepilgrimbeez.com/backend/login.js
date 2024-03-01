@@ -12,7 +12,9 @@ module.exports = (app, db) => {
       (error, results) => {
         if (error) {
           console.error("Database error:", error);
-          return res.status(500).json({ error: "Database error" });
+          return res
+            .status(500)
+            .json({ error: "Database error: " + error.message });
         }
 
         if (results.length > 0) {
