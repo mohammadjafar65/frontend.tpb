@@ -19,7 +19,19 @@ module.exports = (app, db) => {
 
         if (results.length > 0) {
           // Authentication successful
-          return res.status(200).json({ message: "Login successful" });
+          // Fetch dashboard data and return it along with login message
+          db.query("SELECT * FROM travel_packages", (err, packages) => {
+            if (err) {
+              console.error("Database error:", err);
+              return res
+                .status(500)
+                .json({ error: "Database error: " + err.message });
+            }
+            return res.status(200).json({
+              message: "Login successful",
+              packages: packages,
+            });
+          });
         } else {
           // Authentication failed
           return res.status(403).json({ error: "Invalid credentials" });
