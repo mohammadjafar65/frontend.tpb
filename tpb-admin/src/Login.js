@@ -10,7 +10,7 @@ function Login() {
     e.preventDefault();
     try {
       // Send login credentials to the server for authentication
-      const response = await fetch("/login", {
+      const response = await fetch("/api.thepilgrimbeez.com/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
