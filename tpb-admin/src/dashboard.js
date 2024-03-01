@@ -13,7 +13,7 @@ function Dashboard() {
                 const token = localStorage.getItem("token");
                 if (!token) {
                     // Redirect user to login if token is not found
-                    window.location.href = "/login";
+                    window.location.href = "https://admin.thepilgrimbeez.com/login";
                     return;
                 }
 
