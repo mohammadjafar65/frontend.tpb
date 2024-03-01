@@ -13,7 +13,7 @@ function Dashboard() {
                 const token = localStorage.getItem("token");
                 if (!token) {
                     // Redirect user to login if token is not found
-                    window.location.href = "/login";
+                    window.location.href = `${process.env.REACT_APP_API_URL}/login`;
                     return;
                 }
 
