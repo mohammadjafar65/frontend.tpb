@@ -1,28 +1,29 @@
 module.exports = (app, db) => {
-  // Route for user login
-  app.post("/api.thepilgrimbeez.com/login", (req, res) => {
+  // Login route and logic
+  app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
-    // Perform authentication logic here
-    // Check if the email and password match a user in the database
-    // Example authentication logic:
+    // Query the database to check if the user exists and credentials are correct
     db.query(
       "SELECT * FROM user WHERE email = ? AND password = ?",
       [email, password],
-      (error, results) => {
-        if (error) {
-          console.error("Database error:", error);
-          return res
-            .status(500)
-            .json({ error: "Database error: " + error.message });
+      (err, results) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ message: "Internal server error" });
+          return;
         }
 
         if (results.length > 0) {
-          // Authentication successful
-          return res.status(200).json({ message: "Login successful" });
+          // User exists and credentials are correct
+          // Generate and send JWT token as a response
+          const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+          });
+          res.json({ token });
         } else {
-          // Authentication failed
-          return res.status(403).json({ error: "Invalid credentials" });
+          // User doesn't exist or credentials are incorrect
+          res.status(401).json({ message: "Invalid credentials" });
         }
       }
     );
