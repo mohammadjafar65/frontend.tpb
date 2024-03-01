@@ -17,7 +17,8 @@
     RewriteRule ^(.*)$ http://api.thepilgrimbeez.com:3000/$1 [P,L]
 
     # Rewrite rule for the backend project
-    RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com$ [NC]
+    RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com [NC,OR]
+    RewriteCond %{HTTP_HOST} ^admin.thepilgrimbeez\.com [NC]
     RewriteCond %{REQUEST_URI} !^/tpb-admin/build/
     RewriteRule ^(.*)$ /tpb-admin/build/$1 [L]
 
