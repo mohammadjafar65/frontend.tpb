@@ -9,11 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors({
-  origin: 'https://admin.thepilgrimbeez.com',
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors()); // CORS middleware applied here
 // Set up CORS headers
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
@@ -71,12 +67,12 @@ app.use((err, req, res, next) => {
 // Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
 
-// Login route
+// Login route and logic
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   // Query the database to check if the user exists and credentials are correct
-  db.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], (err, results) => {
+  db.query('SELECT * FROM user WHERE email = ? AND password = ?', [email, password], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).json({ message: "Internal server error" });
