@@ -12,7 +12,7 @@ function App() {
           <Routes>
               {/* <Route path="/" component={MaintenancePage} /> */}
               <Route path="/" element={<LoginScreen/>}></Route>
-              {/* <Route path="/dashboard" element={<Dashboard/>}></Route> */}
+              <Route path="/dashboard" element={<Dashboard/>}></Route>
           </Routes>
         </BrowserRouter>
     </div>
