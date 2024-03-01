@@ -9,7 +9,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors()); // CORS middleware applied here
+app.use(cors({
+  origin: 'https://admin.thepilgrimbeez.com',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 // Set up CORS headers
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
