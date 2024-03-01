@@ -1,68 +1,51 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
     const [packages, setPackages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [files, setFiles] = useState([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPackages = async () => {
             try {
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    // Redirect user to login if token is not found
-                    navigate('/login');
-                    return;
-                }
-
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/packages`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setPackages(response.data.packages);
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/packages`);
+                setPackages(response.data);
             } catch (err) {
                 setError("An error occurred while fetching the packages.");
                 console.error(err);
             }
-            setLoading(false);
+            setLoading(false); // Moved outside try-catch block
         };
 
         fetchPackages();
-    }, [navigate]);
+    }, []);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.target);
+        const formData = new FormData(event.target);
 
         files.forEach((fileItem) => {
-            data.append("gallery", fileItem.file);
+            formData.append("gallery", fileItem.file);
         });
 
-        const endpoint = `${process.env.REACT_APP_API_URL}/packages/create`;
-
-        axios
-            .post(endpoint, data, {
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/packages/create`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
-            })
-            .then((response) => {
-                console.log(response.data);
-                alert("Package added successfully");
-            })
-            .catch((error) => {
-                console.error(error);
-                if (error.response && error.response.status === 404) {
-                    alert("The server endpoint was not found. Please check the URL.");
-                } else {
-                    alert("Error in package upload: " + error.message);
-                }
             });
+            console.log(response.data);
+            alert("Package added successfully");
+        } catch (error) {
+            console.error(error);
+            if (error.response && error.response.status === 404) {
+                alert("The server endpoint was not found. Please check the URL.");
+            } else {
+                alert("Error in package upload: " + error.message);
+            }
+        }
     };
 
     const handleFileChange = (e) => {
@@ -79,31 +62,28 @@ function Dashboard() {
                     src: e.target.result,
                     file: file,
                 });
+                setFiles([...filePreviews]);
             };
 
             fileReader.readAsDataURL(file);
         }
-
-        setFiles([...filePreviews]);
     };
 
-    const handleDeletePackage = (packageId) => {
+    const handleDeletePackage = async (packageId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this package?");
         if (confirmDelete) {
-            axios
-                .delete(`${process.env.REACT_APP_API_URL}/packages/delete/${packageId}`)
-                .then((response) => {
-                    console.log("Delete response:", response);
-                    if (response.status === 200 || response.status === 204) {
-                        setPackages(prevPackages => prevPackages.filter((packageItem) => packageItem.id !== packageId));
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error deleting package:", error.response || error.message);
-                    alert("Error deleting package: " + error.message); // Informative message
-                });
+            try {
+                const response = await axios.delete(`${process.env.REACT_APP_API_URL}/packages/delete/${packageId}`);
+                console.log("Delete response:", response);
+                if (response.status === 200 || response.status === 204) {
+                    setPackages(prevPackages => prevPackages.filter((packageItem) => packageItem.id !== packageId));
+                }
+            } catch (error) {
+                console.error("Error deleting package:", error.response || error.message);
+                alert("Error deleting package: " + error.message); // Informative message
+            }
         }
-    };    
+    };
 
     const removeFile = (fileName) => {
         setFiles(files.filter((file) => file.name !== fileName));
