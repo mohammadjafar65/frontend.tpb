@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { redirect } from "react-router-dom";
+
 
 function LoginScreen() {
+  const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +19,7 @@ function LoginScreen() {
       });
 
       if (response.ok) {
-        history.push("/dashboard");
+        setLoggedIn(true);
       } else {
         console.error("Authentication failed");
       }
@@ -26,6 +27,10 @@ function LoginScreen() {
       console.error("Error:", error);
     }
   };
+
+  if (loggedIn) {
+    return <redirect to="/dashboard" />;
+  }
 
   return (
     <div>
