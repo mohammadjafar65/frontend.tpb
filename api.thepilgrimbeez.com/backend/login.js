@@ -1,6 +1,6 @@
 module.exports = (app, db) => {
   // Route for user login
-  app.get("/api.thepilgrimbeez.com/login", (req, res) => {
+  app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
     // Perform authentication logic here
