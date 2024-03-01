@@ -10,13 +10,24 @@ function Dashboard() {
     useEffect(() => {
         const fetchPackages = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/packages`);
-                setPackages(response.data);
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    // Redirect user to login if token is not found
+                    window.location.href = "/login";
+                    return;
+                }
+
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/dashboard`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setPackages(response.data.packages);
             } catch (err) {
                 setError("An error occurred while fetching the packages.");
                 console.error(err);
             }
-            setLoading(false); // Moved outside try-catch block
+            setLoading(false);
         };
 
         fetchPackages();
