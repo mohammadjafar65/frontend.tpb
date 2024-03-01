@@ -56,16 +56,17 @@ app.use("/testapi", express.static("This is test api"));
 app.use("/api.thepilgrimbeez.com/uploads", express.static("uploads"));
 app.use("/static", express.static(path.join(__dirname, "public")));
 
-// // Middleware to handle errors globally
+// Middleware to handle errors globally
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something went wrong!');
 });
 
-// // Routes and middleware for handling travel packages
+// Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
+require('./users')(app, db, upload, uuidv4);
 
-// // Other routes and logic...
+// Other routes and logic...
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
