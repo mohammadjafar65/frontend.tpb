@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom"; // Import useHistory for redirection
 
-function Login() {
+function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
@@ -58,4 +58,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginScreen;
