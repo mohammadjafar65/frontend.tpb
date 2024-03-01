@@ -1,5 +1,0 @@
----
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/i3iazccdja1m/public_html/tpb-admin/build/
-    - /bin/cp * $DEPLOYPATH
