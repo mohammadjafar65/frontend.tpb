@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { redirect } from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
 
 function LoginScreen() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +20,7 @@ function LoginScreen() {
 
       if (response.ok) {
         setLoggedIn(true);
+        navigate('/dashboard');
       } else {
         console.error("Authentication failed");
       }
@@ -29,7 +30,7 @@ function LoginScreen() {
   };
 
   if (loggedIn) {
-    return <redirect to="/dashboard" />;
+    return null; // Return null when logged in to prevent rendering the login screen
   }
 
   return (
