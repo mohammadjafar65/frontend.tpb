@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
     const [packages, setPackages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [files, setFiles] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -13,7 +15,7 @@ function Dashboard() {
                 const token = localStorage.getItem("token");
                 if (!token) {
                     // Redirect user to login if token is not found
-                    window.location.href = "https://admin.thepilgrimbeez.com/login";
+                    navigate('/login');
                     return;
                 }
 
@@ -31,7 +33,7 @@ function Dashboard() {
         };
 
         fetchPackages();
-    }, []);
+    }, [navigate]);
 
     const handleSubmit = (event) => {
         event.preventDefault();

@@ -1,5 +1,3 @@
-const jwt = require("jsonwebtoken");
-
 module.exports = (app, db) => {
   // Route for user login
   app.post("/api.thepilgrimbeez.com/login", (req, res) => {
@@ -21,27 +19,7 @@ module.exports = (app, db) => {
 
         if (results.length > 0) {
           // Authentication successful
-          const user = results[0];
-          const token = jwt.sign(
-            { email: user.email, userId: user.id },
-            "your_secret_key",
-            { expiresIn: "1h" }
-          );
-
-          // Fetch dashboard data and return it along with login message and token
-          db.query("SELECT * FROM travel_packages", (err, packages) => {
-            if (err) {
-              console.error("Database error:", err);
-              return res
-                .status(500)
-                .json({ error: "Database error: " + err.message });
-            }
-            return res.status(200).json({
-              message: "Login successful",
-              token: token,
-              packages: packages,
-            });
-          });
+          return res.status(200).json({ message: "Login successful" });
         } else {
           // Authentication failed
           return res.status(403).json({ error: "Invalid credentials" });

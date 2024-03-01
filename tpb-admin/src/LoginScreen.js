@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
 function LoginScreen() {
-  const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -19,7 +18,9 @@ function LoginScreen() {
       });
 
       if (response.ok) {
-        setLoggedIn(true);
+        // Successful login
+        const data = await response.json();
+        localStorage.setItem('token', data.token); // Store the token in local storage
         navigate('/dashboard');
       } else {
         console.error("Authentication failed");
@@ -28,10 +29,6 @@ function LoginScreen() {
       console.error("Error:", error);
     }
   };
-
-  if (loggedIn) {
-    return null; // Return null when logged in to prevent rendering the login screen
-  }
 
   return (
     <div>

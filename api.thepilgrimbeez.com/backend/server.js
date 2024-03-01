@@ -5,6 +5,8 @@ const fs = require("fs");
 const mysql = require("mysql");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(cors()); // CORS middleware applied here
@@ -64,7 +66,50 @@ app.use((err, req, res, next) => {
 
 // Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
-require('./login')(app, db);
+
+// Login route
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // Query the database to check if the user exists and credentials are correct
+  db.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+      return;
+    }
+
+    if (results.length > 0) {
+      // User exists and credentials are correct
+      // Generate and send JWT token as a response
+      const token = jwt.sign({ email: email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.json({ token });
+    } else {
+      // User doesn't exist or credentials are incorrect
+      res.status(401).json({ message: "Invalid credentials" });
+    }
+  });
+});
+
+// Dashboard route
+app.get('/dashboard', (req, res) => {
+  // Check for valid token
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Here you can fetch user data from the database based on decoded user id
+    // Then you can send the dashboard data as response
+    // For now, let's just send a sample response
+    res.status(200).json({ message: 'Dashboard data', user: decoded });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+});
 
 // Other routes and logic...
 app.listen(port, () => {
