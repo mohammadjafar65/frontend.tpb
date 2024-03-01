@@ -7,7 +7,7 @@ module.exports = (app, db) => {
     // Check if the email and password match a user in the database
     // Example authentication logic:
     db.query(
-      "SELECT * FROM users WHERE email = ? AND password = ?",
+      "SELECT * FROM user WHERE email = ? AND password = ?",
       [email, password],
       (error, results) => {
         if (error) {
