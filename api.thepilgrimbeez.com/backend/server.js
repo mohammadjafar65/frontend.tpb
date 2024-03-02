@@ -8,7 +8,12 @@ const { v4: uuidv4 } = require("uuid");
 const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors()); // CORS middleware applied here
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 // Set up CORS headers
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*"); // Change * to your specific origin if needed
@@ -122,7 +127,7 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
       res.send("Login Successfully");
       const token = generateToken(email); // Implement this function to generate a token
       res.json({ token }); // Send the token as JSON response
-      // res.redirect("/api.thepilgrimbeez.com/packages");
+      res.redirect("/api.thepilgrimbeez.com/packages");
     } else {
       res.send("Invalid email or password");
     }
