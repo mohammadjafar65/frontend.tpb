@@ -1,5 +1,5 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
 const mysql = require("mysql");
@@ -10,14 +10,14 @@ const app = express();
 app.use(cors()); // CORS middleware applied here
 // Set up CORS headers
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Change * to your specific origin if needed
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
 app.use(express.json());
 
-require('dotenv').config();
+require("dotenv").config();
 
 const port = process.env.PORT || 3000;
 
@@ -28,21 +28,24 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
-db.connect(err => {
+db.connect((err) => {
   if (err) {
-    console.error('Database connection failed: ' + err.stack);
+    console.error("Database connection failed: " + err.stack);
     return;
   }
-  console.log('Connected to database.');
+  console.log("Connected to database.");
 });
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/')
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-  }
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
 });
 
 const upload = multer({ storage: storage });
@@ -59,11 +62,35 @@ app.use("/static", express.static(path.join(__dirname, "public")));
 // Middleware to handle errors globally
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something went wrong!');
+  res.status(500).send("Something went wrong!");
 });
 
-// Routes and middleware for handling travel packages
-require('./travelPackages')(app, db, upload, uuidv4);
+// Handle login form submission
+app.post("/login", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  db.get(
+    "SELECT * FROM user WHERE email = ? AND password = ?",
+    [email, password],
+    (err, row) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      if (row) {
+        res.redirect("/dashboard");
+      } else {
+        res.send("Invalid email or password");
+      }
+    }
+  );
+});
+
+// Serve dashboard page
+app.get("/dashboard", (req, res) => {
+  // Routes and middleware for handling travel packages
+  require("./travelPackages")(app, db, upload, uuidv4);
+});
 
 // Other routes and logic...
 app.listen(port, () => {
