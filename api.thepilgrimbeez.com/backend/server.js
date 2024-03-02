@@ -8,11 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors());
 
 // Set up CORS headers
 app.use((req, res, next) => {
@@ -91,6 +87,8 @@ function generateToken(email) {
   const token = jwt.sign(payload, process.env.JWT_SECRET, options);
   return token;
 }
+
+require("./travelPackages")(app, db, upload, uuidv4);
 
 // Handle login form submission
 // app.post("/api.thepilgrimbeez.com/login", (req, res) => {
