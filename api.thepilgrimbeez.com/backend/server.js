@@ -63,7 +63,7 @@ app.use("/static", express.static(path.join(__dirname, "public")));
 // Middleware to handle errors globally
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Something went wrong!");
+  res.status(500).json({ error: err.message }); // Send the error message as JSON response
 });
 
 // Function to generate JWT token
@@ -133,6 +133,11 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
 //   // Routes and middleware for handling travel packages
   
 // });
+
+// Serve dashboard page
+app.get("/dashboard", (req, res) => {
+  res.send("Dashboard page"); // Placeholder response
+});
 
 module.exports = generateToken;
 
