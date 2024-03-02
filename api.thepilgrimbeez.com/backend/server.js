@@ -122,7 +122,6 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
       res.send("Login Successfully");
       const token = generateToken(email); // Implement this function to generate a token
       res.json({ token }); // Send the token as JSON response
-      require("./travelPackages")(app, db, upload, uuidv4);
       // res.redirect("/api.thepilgrimbeez.com/packages");
     } else {
       res.send("Invalid email or password");
@@ -138,7 +137,7 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
 
 // Serve dashboard page
 app.get("/api.thepilgrimbeez.com/dashboard", (req, res) => {
-  res.send("Dashboard page"); // Placeholder response
+  require("./travelPackages")(app, db, upload, uuidv4);
 });
 
 // module.exports = generateToken;
