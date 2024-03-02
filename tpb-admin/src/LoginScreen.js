@@ -20,7 +20,7 @@ const LoginScreen = () => {
         const data = await response.text(); // Read response as text
         if (data === "Login Successfully") {
           localStorage.setItem("isLoggedIn", "true"); // Set session flag
-          navigate("/dashboard"); // Navigate to the dashboard
+        //   navigate("/dashboard"); // Navigate to the dashboard
         } else {
           console.error("Invalid email or password");
         }
