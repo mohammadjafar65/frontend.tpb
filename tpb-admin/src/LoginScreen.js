@@ -17,17 +17,21 @@ const LoginScreen = () => {
         body: JSON.stringify({ email, password }),
       });
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.token);
-        history("/dashboard");
+        const data = await response.text(); // Read response as text
+        if (data === "Login Successfully") {
+          localStorage.setItem("isLoggedIn", "true"); // Set session flag
+          history.push("/dashboard");
+        } else {
+          console.error("Invalid email or password");
+        }
       } else {
-        // Handle invalid credentials
         console.error("Invalid email or password");
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
+  
 
   return (
     <>
