@@ -66,7 +66,7 @@ app.use((err, req, res, next) => {
 });
 
 // Handle login form submission
-app.post("/login", (req, res) => {
+app.post("/api.thepilgrimbeez.com/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
