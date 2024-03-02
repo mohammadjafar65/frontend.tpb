@@ -64,6 +64,7 @@ app.use((err, req, res, next) => {
 
 // Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
+require('./loginApi')(app, db);
 
 
 // Other routes and logic...
