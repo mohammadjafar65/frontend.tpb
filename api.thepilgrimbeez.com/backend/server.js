@@ -70,21 +70,21 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  db.get(
-    "SELECT * FROM user WHERE email = ? AND password = ?",
-    [email, password],
-    (err, row) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      if (row) {
-        res.redirect("/dashboard");
-      } else {
-        res.send("Invalid email or password");
-      }
+  const sql = "SELECT * FROM user WHERE email = ? AND password = ?";
+  const values = [email, password];
+
+  db.query(sql, values, (err, rows) => {
+    if (err) {
+      return console.error(err.message);
     }
-  );
+    if (rows.length > 0) {
+      res.redirect("/dashboard");
+    } else {
+      res.send("Invalid email or password");
+    }
+  });
 });
+
 
 // Serve dashboard page
 app.get("/dashboard", (req, res) => {
