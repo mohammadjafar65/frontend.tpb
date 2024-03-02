@@ -141,9 +141,9 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
 // });
 
 // Serve dashboard page
-app.get("/api.thepilgrimbeez.com/dashboard", (req, res) => {
-  require("./travelPackages")(app, db, upload, uuidv4);
-});
+// app.get("/api.thepilgrimbeez.com/dashboard", (req, res) => {
+//   require("./travelPackages")(app, db, upload, uuidv4);
+// });
 
 // Other routes and logic...
 app.listen(port, () => {
