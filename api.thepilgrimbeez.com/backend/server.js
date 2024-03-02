@@ -78,7 +78,7 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
       return console.error(err.message);
     }
     if (rows.length > 0) {
-      res.redirect("/dashboard");
+      res.redirect("/api.thepilgrimbeez.com/dashboard");
     } else {
       res.send("Invalid email or password");
     }
@@ -87,7 +87,7 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
 
 
 // Serve dashboard page
-app.get("/dashboard", (req, res) => {
+app.get("/api.thepilgrimbeez.com/dashboard", (req, res) => {
   // Routes and middleware for handling travel packages
   require("./travelPackages")(app, db, upload, uuidv4);
 });
