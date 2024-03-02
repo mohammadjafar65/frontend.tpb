@@ -118,17 +118,17 @@ module.exports = (app, db, upload, uuidv4) => {
     });
 
     // Dashboard route
-    app.get("/api.thepilgrimbeez.com/dashboard", async (req, res) => {
-        try {
-            // Fetch dashboard data
-            const packages = await getAllPackages();
-            // Return dashboard data
-            res.json({ packages });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: "Error fetching dashboard data" });
-        }
-    });
+    // app.get("/api.thepilgrimbeez.com/dashboard", async (req, res) => {
+    //     try {
+    //         // Fetch dashboard data
+    //         const packages = await getAllPackages();
+    //         // Return dashboard data
+    //         res.json({ packages });
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(500).json({ error: "Error fetching dashboard data" });
+    //     }
+    // });
     
     // Function to get all packages
     const getAllPackages = () => {
