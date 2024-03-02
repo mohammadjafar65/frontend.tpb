@@ -6,7 +6,7 @@
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Rewrite rule for the frontend project
-    RewriteCond %{HTTP_HOST} ^www\.thepilgrimbeez\.com [NC,OR]
+    RewriteCond %{HTTP_HOST} ^thepilgrimbeez\.com [NC,OR]
     RewriteCond %{HTTP_HOST} ^thepilgrimbeez\.com [NC]
     RewriteCond %{REQUEST_URI} !^/frontend/build/
     RewriteRule ^(.*)$ /frontend/build/$1 [L]
