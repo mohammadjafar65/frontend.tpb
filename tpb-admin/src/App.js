@@ -11,7 +11,7 @@ function App() {
         <BrowserRouter>
           <Routes>
               {/* <Route path="/" component={MaintenancePage} /> */}
-              <Route path="/" component={Login} />
+              <Route path="/" element={<Login/>} />
               <Route path="/dashboard" element={<Dashboard/>}></Route>
           </Routes>
         </BrowserRouter>
