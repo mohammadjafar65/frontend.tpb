@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom"; // Import useHistory f
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const history = useNavigate(); // Get the history object
+  const navigate = useNavigate(); // Get the history object
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,7 +20,7 @@ const LoginScreen = () => {
         const data = await response.text(); // Read response as text
         if (data === "Login Successfully") {
           localStorage.setItem("isLoggedIn", "true"); // Set session flag
-          history.push("/dashboard");
+          navigate("/dashboard");
         } else {
           console.error("Invalid email or password");
         }
