@@ -124,15 +124,14 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
       return console.error(err.message);
     }
     if (rows.length > 0) {
-      res.send("Login Successfully");
-      const token = generateToken(email); // Implement this function to generate a token
+      const token = generateToken(email);
       res.json({ token }); // Send the token as JSON response
-      // res.redirect("/api.thepilgrimbeez.com/packages");
     } else {
-      res.send("Invalid email or password");
+      res.status(401).json({ error: "Invalid email or password" });
     }
   });
 });
+
 
 // Serve dashboard page
 // app.get("/dashboard", (req, res) => {

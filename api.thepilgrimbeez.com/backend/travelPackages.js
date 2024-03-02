@@ -1,16 +1,32 @@
 module.exports = (app, db, upload, uuidv4) => {
     // Route to get all travel packages
-    app.get("/api.thepilgrimbeez.com/packages", (req, res) => {
+    app.get("/api.thepilgrimbeez.com/packages", verifyToken, (req, res) => {
         // Logic to fetch all travel packages from the database
         const sql = "SELECT * FROM travel_packages";
         db.query(sql, (err, data) => {
-        if (err) {
+          if (err) {
             console.error(err);
             return res.status(500).json({ error: "Error fetching travel packages" });
-        }
-        return res.json(data);
+          }
+          return res.json(data);
         });
-    });
+      });      
+
+      const verifyToken = (req, res, next) => {
+        const token = req.headers.authorization;
+        if (!token) {
+          return res.status(401).json({ error: "Token is missing" });
+        }
+      
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+          if (err) {
+            return res.status(401).json({ error: "Invalid token" });
+          }
+          req.user = decoded.email; // Save the decoded user information
+          next(); // Call the next middleware
+        });
+      };
+      
     
     // POST route to create a new travel package
     app.post(
@@ -118,17 +134,17 @@ module.exports = (app, db, upload, uuidv4) => {
     });
 
     // Dashboard route
-    // app.get("/api.thepilgrimbeez.com/dashboard", async (req, res) => {
-    //     try {
-    //         // Fetch dashboard data
-    //         const packages = await getAllPackages();
-    //         // Return dashboard data
-    //         res.json({ packages });
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).json({ error: "Error fetching dashboard data" });
-    //     }
-    // });
+    app.get("/api.thepilgrimbeez.com/dashboard", async (req, res) => {
+        try {
+            // Fetch dashboard data
+            const packages = await getAllPackages();
+            // Return dashboard data
+            res.json({ packages });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: "Error fetching dashboard data" });
+        }
+    });
     
     // Function to get all packages
     const getAllPackages = () => {
