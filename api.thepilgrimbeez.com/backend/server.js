@@ -78,14 +78,35 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
       return console.error(err.message);
     }
     if (rows.length > 0) {
-      res.send("Login Successfully");
-      require("./travelPackages")(app, db, upload, uuidv4);
-      // res.redirect("/api.thepilgrimbeez.com/packages");
+      // Assuming you have a function to generate JWT tokens
+      const token = generateToken(email); // Implement this function to generate a token
+      res.json({ token }); // Send the token as JSON response
     } else {
-      res.send("Invalid email or password");
+      res.status(401).json({ error: "Invalid email or password" }); // Send error response
     }
   });
 });
+
+// app.post("/api.thepilgrimbeez.com/login", (req, res) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
+
+//   const sql = "SELECT * FROM user WHERE email = ? AND password = ?";
+//   const values = [email, password];
+
+//   db.query(sql, values, (err, rows) => {
+//     if (err) {
+//       return console.error(err.message);
+//     }
+//     if (rows.length > 0) {
+//       res.send("Login Successfully");
+//       require("./travelPackages")(app, db, upload, uuidv4);
+//       // res.redirect("/api.thepilgrimbeez.com/packages");
+//     } else {
+//       res.send("Invalid email or password");
+//     }
+//   });
+// });
 
 // Serve dashboard page
 // app.get("/dashboard", (req, res) => {
