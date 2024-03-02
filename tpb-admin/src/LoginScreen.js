@@ -17,7 +17,8 @@ const LoginScreen = () => {
         body: JSON.stringify({ email, password }),
       });
       if (response.ok) {
-        // Redirect to the dashboard page using history.push
+        const data = await response.json();
+        localStorage.setItem("token", data.token);
         history("/dashboard");
       } else {
         // Handle invalid credentials
