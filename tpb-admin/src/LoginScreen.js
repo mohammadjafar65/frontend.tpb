@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom"; // Import useHistory from React Router
+import { useNavigate } from "react-router-dom"; // Import useNavigate from React Router
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Get the history object
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,7 +20,7 @@ const LoginScreen = () => {
         const data = await response.text(); // Read response as text
         if (data === "Login Successfully") {
           localStorage.setItem("isLoggedIn", "true"); // Set session flag
-          navigate("/dashboard");
+          navigate("/dashboard"); // Navigate to the dashboard
         } else {
           console.error("Invalid email or password");
         }
@@ -31,7 +31,6 @@ const LoginScreen = () => {
       console.error("Error:", error);
     }
   };
-  
 
   return (
     <>
