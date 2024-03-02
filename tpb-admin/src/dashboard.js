@@ -22,30 +22,34 @@ function Dashboard() {
         fetchPackages();
     }, []);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
-        const formData = new FormData(event.target);
+        const data = new FormData(event.target);
 
         files.forEach((fileItem) => {
-            formData.append("gallery", fileItem.file);
+            data.append("gallery", fileItem.file);
         });
 
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/packages/create`, formData, {
+        const endpoint = `https://api.thepilgrimbeez.com/packages/create`;
+
+        axios
+            .post(endpoint, data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
+            })
+            .then((response) => {
+                console.log(response.data);
+                alert("Package added successfully");
+            })
+            .catch((error) => {
+                console.error(error);
+                if (error.response && error.response.status === 404) {
+                    alert("The server endpoint was not found. Please check the URL.");
+                } else {
+                    alert("Error in package upload: " + error.message);
+                }
             });
-            console.log(response.data);
-            alert("Package added successfully");
-        } catch (error) {
-            console.error(error);
-            if (error.response && error.response.status === 404) {
-                alert("The server endpoint was not found. Please check the URL.");
-            } else {
-                alert("Error in package upload: " + error.message);
-            }
-        }
     };
 
     const handleFileChange = (e) => {
@@ -62,28 +66,31 @@ function Dashboard() {
                     src: e.target.result,
                     file: file,
                 });
-                setFiles([...filePreviews]);
             };
 
             fileReader.readAsDataURL(file);
         }
+
+        setFiles([...filePreviews]);
     };
 
-    const handleDeletePackage = async (packageId) => {
+    const handleDeletePackage = (packageId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this package?");
         if (confirmDelete) {
-            try {
-                const response = await axios.delete(`${process.env.REACT_APP_API_URL}/packages/delete/${packageId}`);
-                console.log("Delete response:", response);
-                if (response.status === 200 || response.status === 204) {
-                    setPackages(prevPackages => prevPackages.filter((packageItem) => packageItem.id !== packageId));
-                }
-            } catch (error) {
-                console.error("Error deleting package:", error.response || error.message);
-                alert("Error deleting package: " + error.message); // Informative message
-            }
+            axios
+                .delete(`https://api.thepilgrimbeez.com/packages/delete/${packageId}`)
+                .then((response) => {
+                    console.log("Delete response:", response);
+                    if (response.status === 200 || response.status === 204) {
+                        setPackages(prevPackages => prevPackages.filter((packageItem) => packageItem.id !== packageId));
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error deleting package:", error.response || error.message);
+                    alert("Error deleting package: " + error.message); // Informative message
+                });
         }
-    };
+    };    
 
     const removeFile = (fileName) => {
         setFiles(files.filter((file) => file.name !== fileName));

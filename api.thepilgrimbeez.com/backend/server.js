@@ -69,25 +69,29 @@ app.use((err, req, res, next) => {
 
 // Routes and middleware for handling travel packages
 require("./travelPackages")(app, db, upload, uuidv4);
-require("./login")(app, db, uuidv4);
+// require("./login")(app, db, uuidv4);
 
-// Dashboard route
-app.get("/dashboard", (req, res) => {
-  // Check for valid token
-  const token = req.headers.authorization;
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+const users = [
+  { id: 1, username: 'user1', password: 'password1', name: 'User One' },
+  { id: 2, username: 'user2', password: 'password2', name: 'User Two' }
+];
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // Here you can fetch user data from the database based on decoded user id
-    // Then you can send the dashboard data as response
-    // For now, let's just send a sample response
-    res.status(200).json({ message: "Dashboard data", user: decoded });
-  } catch (error) {
-    console.error(error);
-    return res.status(401).json({ message: "Unauthorized" });
+// Login endpoint
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+  if (user) {
+    res.json({
+      success: true,
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        username: user.username,
+        name: user.name
+      }
+    });
+  } else {
+    res.status(401).json({ success: false, message: 'Invalid username or password' });
   }
 });
 
