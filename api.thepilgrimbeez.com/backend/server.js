@@ -78,13 +78,14 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
       return console.error(err.message);
     }
     if (rows.length > 0) {
-      require("./travelPackages")(app, db, upload, uuidv4);
       // res.redirect("https://admin.thepilgrimbeez.com/dashboard");
     } else {
       res.send("Invalid email or password");
     }
   });
 });
+
+require("./travelPackages")(app, db, upload, uuidv4);
 
 // Serve dashboard page
 // app.get("/dashboard", (req, res) => {
