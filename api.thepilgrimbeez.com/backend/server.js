@@ -71,6 +71,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message }); // Send the error message as JSON response
 });
 
+module.exports = generateToken;
+
 // Function to generate JWT token
 function generateToken(email) {
   // Define payload (data to be encoded in the token)
@@ -127,7 +129,7 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
       res.send("Login Successfully");
       const token = generateToken(email); // Implement this function to generate a token
       res.json({ token }); // Send the token as JSON response
-      res.redirect("/api.thepilgrimbeez.com/packages");
+      // res.redirect("/api.thepilgrimbeez.com/packages");
     } else {
       res.send("Invalid email or password");
     }
@@ -144,8 +146,6 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
 app.get("/api.thepilgrimbeez.com/dashboard", (req, res) => {
   require("./travelPackages")(app, db, upload, uuidv4);
 });
-
-// module.exports = generateToken;
 
 // Other routes and logic...
 app.listen(port, () => {
