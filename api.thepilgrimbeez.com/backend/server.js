@@ -5,6 +5,7 @@ const fs = require("fs");
 const mysql = require("mysql");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(cors()); // CORS middleware applied here
@@ -65,6 +66,25 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something went wrong!");
 });
 
+// Function to generate JWT token
+function generateToken(email) {
+  // Define payload (data to be encoded in the token)
+  const payload = {
+    email: email,
+    // You can include additional data in the payload if needed
+  };
+
+  // Define options (e.g., token expiration time)
+  const options = {
+    expiresIn: '1h', // Token will expire in 1 hour
+    // You can include additional options as needed
+  };
+
+  // Generate JWT token
+  const token = jwt.sign(payload, process.env.JWT_SECRET, options);
+  return token;
+}
+
 // Handle login form submission
 app.post("/api.thepilgrimbeez.com/login", (req, res) => {
   const email = req.body.email;
@@ -113,6 +133,8 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
 //   // Routes and middleware for handling travel packages
   
 // });
+
+module.exports = generateToken;
 
 // Other routes and logic...
 app.listen(port, () => {
