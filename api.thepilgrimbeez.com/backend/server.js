@@ -78,19 +78,19 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
       return console.error(err.message);
     }
     if (rows.length > 0) {
-      res.redirect("/api.thepilgrimbeez.com/dashboard");
+      require("./travelPackages")(app, db, upload, uuidv4);
+      // res.redirect("https://admin.thepilgrimbeez.com/dashboard");
     } else {
       res.send("Invalid email or password");
     }
   });
 });
 
-
 // Serve dashboard page
-app.get("/api.thepilgrimbeez.com/dashboard", (req, res) => {
-  // Routes and middleware for handling travel packages
-  require("./travelPackages")(app, db, upload, uuidv4);
-});
+// app.get("/dashboard", (req, res) => {
+//   // Routes and middleware for handling travel packages
+  
+// });
 
 // Other routes and logic...
 app.listen(port, () => {

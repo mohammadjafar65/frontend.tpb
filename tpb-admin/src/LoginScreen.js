@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom"; // Import useHistory from React Router
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const history = useNavigate(); // Get the history object
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -15,8 +17,8 @@ const LoginScreen = () => {
         body: JSON.stringify({ email, password }),
       });
       if (response.ok) {
-        // Redirect or perform actions upon successful login
-        window.location.href = "/dashboard";
+        // Redirect to the dashboard page using history.push
+        history("/dashboard");
       } else {
         // Handle invalid credentials
         console.error("Invalid email or password");
