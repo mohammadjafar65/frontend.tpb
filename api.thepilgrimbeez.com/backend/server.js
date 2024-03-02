@@ -135,7 +135,7 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
 // });
 
 // Serve dashboard page
-app.get("/dashboard", (req, res) => {
+app.get("/api.thepilgrimbeez.com/dashboard", (req, res) => {
   res.send("Dashboard page"); // Placeholder response
 });
 
