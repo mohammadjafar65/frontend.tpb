@@ -79,7 +79,7 @@ app.post("/api.thepilgrimbeez.com/login", (req, res) => {
     }
     if (rows.length > 0) {
       res.send("Login Successfully");
-      // res.redirect("/dashboard");
+      res.redirect("/api.thepilgrimbeez.com/packages");
     } else {
       res.send("Invalid email or password");
     }
