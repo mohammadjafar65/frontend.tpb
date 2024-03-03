@@ -45,3 +45,9 @@
     text-transform: uppercase;
     font-weight: 600;
 }
+
+.navbar-expand-lg .navbar-nav .dropdown-menu button {
+    background: transparent;
+    border: none;
+    padding: 2px 14px;
+}
