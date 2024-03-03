@@ -1,5 +1,5 @@
 module.exports = (app, db) => {
-  app.post("/api.thepilgrimbeez.com/login", (req, res) => {
+  app.post("/login", (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
