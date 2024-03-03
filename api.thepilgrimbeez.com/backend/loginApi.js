@@ -5,7 +5,7 @@ module.exports = (app, db) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    const sql = "SELECT * FROM user WHERE email = ? AND password = ?";
+    const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
     const values = [email, password];
 
     db.query(sql, values, (err, rows) => {
