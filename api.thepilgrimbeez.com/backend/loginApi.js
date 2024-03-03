@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 module.exports = (app, db) => {
   app.post("/login", (req, res) => {
     const email = req.body.email;
@@ -18,25 +20,23 @@ module.exports = (app, db) => {
       }
     });
   });
-
-  module.exports = generateToken;
-
-  // Function to generate JWT token
-  function generateToken(email) {
-    // Define payload (data to be encoded in the token)
-    const payload = {
-      email: email,
-      // You can include additional data in the payload if needed
-    };
-
-    // Define options (e.g., token expiration time)
-    const options = {
-      expiresIn: "1h", // Token will expire in 1 hour
-      // You can include additional options as needed
-    };
-
-    // Generate JWT token
-    const token = jwt.sign(payload, process.env.JWT_SECRET, options);
-    return token;
-  }
 };
+
+// Function to generate JWT token
+function generateToken(email) {
+  // Define payload (data to be encoded in the token)
+  const payload = {
+    email: email,
+    // You can include additional data in the payload if needed
+  };
+
+  // Define options (e.g., token expiration time)
+  const options = {
+    expiresIn: "1h", // Token will expire in 1 hour
+    // You can include additional options as needed
+  };
+
+  // Generate JWT token
+  const token = jwt.sign(payload, process.env.JWT_SECRET, options);
+  return token;
+}

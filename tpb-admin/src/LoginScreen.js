@@ -17,9 +17,9 @@ const LoginScreen = () => {
         body: JSON.stringify({ email, password }),
       });
       if (response.ok) {
-        const data = await response.text(); // Read response as text
-        if (data === "Login Successfully") {
-          localStorage.setItem("isLoggedIn", "true"); // Set session flag
+        const data = await response.json(); // Read response as JSON
+        if (data.token) {
+          localStorage.setItem("token", data.token); // Store token in localStorage
           navigate("/dashboard"); // Navigate to the dashboard
         } else {
           console.error("Invalid email or password");
