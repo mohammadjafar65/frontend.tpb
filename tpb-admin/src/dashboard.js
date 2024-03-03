@@ -7,7 +7,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
-  const { logout } = useAuth0();
+  const { loginWithRedirect, logout } = useAuth0();
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -125,6 +125,10 @@ function Dashboard() {
     <>
       <div>
         <div className="wrapper">
+          <div className="LoginScreen">
+            <button onClick={() => loginWithRedirect()}>Log In</button>
+          </div>
+
           <div className="main-header">
             <div className="logo-header">
               <h6>TPB Admin</h6>
