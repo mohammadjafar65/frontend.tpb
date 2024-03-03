@@ -1,21 +1,45 @@
 .LoginScreen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 99999;
-    height: 100vh;
-    background: #fff;
+    align-items: center;
+    background: #efa852;
     display: flex;
     flex-direction: row;
+    height: 100vh;
     justify-content: center;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 99999;
+}
+
+.LoginScreen .card {
+    width: 30%;
+    height: auto;
+    padding: 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
+.LoginScreen .card img {
+    width: 60%;
+    margin-bottom: 8%;
+}
+
+.LoginScreen .card h2 {
+    font-size: 37px;
+    font-weight: 800;
+    color: #efa852;
+    margin-bottom: 10%;
+    font-family: 'Nunito';
+}
+
 .LoginScreen button {
-    background: #387ADF;
+    background: #000;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 40px;
+    border-radius: 8px;
     font-size: 20px;
     color: #fff;
     text-transform: uppercase;

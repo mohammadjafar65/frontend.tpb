@@ -529,7 +529,11 @@ function Dashboard() {
         ) : (
           <div>
             <div className="LoginScreen">
-              <button onClick={() => loginWithRedirect()}>Log In</button>
+              <div className="card">
+                <img src="https://thepilgrimbeez.com/img/tpb-logo.png"/>
+                <h2>Admin Panel Of TPB</h2>
+                <button onClick={() => loginWithRedirect()}>Log In</button>
+              </div>
             </div>
           </div>
         )}
