@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function Dashboard() {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
+  const { logout } = useAuth0();
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -173,9 +175,18 @@ function Dashboard() {
                         </div>
                       </li>
                       <div className="dropdown-divider"></div>
-                      <a className="dropdown-item" href="#">
+                      <button
+                        onClick={() =>
+                          logout({
+                            logoutParams: { returnTo: window.location.origin },
+                          })
+                        }
+                      >
+                        <i className="fa fa-power-off"></i> Log Out
+                      </button>
+                      {/* <a className="dropdown-item" href="#">
                         <i className="fa fa-power-off"></i> Logout
-                      </a>
+                      </a> */}
                     </ul>
                   </li>
                 </ul>
