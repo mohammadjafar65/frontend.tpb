@@ -11,8 +11,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* <Route path="/" component={MaintenancePage} /> */}
-          <Route path="/" element={<LoginScreen />}></Route>
-          <Route path="/dashboard" element={<Dashboard />}></Route>
+          {/* <Route path="/" element={<LoginScreen />}></Route> */}
+          <Route path="/" element={<Dashboard />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
