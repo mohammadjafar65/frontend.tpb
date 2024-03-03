@@ -1,24 +1,25 @@
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path'); // Import path module
 
 module.exports = (app, db) => {
   app.post("/login", (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
 
-    const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
-    const values = [email, password];
+    // Specify the path to your login.json file
+    const loginFilePath = path.join(__dirname, 'path', 'to', 'login.json');
 
-    db.query(sql, values, (err, rows) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      if (rows.length > 0) {
-        const token = generateToken(email);
-        res.json({ token }); // Send the token as JSON response
-      } else {
-        res.status(401).json({ error: "Invalid email or password" });
-      }
-    });
+    // Read user credentials from login.json
+    const users = JSON.parse(fs.readFileSync(loginFilePath, 'utf8')).users;
+
+    // Check if the provided credentials match any user
+    const user = users.find(u => u.email === email && u.password === password);
+    if (user) {
+      const token = generateToken(email);
+      res.json({ token }); // Send the token as JSON response
+    } else {
+      res.status(401).json({ error: "Invalid email or password" });
+    }
   });
 };
 

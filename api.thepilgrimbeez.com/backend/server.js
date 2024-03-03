@@ -62,6 +62,25 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
+// Middleware to check JWT token and authenticate users
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
+
+// Route for dashboard
+app.get('/dashboard', authenticateToken, (req, res) => {
+  // Render your dashboard page here or redirect to your dashboard.js file
+  // Example: res.redirect('/dashboard.html');
+});
+
 // Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
 require('./loginApi')(app, db);
