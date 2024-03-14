@@ -6,7 +6,7 @@ module.exports = {
       instances: "max",
       autorestart: true,
       watch: true,
-      max_memory_restart: "1TB",
+      max_memory_restart: "1000G",
       env: {
         NODE_ENV: "development",
       },
