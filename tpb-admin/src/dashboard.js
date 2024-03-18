@@ -8,12 +8,15 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
+  const [publishing, setPublishing] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
+  const [addPackageModalVisible, setAddPackageModalVisible] = useState(false); // Track the visibility of the "Add New Package" modal
   const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get token from local storage
+        const token = localStorage.getItem("token");
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/packages`,
           {
@@ -35,6 +38,22 @@ function Dashboard() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Check if image is uploaded
+    const imageFile = event.target.avatar.files[0];
+    if (!imageFile) {
+      alert("Thumbnail is not uploaded");
+      return;
+    }
+
+    // Check if category is selected
+    const category = event.target.packageCategory.value;
+    if (!category) {
+      alert("Category is not selected");
+      return;
+    }
+
+    setPublishing(true);
     const data = new FormData(event.target);
 
     files.forEach((fileItem) => {
@@ -51,7 +70,8 @@ function Dashboard() {
       })
       .then((response) => {
         console.log(response.data);
-        alert("Package added successfully");
+        setSuccessModalVisible(true);
+        setPublishing(false);
       })
       .catch((error) => {
         console.error(error);
@@ -60,6 +80,7 @@ function Dashboard() {
         } else {
           alert("Error in package upload: " + error.message);
         }
+        setPublishing(false);
       });
   };
 
@@ -105,7 +126,7 @@ function Dashboard() {
             "Error deleting package:",
             error.response || error.message
           );
-          alert("Error deleting package: " + error.message); // Informative message
+          alert("Error deleting package: " + error.message);
         });
     }
   };
@@ -330,11 +351,11 @@ function Dashboard() {
               </div>
             </div>
             <div
-              className="modal fade"
+              className={`modal fade ${addPackageModalVisible ? "show" : ""}`}
               id="addPackageModel"
               tabIndex="-1"
               aria-labelledby="addPackageModelLabel"
-              aria-hidden="true"
+              aria-hidden={!addPackageModalVisible}
             >
               <form
                 className="row g-3"
@@ -525,12 +546,51 @@ function Dashboard() {
                 </div>
               </form>
             </div>
+            {publishing && <div className="loader">Publishing...</div>}
+            <div
+              className={`modal fade ${successModalVisible ? "show" : ""}`}
+              id="successModal"
+              tabIndex="-1"
+              aria-labelledby="successModalLabel"
+              aria-hidden={!successModalVisible}
+              onHide={() => setAddPackageModalVisible(false)} // Add this line to handle onHide event
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="successModalLabel">
+                      Success
+                    </h5>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      onClick={() => setSuccessModalVisible(false)}
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    Your new package is published successfully.
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      data-bs-dismiss="modal"
+                      onClick={() => setSuccessModalVisible(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div>
             <div className="LoginScreen">
               <div className="card">
-                <img src="https://thepilgrimbeez.com/img/tpb-logo.png"/>
+                <img src="https://thepilgrimbeez.com/img/tpb-logo.png" />
                 <h2>Admin Panel Of TPB</h2>
                 <button onClick={() => loginWithRedirect()}>Log In</button>
               </div>

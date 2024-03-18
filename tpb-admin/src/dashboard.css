@@ -1,53 +1,140 @@
 .LoginScreen {
-    align-items: center;
-    background: #efa852;
-    display: flex;
-    flex-direction: row;
-    height: 100vh;
-    justify-content: center;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 99999;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 99999;
 }
 
 .LoginScreen .card {
-    width: 30%;
-    height: auto;
-    padding: 30px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 30%;
+  height: auto;
+  padding: 30px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .LoginScreen .card img {
-    width: 60%;
-    margin-bottom: 8%;
+  width: 60%;
+  margin-bottom: 8%;
 }
 
 .LoginScreen .card h2 {
-    font-size: 37px;
-    font-weight: 800;
-    color: #efa852;
-    margin-bottom: 10%;
-    font-family: 'Nunito';
+  font-size: 37px;
+  font-weight: 800;
+  color: #efa852;
+  margin-bottom: 10%;
+  font-family: "Nunito";
 }
 
 .LoginScreen button {
-    background: #000;
-    border: none;
-    padding: 10px 40px;
-    border-radius: 8px;
-    font-size: 20px;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: 600;
+  background: #000;
+  border: none;
+  padding: 10px 40px;
+  border-radius: 8px;
+  font-size: 20px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .navbar-expand-lg .navbar-nav .dropdown-menu button {
-    background: transparent;
-    border: none;
-    padding: 2px 14px;
+  background: transparent;
+  border: none;
+  padding: 2px 14px;
+}
+
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background: rgb(239, 168, 82,0.7);
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  padding: 50px;
+}
+
+#successModal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+#successModal .modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+#successModal .modal-header {
+  padding: 0;
+  background-color: #fff;
+  color: #000;
+  padding-bottom: 10px;
+}
+
+#successModal .modal-body {
+  padding: 30px;
+  font-size: 20px;
+}
+
+#successModal .modal-footer {
+  padding: 0;
+  background-color: #fff;
+  color: #000;
+}
+
+#successModal.show {
+  display: block;
+}
+
+#successModal .modal-footer button.btn.btn-primary {
+  color: #fff;
+  background-color: #edaa58 !important;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+/* Add New Package Modal */
+.modal.fade:not(.show) {
+  opacity: 0;
+  transition: opacity 0.15s linear;
+}
+
+/* Success Modal */
+.modal.fade:not(.show) {
+  opacity: 0;
+  transition: opacity 0.15s linear;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .LoginScreen .card {
+    width: 90%;
+  }
 }

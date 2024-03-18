@@ -33,6 +33,8 @@ function Header() {
 
     const { pathname } = useLocation();
 
+    const imageUrl = `https://thepilgrimbeez.com/img/tpb-logo.png`;
+
     return (
         <section id="header">
             <div className="container">
@@ -52,7 +54,7 @@ function Header() {
                                 <h2><a href="index.html">Home</a></h2>
                                 <div className="logo">
                                     <Link to="/" className="btn">
-                                        <img src='img/tpb-logo.png' alt=''/>
+                                        <img src={imageUrl} alt=''/>
                                     </Link>
                                     {/* <h3>TPB</h3> */}
                                 </div>
