@@ -6,8 +6,8 @@ module.exports = {
       instances: "max",
       autorestart: true,
       watch: true,
-      max_memory_restart: "1000G",
-      kill_timeout: 10000, // 10000 milliseconds (10 seconds)
+      max_memory_restart: "1G", // Corrected memory limit to 1 gigabyte
+      kill_timeout: 10000, // 10 seconds
       env: {
         NODE_ENV: "development",
       },
