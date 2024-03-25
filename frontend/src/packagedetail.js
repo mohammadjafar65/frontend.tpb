@@ -29,6 +29,12 @@ const PackageDetail = () => {
         }
     }, [id]);
 
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
+        return formattedDate;
+    };
+
     if (!packageDetails) {
         return <div>Loading...</div>;
     }
@@ -123,7 +129,7 @@ const PackageDetail = () => {
                                     <div class="agent_card">
                                         <h2>
                                             <span>Total Price:</span>
-                                            {packagePrice}{" "}
+                                            ₹{packagePrice}{" "}
                                         </h2>
                                         <hr />
                                         <div class="ag_name">
@@ -136,7 +142,7 @@ const PackageDetail = () => {
                                         <div class="pg_date">
                                             <span>
                                                 <label for="">Start Date</label>
-                                                <h4>{packageDate} </h4>
+                                                <h4>{packageDate ? formatDate(packageDate) : "Not available"} </h4>
                                             </span>
                                             <iconify-icon icon="uiw:date"></iconify-icon>
                                         </div>

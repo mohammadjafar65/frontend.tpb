@@ -106,6 +106,12 @@ function Dashboard() {
     setFiles([...filePreviews]);
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
+    return formattedDate;
+  };
+
   const handleDeletePackage = (packageId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this package?"
@@ -305,7 +311,7 @@ function Dashboard() {
                                     <td>{packageItem.category}</td>
                                     <td>{packageItem.packageLocation}</td>
                                     <td>{packageItem.packagePrice}</td>
-                                    <td>{packageItem.packageDate}</td>
+                                    <td>{packageItem.packageDate ? formatDate(packageItem.packageDate) : "Not available"}</td>
                                     <td>{packageItem.packageDurationDate}</td>
                                     <td>
                                       <div className="dropdown">

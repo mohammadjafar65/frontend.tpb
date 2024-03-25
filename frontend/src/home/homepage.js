@@ -28,6 +28,12 @@ function HomePage() {
             });
     }, []);
 
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
+        return formattedDate;
+    };
+
     // Function to categorize packages
     const categorizePackages = (packagesArray) => {
         const categorized = categories.reduce((acc, category) => {
@@ -135,7 +141,7 @@ function HomePage() {
                                                                 <span>
                                                                     <label>Start Date</label>
                                                                     <h3>
-                                                                        <iconify-icon icon="uiw:date"></iconify-icon> {pkg.packageDate || "Not available"}
+                                                                        <iconify-icon icon="uiw:date"></iconify-icon> {pkg.packageDate ? formatDate(pkg.packageDate) : "Not available"}
                                                                     </h3>
                                                                 </span>
                                                             </div>
