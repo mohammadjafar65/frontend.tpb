@@ -66,16 +66,16 @@ app.post('/api/submit-form', async (req, res) => {
 
     // Create a nodemailer transporter using your email service credentials
     const transporter = nodemailer.createTransport({
-      service: 'Gmail', // Update with your email service provider
+      service: 'Other', // Update with your email service provider
       auth: {
-        user: 'mansuri.jafar7@gmail.com', // Update with your email address
-        pass: 'UniqWeb8017' // Update with your email password
+        user: 'info@thepilgrimbeez.com', // Update with your email address
+        pass: 'AgateMall12@#' // Update with your email password
       }
     });
 
     // Configure the email to be sent
     const mailOptions = {
-      from: 'mansuri.jafar7@gmail.com', // Update with your email address
+      from: 'info@thepilgrimbeez.com', // Update with your email address
       to: 'your-recipient@gmail.com', // Update with recipient's email address
       subject: 'New Form Submission',
       text: `
