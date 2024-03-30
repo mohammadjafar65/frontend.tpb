@@ -147,10 +147,10 @@ const PackageDetail = () => {
                                             <iconify-icon icon="uiw:date"></iconify-icon>
                                         </div>
                                         <div class="line_al">
-                                            <a href="contact_us.html" class="btn_yellow">
+                                            <a href="/contact" class="btn_yellow">
                                                 Contact Now
                                             </a>
-                                            <a href="https://api.whatsapp.com/send?phone={packageDetails.agentNumber}" class="whatsapp">
+                                            <a href={`https://api.whatsapp.com/send?phone=${packageDetails.agentNumber}`} class="whatsapp">
                                                 <iconify-icon icon="logos:whatsapp-icon"></iconify-icon>
                                             </a>
                                         </div>

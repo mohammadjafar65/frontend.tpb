@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from "./header/header";
 import Footer from "./footer/footer";
-import { Link } from 'react-router-dom'; // Ensure you import Link from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 const CategoryPackages = () => {
   const { category } = useParams();
@@ -11,9 +11,9 @@ const CategoryPackages = () => {
   console.log('Category:', category);
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/${encodeURIComponent(category)}`)
-       .then(response => {
-        console.log('Packages data:', response.data); // Add this line
+    axios.get(`${process.env.REACT_APP_API_URL}/category/${category}`)
+      .then(response => {
+        console.log('Packages data:', response.data); 
         setPackages(response.data);
       })
       .catch(error => {
@@ -25,11 +25,11 @@ const CategoryPackages = () => {
     <div>
         <Header />
         <section id="banner" className="package">
-            <div class="css-zixqbe e7svxqc1"></div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12  col-12">
-                        <div class="inner_banner">
+            <div className="css-zixqbe e7svxqc1"></div>
+            <div className="container">
+                <div className="row">
+                    <div className="col-lg-12 col-md-12  col-12">
+                        <div className="inner_banner">
                             <h1>{category}</h1>
                         </div>
                     </div>
@@ -37,15 +37,15 @@ const CategoryPackages = () => {
             </div>
         </section>
         <section id="our-packages" className="package">
-            <div class="container-fluid">
-                <div class="row">
-                    {packages.map((pkg, index) => ( // Added map function to iterate over packages
-                        <div class="col-lg-3 col-md-3 col-12">
-                            <div className="item" key={index}>
+            <div className="container-fluid">
+                <div className="row">
+                    {packages.map((pkg, index) => ( 
+                        <div className="col-lg-3 col-md-3 col-12" key={index}>
+                            <div className="item">
                                 <Link to={`/package/id/${pkg.id}`}>
                                     <div className="card">
                                         <span className="over_hover">
-                                            <img src={`${process.env.REACT_APP_UPLOAD_API_URL}/${pkg.imageUrl}`} alt={pkg.packageName || 'Package Image'} className="card-img" /></span> {/* Corrected className */}
+                                            <img src={`${process.env.REACT_APP_UPLOAD_API_URL}/${pkg.imageUrl}`} alt={pkg.packageName || 'Package Image'} className="card-img" /></span>
                                         <div className="card_content">
                                             <h2>{pkg.packageName || 'No Name'}</h2>
                                             <p>{pkg.packagePrice ? `₹${pkg.packagePrice}` : 'Not available'}</p>

@@ -7,6 +7,7 @@ function Header() {
 
     const [isChecked, setIsChecked] = useState(false);
     const [divHeight, setDivHeight] = useState('0px');
+    const { pathname } = useLocation();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -31,7 +32,22 @@ function Header() {
         }
     };
 
-    const { pathname } = useLocation();
+    const getPageName = () => {
+        switch (pathname) {
+            case '/':
+                return 'Home';
+            case '/about':
+                return 'About';
+            case '/contact':
+                return 'Contact';
+            case '/allpackages':
+                return 'Packages';
+            default:
+                return '';
+        }
+    };
+
+    // const { pathname } = useLocation();
 
     const imageUrl = `https://thepilgrimbeez.com/img/tpb-logo.png`;
 
@@ -51,7 +67,7 @@ function Header() {
                                         <div className="bars" id="bar3"></div>
                                     </label>
                                 </div>
-                                <h2><a href="index.html">Home</a></h2>
+                                <h2>{getPageName()}</h2>
                                 <div className="logo">
                                     <Link to="/" className="btn">
                                         <img src={imageUrl} alt=''/>
@@ -73,8 +89,14 @@ function Header() {
                                             className={pathname === "/about" ? "active" : ""}>
                                             <a aria-current="page"
                                             href="/about">About</a></li>
-                                        <li><a href="contact_us.html">Contact</a></li>
-                                        <li><a href="allpackages.html">Packages <iconify-icon
+                                        <li 
+                                            className={pathname === "/contact" ? "active" : ""}>
+                                            <a aria-current="page" 
+                                            href="/contact">Contact</a></li>
+                                        <li 
+                                            className={pathname === "/allpackages" ? "active" : ""}>
+                                            <a aria-current="page" 
+                                            href="/allpackages">Packages <iconify-icon
                                                     icon="ph:arrow-up-right"></iconify-icon></a></li>
                                     </ul>
                                 </div>

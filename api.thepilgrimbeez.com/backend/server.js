@@ -5,6 +5,8 @@ const fs = require("fs");
 const mysql = require("mysql");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
 
 const app = express();
 app.use(cors()); // CORS middleware applied here
@@ -55,6 +57,45 @@ if (!fs.existsSync(uploadDir)) {
 app.use("/testapi", express.static("This is test api"));
 app.use("/api.thepilgrimbeez.com/uploads", express.static("uploads"));
 app.use("/static", express.static(path.join(__dirname, "public")));
+
+app.use(bodyParser.json());
+
+app.post('/api/submit-form', async (req, res) => {
+  try {
+    const { name, email, phone, message } = req.body;
+
+    // Create a nodemailer transporter using your email service credentials
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail', // Update with your email service provider
+      auth: {
+        user: 'mansuri.jafar7@gmail.com', // Update with your email address
+        pass: 'UniqWeb8017' // Update with your email password
+      }
+    });
+
+    // Configure the email to be sent
+    const mailOptions = {
+      from: 'mansuri.jafar7@gmail.com', // Update with your email address
+      to: 'your-recipient@gmail.com', // Update with recipient's email address
+      subject: 'New Form Submission',
+      text: `
+        Name: ${name}
+        Email: ${email}
+        Phone: ${phone}
+        Message: ${message}
+      `
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    // Respond to the client
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    res.sendStatus(500);
+  }
+});
 
 // Middleware to handle errors globally
 app.use((err, req, res, next) => {

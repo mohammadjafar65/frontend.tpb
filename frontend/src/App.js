@@ -8,6 +8,8 @@ import AddnewPackage from './addnewpackage';
 import PackageDetail from './packagedetail';
 import CategoryPackages from './categorypackages';
 import AboutPage from './about/aboutpage';
+import ContactPage from './contact/contactpage';
+import AllPackages from './allpackages/allpackages';
 import './App.css';
 
 function App() {
@@ -19,8 +21,10 @@ function App() {
               <Route path="/" element={<HomePage/>}></Route>
               <Route path="/addnewpackage" element={<AddnewPackage/>}></Route>
               <Route path="/package/id/:id" Component={PackageDetail} />
-              <Route path="/packages/:category" element={<CategoryPackages/>} />
+              <Route path="/packages/category/:category" element={<CategoryPackages/>} />
               <Route path="/about" element={<AboutPage/>}></Route>
+              <Route path="/contact" element={<ContactPage/>}></Route>
+              <Route path="/allpackages" element={<AllPackages/>}></Route>
           </Routes>
         </BrowserRouter>
     </div>
