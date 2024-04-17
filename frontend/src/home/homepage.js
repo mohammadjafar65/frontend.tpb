@@ -107,7 +107,7 @@ function HomePage() {
                     </div>
                     <div className="row">
                         <div className="col-lg-12 col-md-12 col-12">
-                            <OwlCarousel
+                        <OwlCarousel
                                 className="owl-carousel owl-theme visa"
                                 margin={30}
                                 nav

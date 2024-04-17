@@ -4,36 +4,36 @@ import { useAuth0 } from "@auth0/auth0-react";
 import "./dashboard.css";
 
 function Dashboard() {
-  const [packages, setPackages] = useState([]);
+  const [visa, setvisa] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
   const [publishing, setPublishing] = useState(false);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [addPackageModalVisible, setAddPackageModalVisible] = useState(false); // Track the visibility of the "Add New Package" modal
+  const [addvisaModalVisible, setAddvisaModalVisible] = useState(false); // Track the visibility of the "Add New visa" modal
   const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
 
   useEffect(() => {
-    const fetchPackages = async () => {
+    const fetchvisa = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/packages`,
+          `${process.env.REACT_APP_API_URL}/visa`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setPackages(response.data);
+        setvisa(response.data);
       } catch (err) {
-        setError("An error occurred while fetching the packages.");
+        setError("An error occurred while fetching the visa.");
         console.error(err);
       }
       setLoading(false);
     };
 
-    fetchPackages();
+    fetchvisa();
   }, []);
 
   const handleSubmit = (event) => {
@@ -47,7 +47,7 @@ function Dashboard() {
     }
 
     // Check if category is selected
-    const category = event.target.packageCategory.value;
+    const category = event.target.visaCategory.value;
     if (!category) {
       alert("Category is not selected");
       return;
@@ -60,7 +60,7 @@ function Dashboard() {
       data.append("gallery", fileItem.file);
     });
 
-    const endpoint = `https://api.thepilgrimbeez.com/packages/create`;
+    const endpoint = `https://api.thepilgrimbeez.com/visa/create`;
 
     axios
       .post(endpoint, data, {
@@ -78,7 +78,7 @@ function Dashboard() {
         if (error.response && error.response.status === 404) {
           alert("The server endpoint was not found. Please check the URL.");
         } else {
-          alert("Error in package upload: " + error.message);
+          alert("Error in visa upload: " + error.message);
         }
         setPublishing(false);
       });
@@ -112,27 +112,27 @@ function Dashboard() {
     return formattedDate;
   };
 
-  const handleDeletePackage = (packageId) => {
+  const handleDeletevisa = (visaId) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this package?"
+      "Are you sure you want to delete this visa?"
     );
     if (confirmDelete) {
       axios
-        .delete(`https://api.thepilgrimbeez.com/packages/delete/${packageId}`)
+        .delete(`https://api.thepilgrimbeez.com/visa/delete/${visaId}`)
         .then((response) => {
           console.log("Delete response:", response);
           if (response.status === 200 || response.status === 204) {
-            setPackages((prevPackages) =>
-              prevPackages.filter((packageItem) => packageItem.id !== packageId)
+            setvisa((prevvisa) =>
+              prevvisa.filter((visaItem) => visaItem.id !== visaId)
             );
           }
         })
         .catch((error) => {
           console.error(
-            "Error deleting package:",
+            "Error deleting visa:",
             error.response || error.message
           );
-          alert("Error deleting package: " + error.message);
+          alert("Error deleting visa: " + error.message);
         });
     }
   };
@@ -142,7 +142,7 @@ function Dashboard() {
   };
 
   if (loading) {
-    return <div>Loading packages...</div>;
+    return <div>Loading visa...</div>;
   }
 
   if (error) {
@@ -247,7 +247,7 @@ function Dashboard() {
                   </div>
                   <ul className="nav">
                     <li className="nav-item active">
-                      <a href="#">
+                      <a href="/">
                         <i className="la la-dashboard"></i>
                         <p>Dashboard</p>
                       </a>
@@ -263,21 +263,21 @@ function Dashboard() {
                 <div className="content">
                   <div className="container-fluid">
                     <div className="mini_header">
-                      <h4 className="page-title">Dashboard</h4>
+                      <h4 className="page-title">Visa</h4>
                       <button
                         type="button"
                         className="btn btn-primary"
                         data-bs-toggle="modal"
-                        data-bs-target="#addPackageModel"
+                        data-bs-target="#addvisaModel"
                       >
-                        <i className="la la-plus"></i> Add New Package
+                        <i className="la la-plus"></i> Add New visa
                       </button>
                     </div>
                     <div className="row">
                       <div className="col-md-12">
                         <div className="card">
                           <div className="card-header">
-                            <div className="card-title">Packages List</div>
+                            <div className="card-title">Visa List</div>
                           </div>
                           <div className="card-body">
                             <table
@@ -287,8 +287,7 @@ function Dashboard() {
                               <thead>
                                 <tr>
                                   <th>IMAGE</th>
-                                  <th>PACKAGE NAME</th>
-                                  <th>CATEGORY</th>
+                                  <th>Visa NAME</th>
                                   <th>LOCATION</th>
                                   <th>TOTAL PRICE</th>
                                   <th>START DATE</th>
@@ -297,26 +296,25 @@ function Dashboard() {
                                 </tr>
                               </thead>
                               <tbody>
-                                {packages.map((packageItem) => (
-                                  <tr key={packageItem.id}>
+                                {visa.map((visaItem) => (
+                                  <tr key={visaItem.id}>
                                     <td>
                                       <div className="avatar avatar-blue mr-3">
-                                        {packageItem.imageUrl ? (
+                                        {visaItem.imageUrl ? (
                                           <img
-                                            src={`${process.env.REACT_APP_UPLOAD_API_URL}/${packageItem.imageUrl}`}
-                                            alt="Package"
+                                            src={`${process.env.REACT_APP_UPLOAD_API_URL}/${visaItem.imageUrl}`}
+                                            alt="visa"
                                           />
                                         ) : (
                                           "No Image"
                                         )}
                                       </div>
                                     </td>
-                                    <td>{packageItem.packageName}</td>
-                                    <td>{packageItem.category}</td>
-                                    <td>{packageItem.packageLocation}</td>
-                                    <td>{packageItem.packagePrice}</td>
-                                    <td>{packageItem.packageDate ? formatDate(packageItem.packageDate) : "Not available"}</td>
-                                    <td>{packageItem.packageDurationDate}</td>
+                                    <td>{visaItem.visaName}</td>
+                                    <td>{visaItem.visaLocation}</td>
+                                    <td>{visaItem.visaPrice}</td>
+                                    <td>{visaItem.visaDate ? formatDate(visaItem.visaDate) : "Not available"}</td>
+                                    <td>{visaItem.visaDurationDate}</td>
                                     <td>
                                       <div className="dropdown">
                                         <button
@@ -337,8 +335,8 @@ function Dashboard() {
                                             className="dropdown-item text-danger"
                                             href="#"
                                             onClick={() =>
-                                              handleDeletePackage(
-                                                packageItem.id
+                                              handleDeletevisa(
+                                                visaItem.id
                                               )
                                             }
                                           >
@@ -361,11 +359,11 @@ function Dashboard() {
               </div>
             </div>
             <div
-              className={`modal fade ${addPackageModalVisible ? "show" : ""}`}
-              id="addPackageModel"
+              className={`modal fade ${addvisaModalVisible ? "show" : ""}`}
+              id="addvisaModel"
               tabIndex="-1"
-              aria-labelledby="addPackageModelLabel"
-              aria-hidden={!addPackageModalVisible}
+              aria-labelledby="addvisaModelLabel"
+              aria-hidden={!addvisaModalVisible}
             >
               <form
                 className="row g-3"
@@ -377,9 +375,9 @@ function Dashboard() {
                     <div className="modal-header">
                       <h1
                         className="modal-title fs-5"
-                        id="addPackageModelLabel"
+                        id="addvisaModelLabel"
                       >
-                        Add New Package
+                        Add New visa
                       </h1>
                       <button
                         type="button"
@@ -398,28 +396,28 @@ function Dashboard() {
                         </div>
                         <div className="col-lg-6 col-md-6 col-12">
                           <div className="ctcp_form_inp">
-                            <label htmlFor="Package Name">PACKAGE NAME</label>
+                            <label htmlFor="visa Name">visa NAME</label>
                             <input
                               type="text"
                               className="form-control"
-                              placeholder="Enter your package name"
-                              name="packageName"
+                              placeholder="Enter your visa name"
+                              name="visaName"
                             />
                           </div>
                         </div>
                         <div className="col-lg-6 col-md-6 col-12">
                           <div className="ctcp_form_inp">
-                            <label htmlFor="Package Name">CATEGORY</label>
-                            <select name="packageCategory" required>
+                            <label htmlFor="visa Name">CATEGORY</label>
+                            <select name="visaCategory" required>
                               <option value="">Select a Category</option>
-                              <option value="POPULAR PACKAGES">
-                                POPULAR PACKAGES
+                              <option value="POPULAR visa">
+                                POPULAR visa
                               </option>
-                              <option value="DUBAI PACKAGES">
-                                DUBAI PACKAGES
+                              <option value="DUBAI visa">
+                                DUBAI visa
                               </option>
-                              <option value="KASHMIR FAMILY PACKAGES">
-                                KASHMIR FAMILY PACKAGES
+                              <option value="KASHMIR FAMILY visa">
+                                KASHMIR FAMILY visa
                               </option>
                             </select>
                           </div>
@@ -432,7 +430,7 @@ function Dashboard() {
                               className="form-control"
                               id="inputPassword4"
                               placeholder="Enter your location"
-                              name="packageLocation"
+                              name="visaLocation"
                             />
                           </div>
                         </div>
@@ -443,7 +441,7 @@ function Dashboard() {
                               type="text"
                               className="form-control"
                               placeholder="Enter your price"
-                              name="packagePrice"
+                              name="visaPrice"
                             />
                           </div>
                         </div>
@@ -454,7 +452,7 @@ function Dashboard() {
                               type="date"
                               className="form-control"
                               id="inputPassword4"
-                              name="packageDate"
+                              name="visaDate"
                             />
                           </div>
                         </div>
@@ -466,16 +464,16 @@ function Dashboard() {
                               className="form-control"
                               id="inputPassword4"
                               placeholder="Duration"
-                              name="packageDurationDate"
+                              name="visaDurationDate"
                             />
                           </div>
                         </div>
                         <div className="col-lg-6 col-md-6 col-12">
-                          <label htmlFor="text">PACKAGE DESCRIPTION</label>
+                          <label htmlFor="text">visa DESCRIPTION</label>
                           <div className="ctcp_form_inp">
                             <textarea
                               id="w3review"
-                              name="packageDescription"
+                              name="visaDescription"
                               rows="5"
                               cols="51"
                             ></textarea>
@@ -563,7 +561,7 @@ function Dashboard() {
               tabIndex="-1"
               aria-labelledby="successModalLabel"
               aria-hidden={!successModalVisible}
-              onHide={() => setAddPackageModalVisible(false)} // Add this line to handle onHide event
+              onHide={() => setAddvisaModalVisible(false)} // Add this line to handle onHide event
             >
               <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
@@ -580,7 +578,7 @@ function Dashboard() {
                     ></button>
                   </div>
                   <div className="modal-body">
-                    Your new package is published successfully.
+                    Your new visa is published successfully.
                   </div>
                   <div className="modal-footer">
                     <button
