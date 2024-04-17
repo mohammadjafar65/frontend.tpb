@@ -3,7 +3,7 @@ import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./dashboard.css";
 
-function Dashboard() {
+function AddVisa() {
   const [visa, setvisa] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -610,4 +610,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default AddVisa;
