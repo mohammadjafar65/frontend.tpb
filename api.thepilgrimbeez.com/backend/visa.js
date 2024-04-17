@@ -2,7 +2,7 @@ module.exports = (app, db, upload, uuidv4) => {
     // Route to get all travel visas
     app.get("/api.thepilgrimbeez.com/visa", (req, res) => {
         // Logic to fetch all travel visas from the database
-        const sql = "SELECT * FROM travel_visas";
+        const sql = "SELECT * FROM travel_visa";
         db.query(sql, (err, data) => {
         if (err) {
             console.error(err);
