@@ -122,7 +122,7 @@ function HomePage() {
                                         <Link to={`/visa/id/${visa.id}`}>
                                             <div className="card">
                                                 {/* Render visa card details */}
-                                                <img src={visa.imageUrl} alt="Visa Image" className="card-img" />
+                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/${visa.imageUrl}`} alt="Visa Image" className="card-img" />
                                                 <div className="card_content">
                                                     <h2>{visa.visaName}</h2>
                                                     <p>{`₹${visa.visaPrice}`}</p>

@@ -4,11 +4,11 @@ module.exports = (app, db, upload, uuidv4) => {
         // Logic to fetch all travel visas from the database
         const sql = "SELECT * FROM travel_visa";
         db.query(sql, (err, data) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: "Error fetching travel visa" });
-        }
-        return res.json(data);
+            if (err) {
+                console.error("Error fetching travel visas:", err);
+                return res.status(500).json({ error: "Error fetching travel visas" });
+            }
+            return res.json(data);
         });
     });
     
@@ -29,7 +29,7 @@ module.exports = (app, db, upload, uuidv4) => {
             const avatarImage = req.files["avatar"][0].filename;
             const visaId = uuidv4();
             const sql =
-                "INSERT INTO travel_visa (`id`, `imageUrl`, `visaName`, `visaLocation`, `visaPrice`, `visaDate`, `visaDurationDate`, `visaDescription`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO travel_visa (`id`, `imageUrl`, `visaName`, `visaLocation`, `visaPrice`, `visaDate`, `visaDurationDate`, `visaDescription`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             const values = [
                 visaId,
                 avatarImage,
