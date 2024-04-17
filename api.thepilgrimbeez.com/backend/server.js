@@ -76,7 +76,7 @@ app.post('/api/submit-form', async (req, res) => {
     // Configure the email to be sent
     const mailOptions = {
       from: 'info@thepilgrimbeez.com', // Update with your email address
-      to: 'your-recipient@gmail.com', // Update with recipient's email address
+      to: email, // Update with recipient's email address
       subject: 'New Form Submission',
       text: `
         Name: ${name}
@@ -105,6 +105,7 @@ app.use((err, req, res, next) => {
 
 // Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
+require('./visa')(app, db, upload, uuidv4);
 // require('./users')(app, db);
 
 
