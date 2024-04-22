@@ -12,7 +12,7 @@ function HomePage() {
     const [visas, setVisas] = useState([]);
     const [packagesByCategory, setPackagesByCategory] = useState({});
     const [isLoading, setIsLoading] = useState(true); // Loading state
-    const categories = ["POPULAR PACKAGES", "DUBAI PACKAGES", "KASHMIR FAMILY PACKAGES"];
+    const categories = ["Popular Packages", "Religious Tours", "Holidays In 'India'", "The Modern 'Europe'", "The Secrets of Middle East", "Adventures of Africa", "Deep into 'Asia Pacific'", "Americans"];
 
     useEffect(() => {
         setIsLoading(true);
@@ -30,7 +30,7 @@ function HomePage() {
                 console.error("Error fetching data:", error);
                 setIsLoading(false);
             });
-    }, []);
+    }, []);    
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -148,7 +148,7 @@ function HomePage() {
                 </div>
             </section>
             {categories.map((category, index) => (
-                <section id="our-packages" key={category} className={index % 2 === 0 ? "alternate-class" : "gray_bg"}>
+                <section id="our-packages" key={category} className={index % 1 === 0 ? "alternate-class" : "gray_bg"}>
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col-lg-12 col-md-12 col-12">
