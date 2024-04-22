@@ -18,7 +18,7 @@ function AddVisa() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/visa`,
+          `${process.env.REACT_APP_API_URL}/visaList`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -47,7 +47,7 @@ function AddVisa() {
     }
   
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/visa/create`, formData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/visaList/create`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -96,7 +96,7 @@ function AddVisa() {
     );
     if (confirmDelete) {
       axios
-        .delete(`https://api.thepilgrimbeez.com/visa/delete/${visaId}`)
+        .delete(`https://api.thepilgrimbeez.com/visaList/delete/${visaId}`)
         .then((response) => {
           console.log("Delete response:", response);
           if (response.status === 200 || response.status === 204) {

@@ -19,7 +19,7 @@ function HomePage() {
         axios
             .all([
                 axios.get(`${process.env.REACT_APP_API_URL}/packages`),
-                axios.get(`${process.env.REACT_APP_API_URL}/visa`),
+                axios.get(`${process.env.REACT_APP_API_URL}/visaList`)
             ])
             .then((responses) => {
                 setPackages(responses[0].data);

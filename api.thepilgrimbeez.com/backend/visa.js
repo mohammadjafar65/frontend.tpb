@@ -1,6 +1,6 @@
 module.exports = (app, db, upload, uuidv4) => {
     // Route to get all travel visas
-    app.get("/api.thepilgrimbeez.com/visa", (req, res) => {
+    app.get("/api.thepilgrimbeez.com/visaList", (req, res) => {
         // Logic to fetch all travel visas from the database
         const sql = "SELECT * FROM travel_visa";
         db.query(sql, (err, data) => {
@@ -14,7 +14,7 @@ module.exports = (app, db, upload, uuidv4) => {
     
     // POST route to create a new travel visa
     app.post(
-        "/api.thepilgrimbeez.com/visa/create",
+        "/api.thepilgrimbeez.com/visaList/create",
         upload.fields([
             { name: "avatar", maxCount: 1 },
             { name: "gallery", maxCount: 10 },
@@ -75,7 +75,7 @@ module.exports = (app, db, upload, uuidv4) => {
     );
     
     // Update a visa
-    app.put("/api.thepilgrimbeez.com/visa/update/:id", (req, res) => {
+    app.put("/api.thepilgrimbeez.com/visaList/update/:id", (req, res) => {
         // Ensure field names match those in the visa table
         const sql = "UPDATE travel_visa SET `imageUrl` = ?, `visaName` = ?, `visaLocation` = ?, `visaPrice` = ?  WHERE `id` = ?";
         const values = [req.body.imageUrl, req.body.visaName, req.body.visaLocation, req.body.visaPrice]; // Add other fields as necessary
@@ -88,7 +88,7 @@ module.exports = (app, db, upload, uuidv4) => {
     });
     
     // Delete a visa
-    app.delete("/api.thepilgrimbeez.com/visa/delete/:id", (req, res) => {
+    app.delete("/api.thepilgrimbeez.com/visaList/delete/:id", (req, res) => {
         const sql = "DELETE FROM travel_visa WHERE `id` = ?";
         const id = req.params.id;
     
@@ -103,7 +103,7 @@ module.exports = (app, db, upload, uuidv4) => {
     });
     
     // Route to get visas by category
-    app.get("/api.thepilgrimbeez.com/visa/category/:category", async (req, res) => {
+    app.get("/api.thepilgrimbeez.com/visaList/category/:category", async (req, res) => {
         try {
             const allvisas = await getAllvisas();
             const filteredvisas = allvisas.filter((pkg) => pkg.category === req.params.category);
@@ -127,7 +127,7 @@ module.exports = (app, db, upload, uuidv4) => {
     };
     
     // Route to get a visa by id
-    app.get("/api.thepilgrimbeez.com/visa/id/:id", async (req, res) => {
+    app.get("/api.thepilgrimbeez.com/visaList/id/:id", async (req, res) => {
         try {
             // Query to fetch visa details and associated images
             const visaDetailsSql = `

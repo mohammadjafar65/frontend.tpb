@@ -105,7 +105,7 @@ app.use((err, req, res, next) => {
 
 // Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
-require('./visa')(app, db, upload, uuidv4);
+require('./visaList')(app, db, upload, uuidv4);
 // require('./users')(app, db);
 
 
