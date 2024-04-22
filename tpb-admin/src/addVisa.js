@@ -36,75 +36,53 @@ function AddVisa() {
     fetchvisa();
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Check if image is uploaded
-    const imageFile = event.target.avatar.files[0];
-    if (!imageFile) {
-      alert("Thumbnail is not uploaded");
-      return;
+  
+    const formData = new FormData(event.target);
+  
+    // Append the selected image file to the formData
+    if (files.length > 0) {
+      formData.append("avatar", files[0].file);
     }
-
-    // Check if category is selected
-    const category = event.target.visaCategory.value;
-    if (!category) {
-      alert("Category is not selected");
-      return;
-    }
-
-    setPublishing(true);
-    const data = new FormData(event.target);
-
-    files.forEach((fileItem) => {
-      data.append("gallery", fileItem.file);
-    });
-
-    const endpoint = `https://api.thepilgrimbeez.com/visa/create`;
-
-    axios
-      .post(endpoint, data, {
+  
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/visa/create`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setSuccessModalVisible(true);
-        setPublishing(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        if (error.response && error.response.status === 404) {
-          alert("The server endpoint was not found. Please check the URL.");
-        } else {
-          alert("Error in visa upload: " + error.message);
-        }
-        setPublishing(false);
       });
+      console.log(response.data);
+      setSuccessModalVisible(true);
+      setFiles([]); // Clear uploaded files after successful upload
+    } catch (error) {
+      console.error("Error uploading visa:", error);
+      alert("Error uploading visa: " + error.message);
+    }
   };
+  
 
   const handleFileChange = (e) => {
     const selectedFiles = e.target.files;
     const filePreviews = [];
-
+  
     for (let i = 0; i < selectedFiles.length; i++) {
       const file = selectedFiles[i];
       const fileReader = new FileReader();
-
+  
       fileReader.onload = (e) => {
         filePreviews.push({
           name: file.name,
           src: e.target.result,
           file: file,
         });
+        setFiles([...filePreviews]);
       };
-
+  
       fileReader.readAsDataURL(file);
     }
-
-    setFiles([...filePreviews]);
   };
+  
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -388,12 +366,13 @@ function AddVisa() {
                     </div>
                     <div className="modal-body form_details">
                       <div className="row">
-                        <div className="col-lg-12 col-md-12 col-12">
-                          <div className="ctcp_form_inp">
-                            <label htmlFor="Image">UPLOAD IMAGE</label>
-                            <input type="file" name="avatar" />
-                          </div>
+                      <div className="col-lg-12 col-md-12 col-12">
+                        <div className="ctcp_form_inp">
+                          <label htmlFor="Image">UPLOAD IMAGE</label>
+                          <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} />
                         </div>
+                      </div>
+
                         <div className="col-lg-6 col-md-6 col-12">
                           <div className="ctcp_form_inp">
                             <label htmlFor="visa Name">visa NAME</label>
