@@ -7,10 +7,10 @@ function Dashboard() {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [files, setFiles] = useState([]);
   const [publishing, setPublishing] = useState(false);
+  const [files, setFiles] = useState([]);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [addPackageModalVisible, setAddPackageModalVisible] = useState(false); // Track the visibility of the "Add New Package" modal
+  const [addPackageModalVisible, setAddPackageModalVisible] = useState(false);
   const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
 
   useEffect(() => {
@@ -25,10 +25,6 @@ function Dashboard() {
         setPackages(response.data);
       } catch (error) {
         console.error("Request failed:", error.message);
-        if (error.response) {
-          console.error("Response status:", error.response.status);
-          console.error("Response data:", error.response.data);
-        }
         setError("An error occurred while fetching the packages.");
       } finally {
         setLoading(false);
@@ -38,52 +34,32 @@ function Dashboard() {
     fetchPackages();
   }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
+    return formattedDate;
+  };
 
-    // Check if image is uploaded
-    const imageFile = event.target.avatar.files[0];
-    if (!imageFile) {
-      alert("Thumbnail is not uploaded");
-      return;
+  const handleDeletePackage = (packageId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this package?"
+    );
+    if (confirmDelete) {
+      axios
+        .delete(`${process.env.REACT_APP_API_URL}/packages/delete/${packageId}`)
+        .then((response) => {
+          console.log("Delete response:", response);
+          if (response.status === 200 || response.status === 204) {
+            setPackages((prevPackages) =>
+              prevPackages.filter((packageItem) => packageItem.id !== packageId)
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting package:", error.response || error.message);
+          alert("Error deleting package: " + error.message);
+        });
     }
-
-    // Check if category is selected
-    const category = event.target.packageCategory.value;
-    if (!category) {
-      alert("Category is not selected");
-      return;
-    }
-
-    setPublishing(true);
-    const data = new FormData(event.target);
-
-    files.forEach((fileItem) => {
-      data.append("gallery", fileItem.file);
-    });
-
-    const endpoint = `https://api.thepilgrimbeez.com/packages/create`;
-
-    axios
-      .post(endpoint, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setSuccessModalVisible(true);
-        setPublishing(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        if (error.response && error.response.status === 404) {
-          alert("The server endpoint was not found. Please check the URL.");
-        } else {
-          alert("Error in package upload: " + error.message);
-        }
-        setPublishing(false);
-      });
   };
 
   const handleFileChange = (e) => {
@@ -108,34 +84,45 @@ function Dashboard() {
     setFiles([...filePreviews]);
   };
 
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
-    return formattedDate;
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const handleDeletePackage = (packageId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this package?"
-    );
-    if (confirmDelete) {
-      axios
-        .delete(`https://api.thepilgrimbeez.com/packages/delete/${packageId}`)
-        .then((response) => {
-          console.log("Delete response:", response);
-          if (response.status === 200 || response.status === 204) {
-            setPackages((prevPackages) =>
-              prevPackages.filter((packageItem) => packageItem.id !== packageId)
-            );
-          }
-        })
-        .catch((error) => {
-          console.error(
-            "Error deleting package:",
-            error.response || error.message
-          );
-          alert("Error deleting package: " + error.message);
-        });
+    const imageFile = event.target.avatar.files[0];
+    if (!imageFile) {
+      alert("Thumbnail is not uploaded");
+      return;
+    }
+
+    const category = event.target.packageCategory.value;
+    if (!category) {
+      alert("Category is not selected");
+      return;
+    }
+
+    setPublishing(true);
+    const formData = new FormData(event.target);
+
+    files.forEach((fileItem) => {
+      formData.append("gallery", fileItem.file);
+    });
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/packages/create`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response.data);
+      setSuccessModalVisible(true);
+    } catch (error) {
+      console.error("Error in package upload:", error);
+      if (error.response && error.response.status === 404) {
+        alert("The server endpoint was not found. Please check the URL.");
+      } else {
+        alert("Error in package upload: " + error.message);
+      }
+    } finally {
+      setPublishing(false);
     }
   };
 

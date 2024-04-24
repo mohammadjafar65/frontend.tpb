@@ -1,43 +1,47 @@
-import Header from "../header/header";
-import Footer from "../footer/footer";
-import OwlCarousel from "react-owl-carousel";
-import "owl.carousel/dist/assets/owl.carousel.css";
-import "owl.carousel/dist/assets/owl.theme.default.css";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import OwlCarousel from "react-owl-carousel";
+import Header from "../header/header";
+import Footer from "../footer/footer";
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
 
 function HomePage() {
     const [packages, setPackages] = useState([]);
-    const [visas, setVisas] = useState([]);
     const [packagesByCategory, setPackagesByCategory] = useState({});
-    const [isLoading, setIsLoading] = useState(true); // Loading state
-    const categories = ["Popular Packages", "Religious Tours", "Holidays In 'India'", "The Modern 'Europe'", "The Secrets of Middle East", "Adventures of Africa", "Deep into 'Asia Pacific'", "Americans"];
+    const [isLoading, setIsLoading] = useState(true);
+    const categories = [
+        "Popular Packages",
+        "Religious Tours",
+        "Holidays In 'India'",
+        "The Modern 'Europe'",
+        "The Secrets of Middle East",
+        "Adventures of Africa",
+        "Deep into 'Asia Pacific'",
+        "Americans"
+    ];
 
     useEffect(() => {
         setIsLoading(true);
         axios
-            .all([
-                axios.get(`${process.env.REACT_APP_API_URL}/packages`)
-            ])
-            .then((responses) => {
-                setPackages(responses[0].data);
-                setVisas(responses[1].data);
+            .get(`${process.env.REACT_APP_API_URL}/packages`)
+            .then((response) => {
+                setPackages(response.data);
+                categorizePackages(response.data);
                 setIsLoading(false);
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
                 setIsLoading(false);
             });
-    }, []);    
+    }, []);
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
-        return formattedDate;
+        return new Date(dateString).toLocaleDateString('en-IN', options);
     };
 
-    // Function to categorize packages
     const categorizePackages = (packagesArray) => {
         const categorized = categories.reduce((acc, category) => {
             acc[category] = packagesArray.filter((pkg) => pkg.category === category);
@@ -48,7 +52,7 @@ function HomePage() {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>; // Show loading indicator
+        return <div>Loading...</div>;
     }
 
     return (

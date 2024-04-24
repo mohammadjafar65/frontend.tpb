@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 // import DisplayComponent from './components/DisplayComponent';
 // import MaintenancePage from './components/MaintenancePage';
 import HomePage from './home/homepage';
-import AddnewPackage from './addnewpackage';
+// import AddnewPackage from './addnewpackage';
 import PackageDetail from './packagedetail';
 import CategoryPackages from './categorypackages';
 import AboutPage from './about/aboutpage';
@@ -19,7 +19,7 @@ function App() {
           <Routes>
               {/* <Route path="/" component={MaintenancePage} /> */}
               <Route path="/" element={<HomePage/>}></Route>
-              <Route path="/addnewpackage" element={<AddnewPackage/>}></Route>
+              {/* <Route path="/addnewpackage" element={<AddnewPackage/>}></Route> */}
               <Route path="/package/id/:id" Component={PackageDetail} />
               <Route path="/packages/category/:category" element={<CategoryPackages/>} />
               <Route path="/about" element={<AboutPage/>}></Route>
