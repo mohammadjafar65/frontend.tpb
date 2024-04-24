@@ -1,14 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const multer = require("multer");
-const fs = require("fs");
-const mysql = require("mysql");
-const path = require("path");
-const { v4: uuidv4 } = require("uuid");
+const multer = require('multer');
+const fs = require('fs');
+const mysql = require('mysql');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
+
+require('dotenv').config();
 
 const app = express();
+const port = process.env.PORT || 3000;
+
+// Middleware
 app.use(cors()); // CORS middleware applied here
 // Set up CORS headers
 app.use((req, res, next) => {
@@ -18,11 +22,10 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
-require('dotenv').config();
-
-const port = process.env.PORT || 3000;
-
+// Database connection
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -30,66 +33,56 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
-db.connect(err => {
+db.connect((err) => {
   if (err) {
-    console.error('Database connection failed: ' + err.stack);
-    return;
+    console.error('Database connection failed:', err.stack);
+    process.exit(1); // Exit the process if database connection fails
   }
   console.log('Connected to database.');
 });
 
+// Multer setup for file uploads
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, 'uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
   },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-  }
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+  },
 });
 
 const upload = multer({ storage: storage });
 
-const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-app.use("/testapi", express.static("This is test api"));
-app.use("/api.thepilgrimbeez.com/uploads", express.static("uploads"));
-app.use("/static", express.static(path.join(__dirname, "public")));
-
-app.use(bodyParser.json());
-
+// Email sending endpoint
 app.post('/api/submit-form', async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
 
-    // Create a nodemailer transporter using your email service credentials
     const transporter = nodemailer.createTransport({
-      service: 'Other', // Update with your email service provider
+      service: process.env.EMAIL_SERVICE,
       auth: {
-        user: 'info@thepilgrimbeez.com', // Update with your email address
-        pass: 'AgateMall12@#' // Update with your email password
-      }
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
 
-    // Configure the email to be sent
     const mailOptions = {
-      from: 'info@thepilgrimbeez.com', // Update with your email address
-      to: email, // Update with recipient's email address
+      from: process.env.EMAIL_USER,
+      to: email,
       subject: 'New Form Submission',
       text: `
         Name: ${name}
         Email: ${email}
         Phone: ${phone}
         Message: ${message}
-      `
+      `,
     };
 
-    // Send the email
     await transporter.sendMail(mailOptions);
-
-    // Respond to the client
     res.sendStatus(200);
   } catch (error) {
     console.error('Error submitting form:', error);
@@ -97,18 +90,18 @@ app.post('/api/submit-form', async (req, res) => {
   }
 });
 
-// Middleware to handle errors globally
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something went wrong!');
 });
 
-// Routes and middleware for handling travel packages
-require('./travelPackages')(app, db, upload, uuidv4);
-// require('./users')(app, db);
-
-
-// Other routes and logic...
+// Start server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+// Include routes and logic for travel packages
+require('./travelPackages')(app, db, upload, uuidv4);
+// Uncomment the line below to include routes and logic for users
+// require('./users')(app, db);
