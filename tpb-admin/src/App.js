@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./dashboard.js";
-import AddVisa from "./addVisa.js";
+// import AddVisa from "./addVisa.js";
 import "./App.css";
 import { Auth0Provider } from '@auth0/auth0-react';
 
@@ -20,7 +20,7 @@ function App() {
             {/* <Route path="/" component={MaintenancePage} /> */}
             {/* <Route path="/" element={<Home />}></Route> */}
             <Route path="/" element={<Dashboard />}></Route>
-            <Route path="/visa" element={<AddVisa />}></Route>
+            {/* <Route path="/visa" element={<AddVisa />}></Route> */}
           </Routes>
         </BrowserRouter>
       </div>

@@ -12,9 +12,9 @@ const app = express();
 app.use(cors()); // CORS middleware applied here
 // Set up CORS headers
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://admin.thepilgrimbeez.com');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 app.use(express.json());
@@ -105,7 +105,6 @@ app.use((err, req, res, next) => {
 
 // Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
-require('./visaList')(app, db, upload, uuidv4);
 // require('./users')(app, db);
 
 

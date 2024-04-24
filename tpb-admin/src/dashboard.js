@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Link } from "react-router-dom";
 import "./dashboard.css";
 
 function Dashboard() {
@@ -254,10 +253,10 @@ function Dashboard() {
                         <i className="la la-dashboard"></i>
                         <p>Dashboard</p>
                       </a>
-                      <Link to="/visa">
+                      <a href="#">
                         <i className="la la-fire"></i>
                         <p>Visa</p>
-                      </Link>
+                      </a>
                     </li>
                   </ul>
                 </div>

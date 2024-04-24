@@ -18,8 +18,7 @@ function HomePage() {
         setIsLoading(true);
         axios
             .all([
-                axios.get(`${process.env.REACT_APP_API_URL}/packages`),
-                axios.get(`${process.env.REACT_APP_API_URL}/visaList`)
+                axios.get(`${process.env.REACT_APP_API_URL}/packages`)
             ])
             .then((responses) => {
                 setPackages(responses[0].data);
@@ -92,62 +91,7 @@ function HomePage() {
                     </div>
                 </div>
             </section>
-            {/* Packages by Category */}
-            <section id="our-packages">
-                <div className="container-fluid">
-                    <div className="row">
-                        <div className="col-lg-12 col-md-12 col-12">
-                            <div className="title_head">
-                                <h2>Get Your Visas</h2>
-                                <Link to="/visas" className="btn">
-                                    View All &nbsp;<i className="cil-arrow-right"></i>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-lg-12 col-md-12 col-12">
-                        <OwlCarousel
-                                className="owl-carousel owl-theme visa"
-                                margin={30}
-                                nav
-                                responsive={{
-                                    0: { items: 1 },
-                                    600: { items: 3 },
-                                    1000: { items: 5 },
-                                }}
-                            >
-                                {visas.map((visa) => (
-                                    <div className="item" key={visa.id}>
-                                        <Link to={`/visa/id/${visa.id}`}>
-                                            <div className="card">
-                                                {/* Render visa card details */}
-                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/${visa.imageUrl}`} alt="Visa Image" className="card-img" />
-                                                <div className="card_content">
-                                                    <h2>{visa.visaName}</h2>
-                                                    <p>{`₹${visa.visaPrice}`}</p>
-                                                    <div className="ft">
-                                                        <span>
-                                                            <label>Duration</label>
-                                                            <h3>{visa.visaDurationDate}</h3>
-                                                        </span>
-                                                        <span>
-                                                            <label>Start Date</label>
-                                                            <h3>{formatDate(visa.visaDate)}</h3>
-                                                        </span>
-                                                    </div>
-                                                    <div className="btn_yellow">View Visa Details</div>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </div>
-                                ))}
-                            </OwlCarousel>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {categories.map((category, index) => (
+            {categorizePackages.map((category, index) => (
                 <section id="our-packages" key={category} className={index % 1 === 0 ? "alternate-class" : "gray_bg"}>
                     <div className="container-fluid">
                         <div className="row">
