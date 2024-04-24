@@ -1,28 +1,25 @@
 const express = require('express');
 const cors = require('cors');
-const multer = require("multer");
-const fs = require("fs");
-const mysql = require("mysql");
-const path = require("path");
-const { v4: uuidv4 } = require("uuid");
-const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const fs = require('fs');
+const mysql = require('mysql');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
 
 const app = express();
-app.use(cors()); // CORS middleware applied here
-// Set up CORS headers
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
-app.use(express.json());
 
 require('dotenv').config();
 
 const port = process.env.PORT || 3000;
 
+// CORS middleware
+app.use(cors());
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Database connection setup
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -30,7 +27,7 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
-db.connect(err => {
+db.connect((err) => {
   if (err) {
     console.error('Database connection failed: ' + err.stack);
     return;
@@ -38,21 +35,28 @@ db.connect(err => {
   console.log('Connected to database.');
 });
 
+// Multer storage configuration for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/')
+    cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-  }
+    cb(
+      null,
+      file.fieldname + '-' + Date.now() + path.extname(file.originalname)
+    );
+  },
 });
 
 const upload = multer({ storage: storage });
 
-const uploadDir = path.join(__dirname, "uploads");
+const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
+
+// Serve static files (if needed)
+app.use(express.static('public'));
 
 app.use("/testapi", express.static("This is test api"));
 app.use("/api.thepilgrimbeez.com/uploads", express.static("uploads"));
