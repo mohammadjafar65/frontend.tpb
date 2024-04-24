@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Link } from "react-router-dom";
 import "./dashboard.css";
 
 function AddVisa() {
@@ -36,40 +37,55 @@ function AddVisa() {
     fetchvisa();
   }, []);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-  
-    const formData = new FormData(event.target);
-  
-    // Append the selected image file to the formData
-    if (files.length > 0) {
-      formData.append("avatar", files[0].file);
+
+    // Check if image is uploaded
+    const imageFile = event.target.avatar.files[0];
+    if (!imageFile) {
+      alert("Thumbnail is not uploaded");
+      return;
     }
-  
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/visaList/create`, formData, {
+
+    setPublishing(true);
+    const data = new FormData(event.target);
+
+    files.forEach((fileItem) => {
+      data.append("gallery", fileItem.file);
+    });
+
+    const endpoint = `https://api.thepilgrimbeez.com/visaList/create`;
+
+    axios
+      .post(endpoint, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setSuccessModalVisible(true);
+        setPublishing(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        if (error.response && error.response.status === 404) {
+          alert("The server endpoint was not found. Please check the URL.");
+        } else {
+          alert("Error in package upload: " + error.message);
+        }
+        setPublishing(false);
       });
-      console.log(response.data);
-      setSuccessModalVisible(true);
-      setFiles([]); // Clear uploaded files after successful upload
-    } catch (error) {
-      console.error("Error uploading visa:", error);
-      alert("Error uploading visa: " + error.message);
-    }
   };
-  
 
   const handleFileChange = (e) => {
     const selectedFiles = e.target.files;
     const filePreviews = [];
-  
+
     for (let i = 0; i < selectedFiles.length; i++) {
       const file = selectedFiles[i];
       const fileReader = new FileReader();
-  
+
       fileReader.onload = (e) => {
         filePreviews.push({
           name: file.name,
@@ -78,15 +94,17 @@ function AddVisa() {
         });
         setFiles([...filePreviews]);
       };
-  
+
       fileReader.readAsDataURL(file);
     }
   };
-  
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-IN",
+      options
+    );
     return formattedDate;
   };
 
@@ -225,14 +243,14 @@ function AddVisa() {
                   </div>
                   <ul className="nav">
                     <li className="nav-item active">
-                      <a href="/">
+                      <Link to="/">
                         <i className="la la-dashboard"></i>
                         <p>Dashboard</p>
-                      </a>
-                      <a href="/visa">
+                      </Link>
+                      <Link to="/visa">
                         <i className="la la-fire"></i>
                         <p>Visa</p>
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -291,7 +309,11 @@ function AddVisa() {
                                     <td>{visaItem.visaName}</td>
                                     <td>{visaItem.visaLocation}</td>
                                     <td>{visaItem.visaPrice}</td>
-                                    <td>{visaItem.visaDate ? formatDate(visaItem.visaDate) : "Not available"}</td>
+                                    <td>
+                                      {visaItem.visaDate
+                                        ? formatDate(visaItem.visaDate)
+                                        : "Not available"}
+                                    </td>
                                     <td>{visaItem.visaDurationDate}</td>
                                     <td>
                                       <div className="dropdown">
@@ -313,9 +335,7 @@ function AddVisa() {
                                             className="dropdown-item text-danger"
                                             href="#"
                                             onClick={() =>
-                                              handleDeletevisa(
-                                                visaItem.id
-                                              )
+                                              handleDeletevisa(visaItem.id)
                                             }
                                           >
                                             <i className="bx bxs-trash mr-2"></i>{" "}
@@ -351,10 +371,7 @@ function AddVisa() {
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                   <div className="modal-content">
                     <div className="modal-header">
-                      <h1
-                        className="modal-title fs-5"
-                        id="addvisaModelLabel"
-                      >
+                      <h1 className="modal-title fs-5" id="addvisaModelLabel">
                         Add New visa
                       </h1>
                       <button
@@ -366,12 +383,17 @@ function AddVisa() {
                     </div>
                     <div className="modal-body form_details">
                       <div className="row">
-                      <div className="col-lg-12 col-md-12 col-12">
-                        <div className="ctcp_form_inp">
-                          <label htmlFor="Image">UPLOAD IMAGE</label>
-                          <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} />
+                        <div className="col-lg-12 col-md-12 col-12">
+                          <div className="ctcp_form_inp">
+                            <label htmlFor="Image">UPLOAD IMAGE</label>
+                            <input
+                              type="file"
+                              name="avatar"
+                              accept="image/*"
+                              onChange={handleFileChange}
+                            />
+                          </div>
                         </div>
-                      </div>
 
                         <div className="col-lg-6 col-md-6 col-12">
                           <div className="ctcp_form_inp">
@@ -389,12 +411,8 @@ function AddVisa() {
                             <label htmlFor="visa Name">CATEGORY</label>
                             <select name="visaCategory" required>
                               <option value="">Select a Category</option>
-                              <option value="POPULAR visa">
-                                POPULAR visa
-                              </option>
-                              <option value="DUBAI visa">
-                                DUBAI visa
-                              </option>
+                              <option value="POPULAR visa">POPULAR visa</option>
+                              <option value="DUBAI visa">DUBAI visa</option>
                               <option value="KASHMIR FAMILY visa">
                                 KASHMIR FAMILY visa
                               </option>

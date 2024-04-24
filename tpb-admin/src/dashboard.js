@@ -18,20 +18,22 @@ function Dashboard() {
     const fetchPackages = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/packages`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/packages`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setPackages(response.data);
-      } catch (err) {
+      } catch (error) {
+        console.error("Request failed:", error.message);
+        if (error.response) {
+          console.error("Response status:", error.response.status);
+          console.error("Response data:", error.response.data);
+        }
         setError("An error occurred while fetching the packages.");
-        console.error(err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchPackages();
