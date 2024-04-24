@@ -5,27 +5,24 @@ import { Link } from "react-router-dom";
 import "./dashboard.css";
 
 function Dashboard() {
+  const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
   const [publishing, setPublishing] = useState(false);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [addPackageModalVisible, setAddPackageModalVisible] = useState(false); // Track the visibility of the "Add New Package" modal
-  const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
+  const [addPackageModalVisible, setAddPackageModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/packages`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/packages`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setPackages(response.data);
       } catch (err) {
         setError("An error occurred while fetching the packages.");
@@ -37,109 +34,64 @@ function Dashboard() {
     fetchPackages();
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if image is uploaded
-    const imageFile = event.target.avatar.files[0];
-    if (!imageFile) {
-      alert("Thumbnail is not uploaded");
-      return;
-    }
-
-    // Check if category is selected
-    const category = event.target.packageCategory.value;
-    if (!category) {
-      alert("Category is not selected");
-      return;
-    }
-
+    const formData = new FormData(event.target);
     setPublishing(true);
-    const data = new FormData(event.target);
 
-    files.forEach((fileItem) => {
-      data.append("gallery", fileItem.file);
-    });
-
-    const endpoint = `https://api.thepilgrimbeez.com/packages/create`;
-
-    axios
-      .post(endpoint, data, {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/packages/create`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setSuccessModalVisible(true);
-        setPublishing(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        if (error.response && error.response.status === 404) {
-          alert("The server endpoint was not found. Please check the URL.");
-        } else {
-          alert("Error in package upload: " + error.message);
-        }
-        setPublishing(false);
       });
+
+      console.log(response.data);
+      setSuccessModalVisible(true);
+      setAddPackageModalVisible(false); // Close add package modal on success
+      setPublishing(false);
+    } catch (error) {
+      console.error("Error in package upload:", error);
+      if (error.response && error.response.status === 404) {
+        alert("The server endpoint was not found. Please check the URL.");
+      } else {
+        alert("Error in package upload: " + error.message);
+      }
+      setPublishing(false);
+    }
   };
 
   const handleFileChange = (e) => {
-    const selectedFiles = e.target.files;
-    const filePreviews = [];
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-      const fileReader = new FileReader();
-
-      fileReader.onload = (e) => {
-        filePreviews.push({
-          name: file.name,
-          src: e.target.result,
-          file: file,
-        });
-      };
-
-      fileReader.readAsDataURL(file);
-    }
-
-    setFiles([...filePreviews]);
+    const selectedFiles = Array.from(e.target.files);
+    const filePreviews = selectedFiles.map((file) => ({
+      name: file.name,
+      src: URL.createObjectURL(file),
+      file,
+    }));
+    setFiles(filePreviews);
   };
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
-    return formattedDate;
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-IN", options);
   };
 
-  const handleDeletePackage = (packageId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this package?"
-    );
+  const handleDeletePackage = async (packageId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this package?");
     if (confirmDelete) {
-      axios
-        .delete(`https://api.thepilgrimbeez.com/packages/delete/${packageId}`)
-        .then((response) => {
-          console.log("Delete response:", response);
-          if (response.status === 200 || response.status === 204) {
-            setPackages((prevPackages) =>
-              prevPackages.filter((packageItem) => packageItem.id !== packageId)
-            );
-          }
-        })
-        .catch((error) => {
-          console.error(
-            "Error deleting package:",
-            error.response || error.message
-          );
-          alert("Error deleting package: " + error.message);
-        });
+      try {
+        await axios.delete(`${process.env.REACT_APP_API_URL}/packages/delete/${packageId}`);
+        setPackages((prevPackages) => prevPackages.filter((packageItem) => packageItem.id !== packageId));
+      } catch (error) {
+        console.error("Error deleting package:", error);
+        alert("Error deleting package: " + error.message);
+      }
     }
   };
 
   const removeFile = (fileName) => {
-    setFiles(files.filter((file) => file.name !== fileName));
+    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
   };
 
   if (loading) {

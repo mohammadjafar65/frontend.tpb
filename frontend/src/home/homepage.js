@@ -8,7 +8,6 @@ import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 
 function HomePage() {
-    const [packages, setPackages] = useState([]);
     const [packagesByCategory, setPackagesByCategory] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const categories = [
@@ -23,18 +22,19 @@ function HomePage() {
     ];
 
     useEffect(() => {
-        setIsLoading(true);
-        axios
-            .get(`${process.env.REACT_APP_API_URL}/packages`)
-            .then((response) => {
-                setPackages(response.data);
-                categorizePackages(response.data);
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/packages`);
+                const packagesData = response.data;
+                categorizePackages(packagesData);
                 setIsLoading(false);
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error("Error fetching data:", error);
                 setIsLoading(false);
-            });
+            }
+        };
+
+        fetchData();
     }, []);
 
     const formatDate = (dateString) => {
@@ -42,13 +42,12 @@ function HomePage() {
         return new Date(dateString).toLocaleDateString('en-IN', options);
     };
 
-    const categorizePackages = (packagesArray) => {
-        const categorized = categories.reduce((acc, category) => {
-            acc[category] = packagesArray.filter((pkg) => pkg.category === category);
-            return acc;
-        }, {});
-
-        setPackagesByCategory(categorized);
+    const categorizePackages = (packagesData) => {
+        const categorizedPackages = {};
+        categories.forEach((category) => {
+            categorizedPackages[category] = packagesData.filter((pkg) => pkg.category === category);
+        });
+        setPackagesByCategory(categorizedPackages);
     };
 
     if (isLoading) {
@@ -95,35 +94,29 @@ function HomePage() {
                     </div>
                 </div>
             </section>
-            {categorizePackages.map((category, index) => (
-                <section id="our-packages" key={category} className={index % 1 === 0 ? "alternate-class" : "gray_bg"}>
+            {categories.map((category, index) => (
+                <section key={index} id="our-packages" className={index % 2 === 0 ? "alternate-class" : "gray_bg"}>
                     <div className="container-fluid">
                         <div className="row">
-                            <div className="col-lg-12 col-md-12 col-12">
+                            <div className="col-lg-12">
                                 <div className="title_head">
                                     <h2>{category || "Default Category"}</h2>
                                     <Link to={`/package/${encodeURIComponent(category)}`} className="btn">
-                                        View All &nbsp;<iconify-icon icon="cil:arrow-right"></iconify-icon>
+                                        View All &nbsp;<i className="cil-arrow-right"></i>
                                     </Link>
                                 </div>
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-lg-12 col-md-12 col-12">
+                            <div className="col-lg-12">
                                 <OwlCarousel
                                     className="owl-carousel owl-theme projects"
                                     margin={30}
                                     nav
                                     responsive={{
-                                        0: {
-                                            items: 1,
-                                        },
-                                        600: {
-                                            items: 3,
-                                        },
-                                        1000: {
-                                            items: 5,
-                                        },
+                                        0: { items: 1 },
+                                        600: { items: 3 },
+                                        1000: { items: 5 }
                                     }}
                                 >
                                     {packagesByCategory[category] && packagesByCategory[category].length > 0 ? (
@@ -131,24 +124,18 @@ function HomePage() {
                                             <div className="item" key={pkg.id}>
                                                 <Link to={`/package/id/${pkg.id}`}>
                                                     <div className="card">
-                                                        <span className="over_hover">
-                                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/${pkg.imageUrl}`} alt={pkg.packageName || "Package Image"} className="card-img" />
-                                                        </span>
+                                                        <img src={`${process.env.REACT_APP_API_URL}/uploads/${pkg.imageUrl}`} alt={pkg.packageName || "Package Image"} className="card-img" />
                                                         <div className="card_content">
                                                             <h2>{pkg.packageName || "No Name"}</h2>
                                                             <p>{pkg.packagePrice ? `₹${pkg.packagePrice}` : "Not available"}</p>
                                                             <div className="ft">
                                                                 <span>
                                                                     <label>Duration</label>
-                                                                    <h3>
-                                                                        <iconify-icon icon="carbon:time"></iconify-icon> {pkg.packageDurationDate || "Not available"}
-                                                                    </h3>
+                                                                    <h3><i className="carbon-time"></i> {pkg.packageDurationDate || "Not available"}</h3>
                                                                 </span>
                                                                 <span>
                                                                     <label>Start Date</label>
-                                                                    <h3>
-                                                                        <iconify-icon icon="uiw:date"></iconify-icon> {pkg.packageDate ? formatDate(pkg.packageDate) : "Not available"}
-                                                                    </h3>
+                                                                    <h3><i className="uiw-date"></i> {pkg.packageDate ? formatDate(pkg.packageDate) : "Not available"}</h3>
                                                                 </span>
                                                             </div>
                                                             <div className="btn_yellow">View Package Details</div>
