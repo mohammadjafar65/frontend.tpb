@@ -1,11 +1,11 @@
 <IfModule mod_rewrite.c>
     RewriteEngine on
-    RewriteCond %{HTTP_HOST} ^(www.)?thepilgrimbeez.com$
+    RewriteCond %{HTTP_HOST} ^thepilgrimbeez\.com$
     RewriteCond %{REQUEST_URI} !^/frontend/build/
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ /frontend/build/$1
-    RewriteCond %{HTTP_HOST} ^(www.)?thepilgrimbeez.com$
+    RewriteCond %{HTTP_HOST} ^thepilgrimbeez\.com$
     RewriteRule ^(/)?$ frontend/build/index.html [L]
     # RewriteEngine On
 
