@@ -6,7 +6,7 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ /frontend/build/$1
     RewriteCond %{HTTP_HOST} ^(www.)?thepilgrimbeez.com$
-    RewriteRule ^(/)?$ frontend/build/index.php [L]
+    RewriteRule ^(/)?$ frontend/build/index.html [L]
     # RewriteEngine On
 
     # # Redirect to HTTPS
