@@ -11,7 +11,16 @@ function HomePage() {
     const [packages, setPackages] = useState([]);
     const [packagesByCategory, setPackagesByCategory] = useState({});
     const [isLoading, setIsLoading] = useState(true); // Loading state
-    const categories = ["POPULAR PACKAGES", "DUBAI PACKAGES", "KASHMIR FAMILY PACKAGES"];
+    const categories = [
+        "Popular Packages",
+        "Religious Tours",
+        "Holidays In 'India'",
+        "The Modern 'Europe'",
+        "The Secrets of Middle East",
+        "Adventures of Africa",
+        "Deep into 'Asia Pacific'",
+        "Americans"
+    ];
 
     useEffect(() => {
         setIsLoading(true); // Start loading
