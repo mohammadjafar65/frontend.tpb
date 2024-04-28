@@ -10,18 +10,11 @@ const bodyParser = require('body-parser');
 
 const app = express();
 app.use(cors()); // CORS middleware applied here
-// Set up CORS headers
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Change * to your specific origin if needed
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
 app.use(express.json());
 
 require('dotenv').config();
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,

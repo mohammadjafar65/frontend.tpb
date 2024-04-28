@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import "./dashboard.css";
 
+
 function Dashboard() {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,13 +14,15 @@ function Dashboard() {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [addPackageModalVisible, setAddPackageModalVisible] = useState(false); // Track the visibility of the "Add New Package" modal
   const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
+  const { REACT_APP_API_URL, REACT_APP_UPLOAD_API_URL } = process.env;
+
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/packages`,
+          `${REACT_APP_API_URL}/packages`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -28,9 +31,9 @@ function Dashboard() {
         );
         setPackages(response.data);
       } catch (err) {
-        setError("An error occurred while fetching the packages.");
+        setError(`Error fetching packages: ${err.message}`);
         console.error(err);
-      }
+      }      
       setLoading(false);
     };
 
@@ -119,7 +122,7 @@ function Dashboard() {
     );
     if (confirmDelete) {
       axios
-        .delete(`https://api.thepilgrimbeez.com/packages/delete/${packageId}`)
+        .delete(`${REACT_APP_UPLOAD_API_URL}/packages/delete/${packageId}`)
         .then((response) => {
           console.log("Delete response:", response);
           if (response.status === 200 || response.status === 204) {
@@ -304,7 +307,7 @@ function Dashboard() {
                                       <div className="avatar avatar-blue mr-3">
                                         {packageItem.imageUrl ? (
                                           <img
-                                            src={`${process.env.REACT_APP_UPLOAD_API_URL}/${packageItem.imageUrl}`}
+                                            src={`${REACT_APP_UPLOAD_API_URL}/${packageItem.imageUrl}`}
                                             alt="Package"
                                           />
                                         ) : (

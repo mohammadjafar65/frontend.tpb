@@ -1,7 +1,7 @@
 // routes/student.js
 module.exports = (app, db) => {
   // Route to get all users
-  app.get("/api.thepilgrimbeez.com/users", (req, res) => {
+  app.get("/users", (req, res) => {
     const sql = "SELECT * FROM user";
     db.query(sql, (err, data) => {
       if (err) {
