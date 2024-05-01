@@ -1,6 +1,6 @@
 module.exports = (app, db, upload, uuidv4) => {
     // Route to get all travel packages
-    app.get("/api.thepilgrimbeez.com/packages", (req, res) => {
+    app.get("/packages", (req, res) => {
         // Logic to fetch all travel packages from the database
         const sql = "SELECT * FROM travel_packages";
         db.query(sql, (err, data) => {
@@ -14,7 +14,7 @@ module.exports = (app, db, upload, uuidv4) => {
     
     // POST route to create a new travel package
     app.post(
-        "/api.thepilgrimbeez.com/packages/create",
+        "/packages/create",
         upload.fields([
             { name: "avatar", maxCount: 1 },
             { name: "gallery", maxCount: 10 },
@@ -79,7 +79,7 @@ module.exports = (app, db, upload, uuidv4) => {
     );
     
     // Update a package
-    app.put("/api.thepilgrimbeez.com/packages/update/:id", (req, res) => {
+    app.put("/packages/update/:id", (req, res) => {
         // Ensure field names match those in the package table
         const sql = "UPDATE travel_packages SET `imageUrl` = ?, `packageName` = ?, `packageLocation` = ?, `packagePrice` = ?  WHERE `id` = ?";
         const values = [req.body.imageUrl, req.body.packageName, req.body.packageLocation, req.body.packagePrice]; // Add other fields as necessary
@@ -92,7 +92,7 @@ module.exports = (app, db, upload, uuidv4) => {
     });
     
     // Delete a package
-    app.delete("/api.thepilgrimbeez.com/packages/delete/:id", (req, res) => {
+    app.delete("/packages/delete/:id", (req, res) => {
         const sql = "DELETE FROM travel_packages WHERE `id` = ?";
         const id = req.params.id;
     
@@ -107,7 +107,7 @@ module.exports = (app, db, upload, uuidv4) => {
     });
     
     // Route to get packages by category
-    app.get("/api.thepilgrimbeez.com/packages/category/:category", async (req, res) => {
+    app.get("/packages/category/:category", async (req, res) => {
         try {
             const allPackages = await getAllPackages();
             const filteredPackages = allPackages.filter((pkg) => pkg.category === req.params.category);
@@ -131,7 +131,7 @@ module.exports = (app, db, upload, uuidv4) => {
     };
     
     // Route to get a package by id
-    app.get("/api.thepilgrimbeez.com/packages/id/:id", async (req, res) => {
+    app.get("/packages/id/:id", async (req, res) => {
         try {
             // Query to fetch package details and associated images
             const packageDetailsSql = `

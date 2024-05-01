@@ -55,8 +55,12 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 app.use("/testapi", express.static("This is test api"));
-app.use("/api.thepilgrimbeez.com/uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 app.use("/static", express.static(path.join(__dirname, "public")));
+app.get('/', (req, res) => {
+  res.send('Hello, World!'); // Send a response to the client
+});
+
 
 app.use(bodyParser.json());
 
@@ -102,6 +106,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something went wrong!');
 });
+
 
 // Routes and middleware for handling travel packages
 require('./travelPackages')(app, db, upload, uuidv4);
