@@ -104,9 +104,7 @@ function HomePage() {
             </section>
             {/* Packages by Category */}
             {categories.map((category, index) => (
-                <section
-                key={category} id="our-packages" className={index % 2 === 0 ? "alternate-class" : "gray_bg"}
-                >
+                <section key={category} id={`section-${index}`} className={index % 2 === 0 ? "alternate-class" : "gray_bg"}>
                 <div className="container-fluid">
                     <div className="row">
                     <div className="col-lg-12 col-md-12 col-12">

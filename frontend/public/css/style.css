@@ -506,14 +506,14 @@ a:hover {
   color: #fff;
 }
 
-#our-packages {
+.our-packages {
   padding: 10vh 5vw;
   background: #fff;
   transition: 0.3s;
   padding-top: 4vw;
 }
 
-#our-packages h2 {
+.our-packages h2 {
   text-align: center;
   margin-bottom: 0;
   font-size: 30px;
@@ -535,7 +535,7 @@ a:hover {
   margin-top: 0;
 }
 
-#our-packages .title_head a.btn {
+.our-packages .title_head a.btn {
   padding: 0;
   margin: 0;
   font-size: 1.2vw;
@@ -550,18 +550,18 @@ a:hover {
   margin-right: 8vw;
 }
 
-#our-packages .title_head a.btn iconify-icon {
+.our-packages .title_head a.btn iconify-icon {
   opacity: 0;
   position: absolute;
   transition: 0.3s;
 }
 
-#our-packages .title_head a.btn:hover iconify-icon {
+.our-packages .title_head a.btn:hover iconify-icon {
   opacity: 1;
   position: relative;
 }
 
-#our-packages .title_head a.btn:hover {
+.our-packages .title_head a.btn:hover {
   margin-right: 8.5vw;
 }
 
@@ -647,7 +647,7 @@ a:hover {
   transform-origin: left;
 } */
 
-#our-packages .card {
+.our-packages .card {
   background-color: #f7f7f9;
   border-radius: 1vw;
   justify-content: center;
@@ -661,7 +661,7 @@ a:hover {
   border: none;
 }
 
-#our-packages .card span.over_hover {
+.our-packages .card span.over_hover {
   border-radius: 10px;
   overflow: hidden;
   display: inline-block;
@@ -669,11 +669,11 @@ a:hover {
   height: 26vh;
 }
 
-#our-packages .card span.over_hover img {
+.our-packages .card span.over_hover img {
   transition: 0.5s;
 }
 
-#our-packages .card .card_content .btn_yellow {
+.our-packages .card .card_content .btn_yellow {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -690,7 +690,7 @@ a:hover {
   transition: 0.3s;
 }
 
-/* #our-packages .card .card_content .btn_yellow:hover {
+/* .our-packages .card .card_content .btn_yellow:hover {
   background: #edaa58;
 } */
 
@@ -710,7 +710,7 @@ a:hover {
   object-fit: cover;
 }
 
-#our-packages .card .card_content {
+.our-packages .card .card_content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -718,13 +718,13 @@ a:hover {
   width: 100%;
 }
 
-#our-packages .card .card_content h2 {
+.our-packages .card .card_content h2 {
   font-size: 1.1vw;
   margin: 0;
   margin-bottom: 0.5vh;
 }
 
-#our-packages .card .card_content p {
+.our-packages .card .card_content p {
   font-size: 0.7vw;
   text-align: left;
   width: 100%;
@@ -732,7 +732,7 @@ a:hover {
   color: #222;
 }
 
-#our-packages .title_head {
+.our-packages .title_head {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -1308,7 +1308,7 @@ a:hover {
   width: 100%;
 }
 
-#our-packages .card .card_content .ft {
+.our-packages .card .card_content .ft {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -1316,19 +1316,19 @@ a:hover {
   width: 100%;
 }
 
-#our-packages .card .card_content .ft span {
+.our-packages .card .card_content .ft span {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-#our-packages .card .card_content .ft label {
+.our-packages .card .card_content .ft label {
   font-size: 0.7vw;
   color: #222;
   margin: 0;
 }
 
-#our-packages .card .card_content .ft h3 {
+.our-packages .card .card_content .ft h3 {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1375,15 +1375,15 @@ a:hover {
   display: none;
 }
 
-#our-packages.gray_bg {
+.our-packages.gray_bg {
   background: #f7f7f9;
 }
 
-#our-packages.gray_bg .card {
+.our-packages.gray_bg .card {
   background: #fff;
 }
 
-#our-packages.gray_bg .card .card_content .btn_yellow {
+.our-packages.gray_bg .card .card_content .btn_yellow {
   background: #f7f7f9;
 }
 
