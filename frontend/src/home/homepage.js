@@ -45,18 +45,21 @@ function HomePage() {
         return formattedDate;
       };
 
-    // Function to categorize packages
+    // Inside categorizePackages function
     const categorizePackages = (packagesArray) => {
         const categorized = packagesArray.reduce((acc, pkg) => {
-          if (!acc[pkg.category]) {
+        if (!acc[pkg.category]) {
             acc[pkg.category] = [];
-          }
-          acc[pkg.category].push(pkg);
-          return acc;
+        }
+        acc[pkg.category].push(pkg);
+        return acc;
         }, {});
-    
+
+        console.log("Categorized Packages:", categorized); // Debugging statement
+
         setPackagesByCategory(categorized);
-      };
+    };
+
 
     if (isLoading) {
         return <div>Loading...</div>; // Show loading indicator
