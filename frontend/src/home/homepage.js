@@ -46,10 +46,11 @@ function HomePage() {
     // Function to categorize packages
     const categorizePackages = (packagesArray) => {
         const categorized = packagesArray.reduce((acc, pkg) => {
-            if (!acc[pkg.category]) {
-                acc[pkg.category] = [];
+            const category = pkg.category.toUpperCase(); // Convert category to uppercase for consistency
+            if (!acc[category]) {
+                acc[category] = [];
             }
-            acc[pkg.category].push(pkg);
+            acc[category].push(pkg);
             return acc;
         }, {});
 
@@ -57,6 +58,7 @@ function HomePage() {
 
         setPackagesByCategory(categorized);
     };
+
 
     if (isLoading) {
         return <div>Loading...</div>; // Show loading indicator
