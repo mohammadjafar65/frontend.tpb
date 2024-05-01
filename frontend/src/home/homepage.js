@@ -13,13 +13,12 @@ function HomePage() {
     const [isLoading, setIsLoading] = useState(true); // Loading state
     const categories = [
         "Popular Packages",
-        "Religious Tours",
+        "The Pilgrimage",
         "Holidays In 'India'",
         "The Modern 'Europe'",
         "The Secrets of Middle East",
-        "Adventures of Africa",
-        "Deep into 'Asia Pacific'",
-        "Americans"
+        "Adventurous Africa",
+        "The Asia Pacific"
     ];
 
     useEffect(() => {

@@ -416,14 +416,26 @@ function Dashboard() {
                             <label htmlFor="Package Name">CATEGORY</label>
                             <select name="packageCategory" required>
                               <option value="">Select a Category</option>
-                              <option value="POPULAR PACKAGES">
-                                POPULAR PACKAGES
+                              <option value="Popular Packages">
+                                Popular Packages
                               </option>
-                              <option value="DUBAI PACKAGES">
-                                DUBAI PACKAGES
+                              <option value="The Pilgrimage">
+                                The Pilgrimage
                               </option>
-                              <option value="KASHMIR FAMILY PACKAGES">
-                                KASHMIR FAMILY PACKAGES
+                              <option value="Holidays In 'India'">
+                                Holidays In 'India'
+                              </option>
+                              <option value="The Modern 'Europe'">
+                                The Modern 'Europe'
+                              </option>
+                              <option value="The Secrets of Middle East">
+                                The Secrets of Middle East
+                              </option>
+                              <option value="Adventurous Africa">
+                                Adventurous Africa
+                              </option>
+                              <option value="The Asia Pacific">
+                                The Asia Pacific
                               </option>
                             </select>
                           </div>
