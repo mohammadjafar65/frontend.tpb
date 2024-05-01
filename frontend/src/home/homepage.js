@@ -1,9 +1,9 @@
+import React, { useEffect, useState } from "react";
 import Header from "../header/header";
 import Footer from "../footer/footer";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
-import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -26,6 +26,7 @@ function HomePage() {
         axios
             .get(`${process.env.REACT_APP_API_URL}/packages`)
             .then((response) => {
+                console.log("Packages from API:", response.data); // Debugging statement
                 setPackages(response.data);
                 categorizePackages(response.data);
                 setIsLoading(false); // End loading
@@ -38,28 +39,24 @@ function HomePage() {
 
     const formatDate = (dateString) => {
         const options = { year: "numeric", month: "long", day: "numeric" };
-        const formattedDate = new Date(dateString).toLocaleDateString(
-          "en-IN",
-          options
-        );
+        const formattedDate = new Date(dateString).toLocaleDateString("en-IN", options);
         return formattedDate;
-      };
+    };
 
-    // Inside categorizePackages function
+    // Function to categorize packages
     const categorizePackages = (packagesArray) => {
         const categorized = packagesArray.reduce((acc, pkg) => {
-        if (!acc[pkg.category]) {
-            acc[pkg.category] = [];
-        }
-        acc[pkg.category].push(pkg);
-        return acc;
+            if (!acc[pkg.category]) {
+                acc[pkg.category] = [];
+            }
+            acc[pkg.category].push(pkg);
+            return acc;
         }, {});
 
         console.log("Categorized Packages:", categorized); // Debugging statement
 
         setPackagesByCategory(categorized);
     };
-
 
     if (isLoading) {
         return <div>Loading...</div>; // Show loading indicator
@@ -109,67 +106,62 @@ function HomePage() {
             {categories.map((category, index) => (
                 <section key={category} id={`section-${index}`} className={index % 2 === 0 ? "alternate-class" : "gray_bg"}>
                     <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-lg-12 col-md-12 col-12">
-                                <div className="title_head">
-                                    <h2>{category || "Default Category"}</h2>
-                                    <Link to={`/package/${encodeURIComponent(category)}`} className="btn">
-                                        View All &nbsp;<iconify-icon icon="cil:arrow-right"></iconify-icon>
-                                    </Link>
-                                </div>
-                            </div>
+                        {/* Category Title */}
+                        <div className="title_head">
+                            <h2>{category || "Default Category"}</h2>
+                            <Link to={`/package/${encodeURIComponent(category)}`} className="btn">
+                                View All &nbsp;<iconify-icon icon="cil:arrow-right"></iconify-icon>
+                            </Link>
                         </div>
-                        <div className="row">
-                            <div className="col-lg-12 col-md-12 col-12">
-                                <OwlCarousel
-                                    className="owl-carousel owl-theme projects"
-                                    margin={30}
-                                    nav
-                                    responsive={{
-                                        0: {
-                                            items: 1,
-                                        },
-                                        600: {
-                                            items: 3,
-                                        },
-                                        1000: {
-                                            items: 5,
-                                        },
-                                    }}
-                                >
-                                    {packagesByCategory[category] && packagesByCategory[category].length > 0 ? (
-                                        packagesByCategory[category].map((pkg) => (
-                                            <div className="item" key={pkg.id}>
-                                                <Link to={`/package/id/${pkg.id}`}>
-                                                    <div className="card">
-                                                        <span className="over_hover">
-                                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/${pkg.imageUrl}`} alt={pkg.packageName || "Package Image"} className="card-img" />
+                        {/* Owl Carousel */}
+                        <OwlCarousel
+                            className="owl-carousel owl-theme projects"
+                            margin={30}
+                            nav
+                            responsive={{
+                                0: {
+                                    items: 1,
+                                },
+                                600: {
+                                    items: 3,
+                                },
+                                1000: {
+                                    items: 5,
+                                },
+                            }}
+                        >
+                            {packagesByCategory[category] && packagesByCategory[category].length > 0 ? (
+                                packagesByCategory[category].map((pkg) => (
+                                    <div className="item" key={pkg.id}>
+                                        <Link to={`/package/id/${pkg.id}`}>
+                                            <div className="card">
+                                                {/* Package Card Content */}
+                                                <span className="over_hover">
+                                                    <img src={`${process.env.REACT_APP_API_URL}/uploads/${pkg.imageUrl}`} alt={pkg.packageName || "Package Image"} className="card-img" />
+                                                </span>
+                                                <div className="card_content">
+                                                    <h2>{pkg.packageName || "No Name"}</h2>
+                                                    <p>{pkg.packagePrice ? `₹${pkg.packagePrice}` : "Not available"}</p>
+                                                    <div className="ft">
+                                                        <span>
+                                                            <label>Duration</label>
+                                                            <h3><iconify-icon icon="carbon:time"></iconify-icon> {pkg.packageDurationDate || "Not available"}</h3>
                                                         </span>
-                                                        <div className="card_content">
-                                                            <h2>{pkg.packageName || "No Name"}</h2>
-                                                            <p>{pkg.packagePrice ? `₹${pkg.packagePrice}` : "Not available"}</p>
-                                                            <div className="ft">
-                                                                <span>
-                                                                    <label>Duration</label>
-                                                                    <h3><iconify-icon icon="carbon:time"></iconify-icon> {pkg.packageDurationDate || "Not available"}</h3>
-                                                                </span>
-                                                                <span>
-                                                                    <label>Start Date</label>
-                                                                    <h3><iconify-icon icon="uiw:date"></iconify-icon> {pkg.packageDate ? formatDate(pkg.packageDate) : "Not available"}</h3>
-                                                                </span>
-                                                            </div>
-                                                            <div className="btn_yellow">View Package Details</div>
-                                                        </div>
+                                                        <span>
+                                                            <label>Start Date</label>
+                                                            <h3><iconify-icon icon="uiw:date"></iconify-icon> {pkg.packageDate ? formatDate(pkg.packageDate) : "Not available"}</h3>
+                                                        </span>
                                                     </div>
-                                                </Link>
+                                                    <div className="btn_yellow">View Package Details</div>
+                                                </div>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <p>No packages available.</p>
-                                    )}
-                                </OwlCarousel>
-                            </div>
-                        </div>
+                                        </Link>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No packages available.</p>
+                            )}
+                        </OwlCarousel>
                     </div>
                 </section>
             ))}
