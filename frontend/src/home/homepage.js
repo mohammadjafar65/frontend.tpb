@@ -26,6 +26,7 @@ function HomePage() {
         axios
             .get(`${process.env.REACT_APP_API_URL}/packages`)
             .then((response) => {
+                console.log("Packages:", response.data); // Log packages data
                 setPackages(response.data);
                 categorizePackages(response.data);
                 setIsLoading(false); // End loading
@@ -34,7 +35,7 @@ function HomePage() {
                 console.error("Error fetching packages:", error);
                 setIsLoading(false); // End loading
             });
-    }, []);
+    }, []);    
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -48,9 +49,12 @@ function HomePage() {
             acc[category] = packagesArray.filter((pkg) => pkg.category === category);
             return acc;
         }, {});
-
+    
+        console.log("Categorized Packages:", categorized); // Log categorized packages
+    
         setPackagesByCategory(categorized);
-    };
+    };    
+
 
     if (isLoading) {
         return <div>Loading...</div>; // Show loading indicator
