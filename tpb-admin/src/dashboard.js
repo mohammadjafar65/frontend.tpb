@@ -64,7 +64,7 @@ function Dashboard() {
       data.append("gallery", fileItem.file);
     });
 
-    const endpoint = `https://api.thepilgrimbeez.com/packages/create`;
+    const endpoint = `${REACT_APP_API_URL}/packages/create`;
 
     axios
       .post(endpoint, data, {

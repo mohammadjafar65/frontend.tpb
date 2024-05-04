@@ -1,5 +1,7 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@1,100;1,300;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@1,100;1,300;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"); */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 /*** GENERIC CSS ***/
 html,
 body {
@@ -12,7 +14,7 @@ html {
 
 body {
   font-size: 14px;
-  font-family: "Space Grotesk", sans-serif;
+    font-family: "Raleway", sans-serif;
   color: #60697b;
 }
 
@@ -34,11 +36,11 @@ a {
   transition: all ease 0.5s;
   text-decoration: none;
   color: #555555;
-  font-family: "Space Grotesk", sans-serif;
+    font-family: "Raleway", sans-serif;
 }
 
 p {
-  font-family: "Space Grotesk", sans-serif;
+    font-family: "Raleway", sans-serif;
 }
 
 a:hover {
@@ -74,7 +76,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Space Grotesk", sans-serif;
+    font-family: "Raleway", sans-serif;
   color: #343f52;
 }
 
@@ -284,7 +286,7 @@ section {
 
 /*** HEADER ***/
 .container {
-  max-width: 1300px;
+  max-width: 1350px;
 }
 
 section#header {
@@ -323,6 +325,7 @@ section#header {
   position: absolute;
   inset: 0;
   background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.5) 60%);
+  height: 80vh;
 }
 
 .header_bar .menu {
@@ -480,7 +483,7 @@ a:hover {
 }
 
 #banner {
-  background: url("../img/main_banner.jpg") 50% 50% no-repeat;
+  /* background: url("../img/main_banner.jpg") 50% 50% no-repeat; */
   background-size: cover;
   height: 80vh;
   width: 100%;
@@ -490,16 +493,23 @@ a:hover {
 #banner .inner_banner {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-end;
   height: 80vh;
+  padding-bottom: 15vh;
 }
 
 #banner .inner_banner h1 {
-  font-size: 5vw;
+  font-size: 3vw;
   color: #000;
   margin: 0;
-  text-align: center;
+  text-align: left;
+  font-weight: 500;
+}
+
+#banner .inner_banner h1 span {
+  font-weight: 900;
+  color: #efa852;
 }
 
 #banner.about h1, #banner.package h1 {
@@ -507,10 +517,9 @@ a:hover {
 }
 
 #our-packages {
-  padding: 10vh 5vw;
+  padding: 50px 0px;
   background: #fff;
   transition: 0.3s;
-  padding-top: 4vw;
 }
 
 #our-packages h2 {
@@ -650,7 +659,7 @@ a:hover {
 #our-packages .card {
   background-color: #f7f7f9;
   border-radius: 1vw;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: flex-start;
   display: flex;
   /* box-shadow: 0 15px 20px rgba(0, 0, 0, 0.03); */
@@ -659,7 +668,27 @@ a:hover {
   padding: 1vw;
   /* border: 1px solid rgba(0, 0, 0, 0.1); */
   border: none;
+  height: 380px;
+  position: relative;
+  overflow: hidden;
+  transition: 0.2s ease-in-out;
 }
+
+#our-packages .card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(0deg, rgb(0 0 0) 0%, rgb(255 255 255 / 0%) 40%);
+  height: 100%;
+  transition: 0.2s ease-in-out;
+}
+
+#our-packages .card:hover::after {
+  background: linear-gradient(0deg, rgb(0 0 0) 0%, rgb(255 255 255 / 0%) 80%);
+  transition: 0.2s ease-in-out;
+} 
 
 #our-packages .card span.over_hover {
   border-radius: 10px;
@@ -716,20 +745,24 @@ a:hover {
   align-items: flex-start;
   gap: 0vh;
   width: 100%;
+  z-index: 999;
 }
 
 #our-packages .card .card_content h2 {
   font-size: 1.1vw;
   margin: 0;
   margin-bottom: 0.5vh;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
 }
 
 #our-packages .card .card_content p {
-  font-size: 0.7vw;
+  font-size: 0.9vw;
   text-align: left;
   width: 100%;
   margin-bottom: 1.5vh;
-  color: #222;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
 }
 
 #our-packages .title_head {
@@ -1324,7 +1357,7 @@ a:hover {
 
 #our-packages .card .card_content .ft label {
   font-size: 0.7vw;
-  color: #222;
+  color: #fff;
   margin: 0;
 }
 
@@ -1334,7 +1367,7 @@ a:hover {
   align-items: center;
   gap: 0.2vw;
   font-size: 0.9vw;
-  color: #000;
+  color: #fff;
   font-weight: 700;
   margin: 0;
   margin-top: 0.3vh;
@@ -1486,4 +1519,8 @@ a:hover {
 
 .contact-form .bg-form h2.mb-3 {
   text-align: left;
+}
+
+.owl-theme .owl-nav [class*='owl-'] {
+  color: transparent !important;
 }

@@ -4,6 +4,7 @@ import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import React, { useEffect, useState } from "react";
+import ImageSlider from '../components/ImageSlider';
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -19,6 +20,11 @@ function HomePage() {
         "The Secrets of Middle East",
         "Adventurous Africa",
         "The Asia Pacific"
+    ];
+    const images = [
+        'img/slider_1.jpeg',
+        'img/slider_2.jpeg',
+        'img/slider_3.jpeg'
     ];
 
     useEffect(() => {
@@ -53,8 +59,7 @@ function HomePage() {
         console.log("Categorized Packages:", categorized); // Log categorized packages
     
         setPackagesByCategory(categorized);
-    };    
-
+    };     
 
     if (isLoading) {
         return <div>Loading...</div>; // Show loading indicator
@@ -64,14 +69,16 @@ function HomePage() {
         <>
             <Header />
             <section id="banner">
+                <ImageSlider images={images} />
                 <div className="css-zixqbe e7svxqc1"></div>
-                <div className="container-fluid">
+                <div className="container">
                     <div className="row">
                         <div className="col-lg-12 col-md-12  col-12">
                             <div className="inner_banner">
                                 <h1>
                                     Affortability, Comfortability <br />
-                                    now comes in budget with TPB
+                                    now comes in budget with<br/>
+                                    <span>The Pilgrim Beez</span>
                                 </h1>
                                 {/* <a href="#our-packages">
                                     <button className="button button--surtur">
@@ -103,7 +110,7 @@ function HomePage() {
             {/* Packages by Category */}
             {categories.map((category, index) => (
                 <section id="our-packages" key={category} className={index % 2 === 0 ? "alternate-class" : "gray_bg"}>
-                    <div className="container-fluid">
+                    <div className="container">
                         <div className="row">
                             <div className="col-lg-12 col-md-12 col-12">
                                 <div className="title_head">
@@ -128,7 +135,7 @@ function HomePage() {
                                             items: 3,
                                         },
                                         1000: {
-                                            items: 5,
+                                            items: 4,
                                         },
                                     }}
                                 >
@@ -136,10 +143,12 @@ function HomePage() {
                                         packagesByCategory[category].map((pkg) => (
                                             <div className="item" key={pkg.id}>
                                                 <Link to={`/package/id/${pkg.id}`}>
-                                                    <div className="card">
-                                                        <span className="over_hover">
-                                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/${pkg.imageUrl}`} alt={pkg.packageName || "Package Image"} className="card-img" />
-                                                        </span>
+                                                    <div className="card"
+                                                    style={{ 
+                                                        backgroundImage: `url(${process.env.REACT_APP_API_URL}/uploads/${pkg.imageUrl})`,
+                                                        backgroundSize: 'cover',
+                                                        transition: 'transform 0.2s ease-in-out'
+                                                    }}>
                                                         <div className="card_content">
                                                             <h2>{pkg.packageName || "No Name"}</h2>
                                                             <p>{pkg.packagePrice ? `₹${pkg.packagePrice}` : "Not available"}</p>
@@ -157,7 +166,7 @@ function HomePage() {
                                                                     </h3>
                                                                 </span>
                                                             </div>
-                                                            <div className="btn_yellow">View Package Details</div>
+                                                            {/* <div className="btn_yellow">View Package Details</div> */}
                                                         </div>
                                                     </div>
                                                 </Link>
@@ -173,7 +182,7 @@ function HomePage() {
                 </section>
             ))}
             <section id="about_us">
-                <div className="container-fluid">
+                <div className="container">
                     <div className="row">
                         <div className="col-lg-12 col-md-12 col-12">
                             <h2>About Us</h2>
@@ -189,7 +198,7 @@ function HomePage() {
                 </div>
             </section>
             <section id="services">
-                <div className="container-fluid">
+                <div className="container">
                     <div className="row">
                         <div className="col-lg-12 col-md-12 col-12">
                             <h2>OUR SERVICES</h2>

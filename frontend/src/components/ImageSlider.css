@@ -1,0 +1,31 @@
+.image-slider {
+    height: 80vh;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    top: 0;
+    overflow: hidden;
+}
+
+.slider-container {
+    display: flex;
+    position: relative;
+}
+
+.slider-container img {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    object-fit: cover;
+    height: 80vh;
+    width: 100%;
+}
+
+.slider-container img.active {
+    opacity: 1;
+}
+
+.image-slider button {
+    display: none;
+}
