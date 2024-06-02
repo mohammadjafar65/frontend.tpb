@@ -132,6 +132,16 @@
   transition: opacity 0.15s linear;
 }
 
+/* div#editPackageModal {
+  display: inline-block;
+  z-index: 9999;
+  position: absolute;
+} */
+
+.show {
+  display: inline-block;
+}
+
 
 @media only screen and (max-width: 600px) {
   .LoginScreen .card {

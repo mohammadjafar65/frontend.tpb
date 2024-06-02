@@ -4,7 +4,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import "./dashboard.css";
 
-
 function Dashboard() {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,28 +11,26 @@ function Dashboard() {
   const [files, setFiles] = useState([]);
   const [publishing, setPublishing] = useState(false);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
-  const [addPackageModalVisible, setAddPackageModalVisible] = useState(false); // Track the visibility of the "Add New Package" modal
+  const [addPackageModalVisible, setAddPackageModalVisible] = useState(false);
+  const [editPackageModalVisible, setEditPackageModalVisible] = useState(false);
+  const [currentPackage, setCurrentPackage] = useState(null);
   const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
   const { REACT_APP_API_URL, REACT_APP_UPLOAD_API_URL } = process.env;
-
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${REACT_APP_API_URL}/packages`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${REACT_APP_API_URL}/packages`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setPackages(response.data);
       } catch (err) {
         setError(`Error fetching packages: ${err.message}`);
         console.error(err);
-      }      
+      }
       setLoading(false);
     };
 
@@ -111,9 +108,41 @@ function Dashboard() {
   };
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-IN",
+      options
+    );
     return formattedDate;
+  };
+
+  const handleEditPackage = (packageItem) => {
+    setCurrentPackage(packageItem);
+    setEditPackageModalVisible(true);
+  };
+
+  const handleUpdateSubmit = async (event) => {
+    event.preventDefault();
+
+    const token = localStorage.getItem("token");
+    const data = new FormData(event.target);
+    const endpoint = `${REACT_APP_API_URL}/packages/update/${currentPackage.id}`;
+
+    try {
+      const response = await axios.put(endpoint, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response.data);
+      setEditPackageModalVisible(false);
+      setCurrentPackage(null);
+      // Refresh the package list or update state
+    } catch (error) {
+      console.error("Error updating package:", error);
+      alert("Error updating package: " + error.message);
+    }
   };
 
   const handleDeletePackage = (packageId) => {
@@ -122,7 +151,7 @@ function Dashboard() {
     );
     if (confirmDelete) {
       axios
-        .delete(`${REACT_APP_UPLOAD_API_URL}/packages/delete/${packageId}`)
+        .delete(`${REACT_APP_API_URL}/packages/delete/${packageId}`)
         .then((response) => {
           console.log("Delete response:", response);
           if (response.status === 200 || response.status === 204) {
@@ -255,10 +284,10 @@ function Dashboard() {
                         <i className="la la-dashboard"></i>
                         <p>Dashboard</p>
                       </a>
-                      <Link to="/visa">
+                      {/* <Link to="/visa">
                         <i className="la la-fire"></i>
                         <p>Visa</p>
-                      </Link>
+                      </Link> */}
                     </li>
                   </ul>
                 </div>
@@ -319,7 +348,11 @@ function Dashboard() {
                                     <td>{packageItem.category}</td>
                                     <td>{packageItem.packageLocation}</td>
                                     <td>{packageItem.packagePrice}</td>
-                                    <td>{packageItem.packageDate ? formatDate(packageItem.packageDate) : "Not available"}</td>
+                                    <td>
+                                      {packageItem.packageDate
+                                        ? formatDate(packageItem.packageDate)
+                                        : "Not available"}
+                                    </td>
                                     <td>{packageItem.packageDurationDate}</td>
                                     <td>
                                       <div className="dropdown">
@@ -337,6 +370,16 @@ function Dashboard() {
                                           className="dropdown-menu"
                                           aria-labelledby="dropdownMenuButton2"
                                         >
+                                          <a
+                                            className="dropdown-item"
+                                            href="#"
+                                            onClick={() =>
+                                              handleEditPackage(packageItem)
+                                            }
+                                          >
+                                            <i className="bx bx-edit mr-2"></i>{" "}
+                                            Edit
+                                          </a>
                                           <a
                                             className="dropdown-item text-danger"
                                             href="#"
@@ -610,6 +653,204 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
+            </div>
+            <div
+              className={`modal fade ${editPackageModalVisible ? "show" : ""}`}
+              id="editPackageModel"
+              tabIndex="-1"
+              aria-labelledby="editPackageModelLabel"
+              aria-hidden={!editPackageModalVisible}
+            >
+              <form
+                className="row g-3"
+                onSubmit={handleUpdateSubmit}
+                encType="multipart/form-data"
+              >
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h1
+                        className="modal-title fs-5"
+                        id="editPackageModelLabel"
+                      >
+                        Edit Package
+                      </h1>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div className="modal-body form_details">
+                      <div className="row">
+                        <div className="col-lg-12 col-md-12 col-12">
+                          <div className="ctcp_form_inp">
+                            <label htmlFor="Image">UPLOAD IMAGE</label>
+                            <input type="file" name="avatar" />
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <div className="ctcp_form_inp">
+                            <label htmlFor="Package Name">PACKAGE NAME</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Enter your package name"
+                              name="packageName"
+                              defaultValue={currentPackage?.packageName}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <div className="ctcp_form_inp">
+                            <label htmlFor="Package Name">CATEGORY</label>
+                            <select
+                              name="packageCategory"
+                              required
+                              defaultValue={currentPackage?.packageCategory}
+                            >
+                              <option value="">Select a Category</option>
+                              <option value="Popular Packages">
+                                Popular Packages
+                              </option>
+                              <option value="The Pilgrimage">
+                                The Pilgrimage
+                              </option>
+                              <option value="Holidays In 'India'">
+                                Holidays In 'India'
+                              </option>
+                              <option value="The Modern 'Europe'">
+                                The Modern 'Europe'
+                              </option>
+                              <option value="The Secrets of Middle East">
+                                The Secrets of Middle East
+                              </option>
+                              <option value="Adventurous Africa">
+                                Adventurous Africa
+                              </option>
+                              <option value="The Asia Pacific">
+                                The Asia Pacific
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <label htmlFor="Location">LOCATION</label>
+                          <div className="ctcp_form_inp">
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="inputPassword4"
+                              placeholder="Enter your location"
+                              name="packageLocation"
+                              defaultValue={currentPackage?.packageLocation}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <div className="ctcp_form_inp">
+                            <label htmlFor="Price">TOTAL PRICE</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Enter your price"
+                              name="packagePrice"
+                              defaultValue={currentPackage?.packagePrice}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <label htmlFor="Date">START DATE</label>
+                          <div className="ctcp_form_inp">
+                            <input
+                              type="date"
+                              className="form-control"
+                              id="inputPassword4"
+                              name="packageDate"
+                              defaultValue={currentPackage?.packageDate}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <label htmlFor="text">DURATION</label>
+                          <div className="ctcp_form_inp">
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="inputPassword4"
+                              placeholder="Duration"
+                              name="packageDurationDate"
+                              defaultValue={currentPackage?.packageDurationDate}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <label htmlFor="text">PACKAGE DESCRIPTION</label>
+                          <div className="ctcp_form_inp">
+                            <textarea
+                              id="w3review"
+                              name="packageDescription"
+                              rows="5"
+                              cols="51"
+                              defaultValue={currentPackage?.packageDescription}
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <label htmlFor="text">AMINITIES IN HOTEL</label>
+                          <div className="ctcp_form_inp">
+                            <textarea
+                              id="w3review"
+                              name="amenitiesInHotel"
+                              rows="5"
+                              cols="51"
+                              defaultValue={currentPackage?.amenitiesInHotel}
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <div className="ctcp_form_inp">
+                            <label htmlFor="text">AGENT NAME</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Enter your Name"
+                              name="agentName"
+                              defaultValue={currentPackage?.agentName}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-lg-6 col-md-6 col-12">
+                          <label htmlFor="number">AGENT NUMBER</label>
+                          <div className="ctcp_form_inp">
+                            <input
+                              type="tel"
+                              className="form-control"
+                              id="inputPassword4"
+                              placeholder="Enter your number"
+                              name="agentNumber"
+                              defaultValue={currentPackage?.agentNumber}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="submit" className="btn btn-primary">
+                        Update
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         ) : (

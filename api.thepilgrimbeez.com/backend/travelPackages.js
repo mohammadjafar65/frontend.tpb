@@ -79,13 +79,34 @@ module.exports = (app, db, upload, uuidv4) => {
     );
     
     // Update a package
-    app.put("/packages/update/:id", (req, res) => {
-        // Ensure field names match those in the package table
-        const sql = "UPDATE travel_packages SET `imageUrl` = ?, `packageName` = ?, `packageLocation` = ?, `packagePrice` = ?  WHERE `id` = ?";
-        const values = [req.body.imageUrl, req.body.packageName, req.body.packageLocation, req.body.packagePrice]; // Add other fields as necessary
+    app.put("/packages/update/:id", upload.fields([{ name: "avatar", maxCount: 1 }]), (req, res) => {
         const id = req.params.id;
-    
-        db.query(sql, [...values, id], (err, data) => {
+        const {
+            packageName,
+            packageCategory,
+            packageLocation,
+            packagePrice,
+            packageDate,
+            packageDurationDate,
+            packageDescription,
+            amenitiesInHotel,
+            agentName,
+            agentNumber,
+        } = req.body;
+
+        const avatarImage = req.files["avatar"] ? req.files["avatar"][0].filename : null;
+
+        let sql = "UPDATE travel_packages SET `packageName` = ?, `category` = ?, `packageLocation` = ?, `packagePrice` = ?, `packageDate` = ?, `packageDurationDate` = ?, `packageDescription` = ?, `amenitiesInHotel` = ?, `agentName` = ?, `agentNumber` = ?";
+        const values = [packageName, packageCategory, packageLocation, packagePrice, packageDate, packageDurationDate, packageDescription, amenitiesInHotel, agentName, agentNumber];
+
+        if (avatarImage) {
+            sql += ", `imageUrl` = ?";
+            values.push(avatarImage);
+        }
+        sql += " WHERE `id` = ?";
+        values.push(id);
+
+        db.query(sql, values, (err, data) => {
             if (err) return res.status(500).json({ error: err.message });
             return res.json(data);
         });

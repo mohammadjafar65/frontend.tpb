@@ -490,6 +490,23 @@ a:hover {
   display: inline-block;
 }
 
+#banner.allpackages, #banner.allpackages .inner_banner {
+  height: 50vh;
+}
+
+#banner.allpackages .inner_banner {
+  padding-bottom: 5vh;
+}
+
+#banner.allpackages .image-slider {
+  height: 50vh;
+}
+
+#banner.allpackages h1 {
+  font-weight: 600;
+  color: #000;
+}
+
 #banner .inner_banner {
   display: flex;
   flex-direction: column;
@@ -1112,7 +1129,7 @@ a:hover {
 }
 
 #package_details {
-  padding: 10vh 5vw;
+  padding: 7vh 5vw;
   background: #fff;
   transition: 0.3s;
 }
@@ -1133,9 +1150,10 @@ a:hover {
 #package_details p {
   margin-bottom: 2vh;
   color: #000;
-  font-size: 1.2vw;
-  margin-top: 5vh;
+  font-size: 23px;
+  margin-top: 40px;
   text-align: left;
+  width: 82%;
 }
 
 #package_details label {
@@ -1149,7 +1167,7 @@ a:hover {
 }
 
 #package_details h3 {
-  font-size: 1.5vw;
+  font-size: 24px;
   font-weight: 700;
   margin: 0;
   color: #000;
@@ -1297,11 +1315,74 @@ a:hover {
   background: #edaa58;
 }
 
+#package_details h1 {
+  font-size: 40px;
+  color: #000;
+  margin: 0;
+  text-align: left;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
 #gallery {
-  padding: 10vh 5vw;
-  background: #fff;
+  padding: 0vh 5vw;
+  background: #f7f7f9;
   transition: 0.3s;
-  padding-top: 0;
+  padding-top: 145px;
+  padding-bottom: 50px;
+  position: relative;
+}
+
+/* #gallery::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 100px;
+  border-radius: 0px 0px 100px 100px;
+  background-color: red;
+} */
+
+.grid_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.grid_container .align_v {
+  display: grid;
+  flex-direction: column;
+  align-items: center;
+  width: 35%;
+  gap: 20px;
+  height: 500px;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto auto;
+}
+
+.grid_container .align_v img.img-fluid.rounded {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.grid_container .big_image {
+  width: 65%;
+  display: flex;
+  height: 500px;
+  flex-direction: row;
+  align-items: center;
+}
+
+.grid_container .big_image img.main_image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  object-position: top;
 }
 
 #gallery h2 {
@@ -1325,14 +1406,6 @@ a:hover {
 
 .rounded {
   border-radius: 1vw !important;
-}
-
-#gallery a.col-md-4 {
-  height: 35vh;
-}
-
-#gallery a {
-  padding: 10px;
 }
 
 #gallery a.col-md-4 img.img-fluid.rounded {
