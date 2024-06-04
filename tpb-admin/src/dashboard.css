@@ -142,6 +142,30 @@
   display: inline-block;
 }
 
+.ctcp_form_inp {
+  display: inline-block;
+  width: 100%;
+}
+
+.ctcp_form_inp .quill {
+  height: 250px;
+}
+
+#editPackageModel.show::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(0 0 0 / 39%);
+  z-index: -1;
+}
+
+.ql-toolbar.ql-snow {
+  text-align: left;
+}
+
 
 @media only screen and (max-width: 600px) {
   .LoginScreen .card {

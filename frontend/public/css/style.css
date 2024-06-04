@@ -1,7 +1,7 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");
 /* @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@1,100;1,300;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"); */
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 /*** GENERIC CSS ***/
 html,
 body {
@@ -14,7 +14,7 @@ html {
 
 body {
   font-size: 14px;
-    font-family: "Raleway", sans-serif;
+    font-family: "Montserrat", sans-serif;
   color: #60697b;
 }
 
@@ -36,11 +36,11 @@ a {
   transition: all ease 0.5s;
   text-decoration: none;
   color: #555555;
-    font-family: "Raleway", sans-serif;
+    font-family: "Montserrat", sans-serif;
 }
 
 p {
-    font-family: "Raleway", sans-serif;
+    font-family: "Montserrat", sans-serif;
 }
 
 a:hover {
@@ -76,7 +76,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Raleway", sans-serif;
+    font-family: "Montserrat", sans-serif;
   color: #343f52;
 }
 
@@ -490,6 +490,11 @@ a:hover {
   display: inline-block;
 }
 
+.ql-editor {
+  padding: 0 !important;
+  margin-top: 30px !important;
+}
+
 #banner.allpackages, #banner.allpackages .inner_banner {
   height: 50vh;
 }
@@ -770,7 +775,7 @@ a:hover {
   margin: 0;
   margin-bottom: 0.5vh;
   color: #fff;
-  font-family: "Poppins", sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 #our-packages .card .card_content p {
@@ -779,7 +784,7 @@ a:hover {
   width: 100%;
   margin-bottom: 1.5vh;
   color: #fff;
-  font-family: "Poppins", sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 #our-packages .title_head {
@@ -1137,7 +1142,7 @@ a:hover {
 #package_details h2 {
   text-align: center;
   margin-bottom: 2vh;
-  font-size: 2.2vw;
+  font-size: 18px;
   width: 100%;
   font-weight: 700;
   display: flex;
@@ -1148,10 +1153,10 @@ a:hover {
 }
 
 #package_details p {
-  margin-bottom: 2vh;
+  /* margin-bottom: 2vh; */
   color: #000;
-  font-size: 23px;
-  margin-top: 40px;
+  font-size: 22px;
+  /* margin-top: 40px; */
   text-align: left;
   width: 82%;
 }
@@ -1596,4 +1601,8 @@ a:hover {
 
 .owl-theme .owl-nav [class*='owl-'] {
   color: transparent !important;
+}
+
+p.minititle {
+  color: #edaa58 !important;
 }

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // import styles
 import "./dashboard.css";
 
 function Dashboard() {
@@ -16,6 +18,7 @@ function Dashboard() {
   const [currentPackage, setCurrentPackage] = useState(null);
   const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
   const { REACT_APP_API_URL, REACT_APP_UPLOAD_API_URL } = process.env;
+  const [text, setText] = useState("");
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -37,6 +40,16 @@ function Dashboard() {
     fetchPackages();
   }, []);
 
+  useEffect(() => {
+    if (currentPackage?.packageDescription) {
+      setText(currentPackage.packageDescription);
+    }
+  }, [currentPackage]);
+
+  const handleChange = (value) => {
+    setText(value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -56,6 +69,7 @@ function Dashboard() {
 
     setPublishing(true);
     const data = new FormData(event.target);
+    data.append("packageDescription", text);
 
     files.forEach((fileItem) => {
       data.append("gallery", fileItem.file);
@@ -126,6 +140,7 @@ function Dashboard() {
 
     const token = localStorage.getItem("token");
     const data = new FormData(event.target);
+    data.append("packageDescription", text);
     const endpoint = `${REACT_APP_API_URL}/packages/update/${currentPackage.id}`;
 
     try {
@@ -169,6 +184,36 @@ function Dashboard() {
         });
     }
   };
+
+  // You can specify custom modules and formats for the editor
+  Dashboard.modules = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link"],
+    ],
+    clipboard: {
+      // toggle to add extra line breaks when pasting HTML:
+      matchVisual: false,
+    },
+  };
+
+  Dashboard.formats = [
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+  ];
 
   const removeFile = (fileName) => {
     setFiles(files.filter((file) => file.name !== fileName));
@@ -529,18 +574,24 @@ function Dashboard() {
                             />
                           </div>
                         </div>
-                        <div className="col-lg-6 col-md-6 col-12">
+                        <div className="col-lg-12 col-md-12 col-12">
                           <label htmlFor="text">PACKAGE DESCRIPTION</label>
                           <div className="ctcp_form_inp">
-                            <textarea
+                            <ReactQuill
+                              value={text}
+                              onChange={handleChange}
+                              modules={Dashboard.modules}
+                              formats={Dashboard.formats}
+                            />
+                            {/* <textarea
                               id="w3review"
                               name="packageDescription"
                               rows="5"
                               cols="51"
-                            ></textarea>
+                            ></textarea> */}
                           </div>
                         </div>
-                        <div className="col-lg-6 col-md-6 col-12">
+                        <div className="col-lg-12 col-md-12 col-12">
                           <label htmlFor="text">AMINITIES IN HOTEL</label>
                           <div className="ctcp_form_inp">
                             <textarea
@@ -679,6 +730,7 @@ function Dashboard() {
                         type="button"
                         className="btn-close"
                         data-bs-dismiss="modal"
+                        onClick={() => setEditPackageModalVisible(false)}
                         aria-label="Close"
                       ></button>
                     </div>
@@ -785,19 +837,25 @@ function Dashboard() {
                             />
                           </div>
                         </div>
-                        <div className="col-lg-6 col-md-6 col-12">
+                        <div className="col-lg-12 col-md-12 col-12">
                           <label htmlFor="text">PACKAGE DESCRIPTION</label>
                           <div className="ctcp_form_inp">
-                            <textarea
+                            <ReactQuill
+                              value={text}
+                              onChange={handleChange}
+                              modules={Dashboard.modules}
+                              formats={Dashboard.formats}
+                            />
+                            {/* <textarea
                               id="w3review"
                               name="packageDescription"
                               rows="5"
                               cols="51"
                               defaultValue={currentPackage?.packageDescription}
-                            ></textarea>
+                            ></textarea> */}
                           </div>
                         </div>
-                        <div className="col-lg-6 col-md-6 col-12">
+                        <div className="col-lg-12 col-md-12 col-12">
                           <label htmlFor="text">AMINITIES IN HOTEL</label>
                           <div className="ctcp_form_inp">
                             <textarea
@@ -842,8 +900,9 @@ function Dashboard() {
                       </button>
                       <button
                         type="button"
-                        className="btn btn-secondary"
+                        className="btn"
                         data-bs-dismiss="modal"
+                        onClick={() => setEditPackageModalVisible(false)}
                       >
                         Close
                       </button>

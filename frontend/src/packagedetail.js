@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "./header/header";
 import Footer from "./footer/footer";
+import ReactQuill from 'react-quill'; // Import ReactQuill
+import 'react-quill/dist/quill.snow.css'; // Import the styles
 
 const PackageDetail = () => {
     const [packageDetails, setPackageDetails] = useState(null);
@@ -44,7 +46,6 @@ const PackageDetail = () => {
 
     // Ensure these fields are spelled correctly and match the database schema
     const { packageName, packageDurationDate, packageLocation, packageDescription, amenitiesInHotel, agentName, packagePrice, packageDate } = packageDetails;
-
     // const { imageUrl } = packageDetails;
 
     return (
@@ -95,17 +96,17 @@ const PackageDetail = () => {
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-12">
-                                        <p>
-                                            <b>{packageDescription}</b>
-                                            <br />
-                                            <br />
-                                            <b>Aminities in hotel :</b> {amenitiesInHotel}
-                                            <br />
-                                            <br />
-                                            <b>Just drop your luggage and stay comfortable with TPB</b>
-                                        </p>
-                                        <h5>Low Budget Package at affordable price</h5>
-                                        <p>Facilities</p>
+                                        <br/>
+                                        <br/>
+                                        <p className="minititle"><b>Package Details :</b></p>
+                                        <ReactQuill
+                                            value={packageDescription || 'No description available'}
+                                            readOnly={true}
+                                            theme="bubble" // Use 'bubble' theme for read-only display
+                                        />
+                                        <p className="minititle"><b>Aminities in hotel :</b></p>
+                                        <p>{amenitiesInHotel}</p>
+                                        {/* <p>Facilities</p>
                                         <ul>
                                             <li>
                                                 <iconify-icon icon="fluent-mdl2:air-tickets"></iconify-icon> Air Ticket
@@ -131,7 +132,7 @@ const PackageDetail = () => {
                                             <li>
                                                 <iconify-icon icon="icon-park-outline:handbag"></iconify-icon> Hand bag + passport bag{" "}
                                             </li>
-                                        </ul>
+                                        </ul> */}
                                     </div>
                                 </div>
                             </div>
