@@ -73,7 +73,7 @@ const ContactPage = () => {
 						<img src="/img/calling.png" className="mr-4" alt="..."/>
 						<div className="media-body">
 							<h5 className="mt-0 mb-0">Phone</h5>
-							<p><a href="tel:61894717645">+91 091019019</a></p>
+							<p><a href="tel:9904441844">+91 9904441844</a></p>
 						</div>
 					</div>
 					<div className="media">
@@ -94,7 +94,7 @@ const ContactPage = () => {
 						<img src="/img/placeholder.png" className="mr-4" alt="..."/>
 						<div className="media-body">
 							<h5 className="mt-0 mb-0">Mehsana Office</h5>
-							<p className="text-white">Sukheshwar Society, Mehsana, Gujarat 384001</p>
+							<p className="text-white">218-220 2nd FLOOR, A3-A4 BLOCK JOYOSH HUB-TOWN DHARAM (PRASHANT) CINEMA ROAD</p>
 						</div>
 					</div>
 				</div>
