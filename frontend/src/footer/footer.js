@@ -36,7 +36,7 @@ function Footer() {
                     <div class="col-lg-12 pb-5 text-center col-md-12 col-12">
                         <h5>Have something in mind?</h5>
                         <h2>get connected</h2>
-                        <a href="#" class="btn-default">contact us</a>
+                        <a href="/contact" class="btn-default">contact us</a>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@ function Footer() {
                         </div>
                     </div>
                     <div class="col-lg-6 xs-center text-right col-md-6 col-10">
-                        <p>&copy; 2023 All Right Reserved The Pilgrim Beez.</p>
+                        <p>&copy; 2024 All Right Reserved The Pilgrim Beez.</p>
                     </div>
                 </div>
             </div>

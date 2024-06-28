@@ -291,41 +291,91 @@ section {
 
 section#header {
   position: fixed;
-  z-index: 9999;
+  z-index: 99999;
+  background: #fffffff7;  
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.03);
+}
+
+.flush {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+#header {
+  /* background: #fff;
+  box-shadow: 0px 7px 20px 2px rgb(0 0 0 / 4%); */
+  /* -webkit-backdrop-filter: blur(45px);
+  backdrop-filter: blur(45px);
+  -webkit-backdrop-filter: blur(45px); */
 }
 
 .header_bar {
-  position: absolute;
-  top: 30px;
-  left: 0;
+  position: relative;
+  z-index: 99999;
   width: 100%;
-  -webkit-animation: 0.5s var(--cubic-easing) appear-down forwards;
-  animation: 0.5s var(--cubic-easing) appear-down forwards;
-  -webkit-animation-delay: 0.1s;
-  animation-delay: 0.1s;
-  -webkit-transform: translate3d(0, -1rem, 0);
-  -moz-transform: translate3d(0, -1rem, 0);
-  -ms-transform: translate3d(0, -1rem, 0);
-  transform: translate3d(0, -1rem, 0);
-  opacity: 1;
   padding: 10px 20px;
-  border-radius: 0.75rem;
   margin: auto;
   pointer-events: all;
-  z-index: 999999;
-  background: rgba(240, 240, 240, 0.5);
-  box-shadow: 1.5px 3.5px 3.5px rgba(0, 0, 0, 0.25);
-  -webkit-backdrop-filter: blur(45px);
-  backdrop-filter: blur(45px);
-  -webkit-backdrop-filter: blur(45px);
   align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.action_btn a {
+  text-align: center;
+  object-fit: fill;
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+  font-size: 16px;
+  color: #000;
+  background: #edaa58;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  text-transform: uppercase;
+  /* border: 2px solid #edaa58; */
+}
+
+.action_btn a:hover {
+  color: #fff;
+}
+
+.header_bar .primary_menu {
+  
+}
+
+.header_bar .primary_menu ul {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  gap: 25px;
+}
+
+.header_bar .primary_menu ul li {
+
+}
+
+.header_bar .primary_menu ul li a {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+}
+
+.header_bar .primary_menu ul li a:hover {
+  color: #edaa58;
 }
 
 .css-zixqbe {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.5) 60%);
-  height: 80vh;
+  height: 55vh;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 60%);
 }
 
 .header_bar .menu {
@@ -485,9 +535,22 @@ a:hover {
 #banner {
   /* background: url("../img/main_banner.jpg") 50% 50% no-repeat; */
   background-size: cover;
-  height: 80vh;
+  height: 55vh;
   width: 100%;
   display: inline-block;
+  margin-top: 85px;
+  position: relative;
+}
+
+.css-zixqbe::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #000;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(178deg, rgb(0 0 0 / 57%) 0%, rgb(0 0 0 / 0%) 60%);
 }
 
 .ql-editor {
@@ -515,22 +578,22 @@ a:hover {
 #banner .inner_banner {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
   height: 80vh;
   padding-bottom: 15vh;
 }
 
 #banner .inner_banner h1 {
-  font-size: 3vw;
-  color: #000;
+  font-size: 45px;
+  color: #ffff;
   margin: 0;
-  text-align: left;
+  text-align: center;
   font-weight: 500;
 }
 
 #banner .inner_banner h1 span {
-  font-weight: 900;
+  font-weight: 700;
   color: #efa852;
 }
 
@@ -690,7 +753,7 @@ a:hover {
   padding: 1vw;
   /* border: 1px solid rgba(0, 0, 0, 0.1); */
   border: none;
-  height: 380px;
+  height: 330px;
   position: relative;
   overflow: hidden;
   transition: 0.2s ease-in-out;
@@ -771,20 +834,21 @@ a:hover {
 }
 
 #our-packages .card .card_content h2 {
-  font-size: 1.1vw;
+  font-size: 20px;
   margin: 0;
-  margin-bottom: 0.5vh;
+  margin-bottom: 0;
   color: #fff;
   font-family: "Montserrat", sans-serif;
 }
 
 #our-packages .card .card_content p {
-  font-size: 0.9vw;
+  font-size: 18px;
   text-align: left;
   width: 100%;
-  margin-bottom: 1.5vh;
+  margin-bottom: 15px;
   color: #fff;
   font-family: "Montserrat", sans-serif;
+  font-weight: 500;
 }
 
 #our-packages .title_head {
@@ -1219,6 +1283,8 @@ a:hover {
   -webkit-backdrop-filter: blur(45px);
   padding: 1.8vw;
   border-radius: 1.5vw;
+  position: sticky;
+  top: 13%;
 }
 
 .agent_card hr {
@@ -1352,19 +1418,42 @@ a:hover {
 .grid_container {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: 20px;
+  align-items: flex-start;
+  gap: 15px;
 }
 
 .grid_container .align_v {
   display: grid;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   width: 35%;
-  gap: 20px;
-  height: 500px;
+  gap: 15px;
+  height: 55vh;
   grid-template-columns: auto auto;
   grid-template-rows: auto auto auto;
+  align-content: stretch;
+  overflow-y: scroll;
+  padding-right: 15px;
+}
+
+/* width */
+.grid_container .align_v::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.grid_container .align_v::-webkit-scrollbar-track {
+  background: #f7f7f9; 
+}
+ 
+/* Handle */
+.grid_container .align_v::-webkit-scrollbar-thumb {
+  background: #edaa58; 
+}
+
+/* Handle on hover */
+.grid_container .align_v::-webkit-scrollbar-thumb:hover {
+  background: #edaa58; 
 }
 
 .grid_container .align_v img.img-fluid.rounded {

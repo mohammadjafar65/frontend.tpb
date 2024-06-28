@@ -55,51 +55,39 @@ function Header() {
         <section id="header">
             <div className="container">
                 <div className="row">
-                    <div className="col-lg-12 xs-center col-md-12 col-12 ">
+                    <div className="col-lg-12 xs-center col-md-12 col-12">
                         <div className="header_bar">
-                            <div className="menu">
-                                <div className="menu_icon">
-                                    <input type="checkbox" id="checkbox" checked={isChecked} onChange={handleChange} />
-                                    {/* <input id="checkbox" type="checkbox" className="validate" /> */}
-                                    <label for="checkbox" className="toggle">
-                                        <div className="bars" id="bar1"></div>
-                                        <div className="bars" id="bar2"></div>
-                                        <div className="bars" id="bar3"></div>
-                                    </label>
-                                </div>
-                                <h2>{getPageName()}</h2>
-                                <div className="logo">
-                                    <Link to="/" className="btn">
-                                        <img src={imageUrl} alt=''/>
-                                    </Link>
-                                    {/* <h3>TPB</h3> */}
-                                </div>
+                            <div className="logo">
+                                <Link to="/" className="btn">
+                                    <img src={imageUrl} alt=''/>
+                                </Link>
+                                {/* <h3>TPB</h3> */}
                             </div>
-                            <div id="mega_menu" style={{ height: divHeight }} classNameName={isChecked ? 'newclassName' : ''}>
-                            {/* <div className="mega_menu" id="mega_menu"> */}
-                                <div className="inner_ct_menu">
-                                    <ul>
-                                        <li 
-                                            className={pathname === "/" ? "active" : ""}>
-                                            <a 
-                                            aria-current="page"
-                                            href="/">Home</a>
-                                        </li>
-                                        <li
-                                            className={pathname === "/about" ? "active" : ""}>
-                                            <a aria-current="page"
-                                            href="/about">About</a></li>
-                                        <li 
-                                            className={pathname === "/contact" ? "active" : ""}>
-                                            <a aria-current="page" 
-                                            href="/contact">Contact</a></li>
-                                        <li 
-                                            className={pathname === "/allpackages" ? "active" : ""}>
-                                            <a aria-current="page" 
-                                            href="/allpackages">Packages <iconify-icon
-                                                    icon="ph:arrow-up-right"></iconify-icon></a></li>
-                                    </ul>
-                                </div>
+                            <div className='primary_menu'>
+                                <ul>
+                                    <li 
+                                        className={pathname === "/" ? "active" : ""}>
+                                        <a 
+                                        aria-current="page"
+                                        href="/">Home</a>
+                                    </li>
+                                    <li
+                                        className={pathname === "/about" ? "active" : ""}>
+                                        <a aria-current="page"
+                                        href="/about">About</a></li>
+                                    <li 
+                                        className={pathname === "/allpackages" ? "active" : ""}>
+                                        <a aria-current="page" 
+                                        href="/allpackages">Packages <iconify-icon
+                                                icon="ph:arrow-up-right"></iconify-icon></a></li>
+                                    <li 
+                                        className={pathname === "/contact" ? "active" : ""}>
+                                        <a aria-current="page" 
+                                        href="/contact">Contact</a></li>
+                                </ul>
+                            </div>
+                            <div className="action_btn">
+                                <a href='#'>+91 9989897675</a>
                             </div>
                         </div>
                     </div>

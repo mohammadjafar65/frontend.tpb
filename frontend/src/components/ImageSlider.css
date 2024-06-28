@@ -1,5 +1,5 @@
 .image-slider {
-    height: 80vh;
+    height: 55vh;
     position: absolute;
     left: 0;
     width: 100%;
@@ -18,8 +18,9 @@
     opacity: 0;
     transition: opacity 1s ease-in-out;
     object-fit: cover;
-    height: 80vh;
+    height: 55vh;
     width: 100%;
+    object-position: center;
 }
 
 .slider-container img.active {

@@ -75,11 +75,11 @@ function HomePage() {
                     <div className="row">
                         <div className="col-lg-12 col-md-12  col-12">
                             <div className="inner_banner">
-                                <h1>
-                                    Affortability, Comfortability <br />
-                                    now comes in budget with<br/>
+                                {/* <h1>
+                                    Affortability, Comfortability 
+                                    now comes <br/>in budget with
                                     <span>The Pilgrim Beez</span>
-                                </h1>
+                                </h1> */}
                                 {/* <a href="#our-packages">
                                     <button className="button button--surtur">
                                         <svg className="textcircle" viewBox="0 0 500 500">
