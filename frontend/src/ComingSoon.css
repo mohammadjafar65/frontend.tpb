@@ -3,7 +3,7 @@ html {
     margin: 0;
     padding: 0;
     font-family: "Helvetica Neue", sans-serif;
-    background: linear-gradient(135deg, #1d2b20, #436348, #2a2f2c);
+    background: linear-gradient(135deg, #61dafb, #61dafb, #3dc6ec);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
     color: #fff;
@@ -37,12 +37,14 @@ html {
 h1 {
     font-size: 2.5rem;
     margin-bottom: 20px;
+    color: #fff;
 }
 
 .description {
     font-size: 1rem;
     line-height: 1.6;
     margin-bottom: 30px;
+    color: #fff;
 }
 
 .progress-bar {
@@ -55,7 +57,7 @@ h1 {
 }
 
 .progress-fill {
-    background: #a3d44c;
+    background: #61dafb;
     height: 100%;
     text-align: right;
     padding-right: 10px;
