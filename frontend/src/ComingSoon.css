@@ -3,7 +3,7 @@ html {
     margin: 0;
     padding: 0;
     font-family: "Helvetica Neue", sans-serif;
-    background: linear-gradient(135deg, #61dafb, #61dafb, #3dc6ec);
+    background: linear-gradient(135deg, #111, #111, #000);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
     color: #fff;
@@ -57,7 +57,7 @@ h1 {
 }
 
 .progress-fill {
-    background: #61dafb;
+    background: #fff;
     height: 100%;
     text-align: right;
     padding-right: 10px;
