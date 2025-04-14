@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coming Soon | The Pilgrim Beez</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", sans-serif;
+            background: linear-gradient(135deg, #1d2b20, #436348, #2a2f2c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #fff;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            height: 25px;
+            width: 100%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #a3d44c;
+            height: 100%;
+            text-align: right;
+            padding-right: 10px;
+            line-height: 25px;
+            color: #000;
+            font-weight: bold;
+            transition: width 1s ease-in-out;
+        }
+
+        .socials {
+            margin-top: 30px;
+        }
+
+        .social-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid #ccc;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Coming soon.</h1>
+        <p class="description">
+            With our solution you don’t need to care about anything.<br />
+            The whole idea is simple as possible and will be easy to use for everyone<br />
+            on this planet. Check the video below to see more!
+        </p>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 25%">25%</div>
+        </div>
+
+        <div class="socials">
+            <button class="social-btn fb">👍 Like</button>
+            <button class="social-btn tw">🐦 Tweet</button>
+            <button class="social-btn gp">🔗 +1</button>
+        </div>
+    </div>
+
+    <script>
+        // Optional: Animate progress bar fill
+        document.addEventListener("DOMContentLoaded", () => {
+            const progress = document.querySelector(".progress-fill");
+            progress.style.width = "0";
+            setTimeout(() => {
+                progress.style.width = "25%";
+                progress.textContent = "25%";
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>
