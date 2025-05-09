@@ -11,12 +11,16 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.5",
+    "bootstrap": "^5.3.5",
     "dotenv": "^16.4.5",
+    "modal-video": "^2.4.8",
     "quill": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-quill": "^2.0.0",
     "react-scripts": "5.0.1",
+    "react-tabs": "^6.1.0",
+    "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -44,7 +48,16 @@
     ]
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.3",
-    "react-router-dom": "^6.22.2"
+    "css-loader": "^7.1.2",
+    "postcss": "^8.5.3",
+    "postcss-loader": "^8.1.1",
+    "react-router-dom": "^6.22.2",
+    "resolve-url-loader": "^5.0.0",
+    "sass": "^1.87.0",
+    "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
+    "tailwindcss": "^3.4.17"
   }
 }

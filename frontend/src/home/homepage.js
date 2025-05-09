@@ -1,12 +1,19 @@
-import Header from "../header/header";
-import Footer from "../footer/footer";
+import Header from "../main-components/header/header";
+import Footer from "../main-components/footer";
+import Hero from "../main-components/hero";
+import Tours2 from "../main-components/tours/Tours2";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import React, { useEffect, useState } from "react";
-import ImageSlider from '../components/ImageSlider';
+import ImageSlider from "../components/ImageSlider";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Locations from "../main-components/tours/Locations";
+import Counter3 from "../main-components/counter/Counter3";
+import WhyChooseUs from "../main-components/common/WhyChooseUs";
+import Testimonial from "../main-components/common/Testimonial";
+import Brand2 from "../main-components/common/Brand2";
 
 function HomePage() {
     const [packages, setPackages] = useState([]);
@@ -19,12 +26,12 @@ function HomePage() {
         "The Modern 'Europe'",
         "The Secrets of Middle East",
         "Adventurous Africa",
-        "The Asia Pacific"
+        "The Asia Pacific",
     ];
     const images = [
-        'img/slider_1.jpeg',
-        'img/slider_2.jpeg',
-        'img/slider_3.jpeg'
+        "img/slider_1.jpeg",
+        "img/slider_2.jpeg",
+        "img/slider_3.jpeg",
     ];
 
     useEffect(() => {
@@ -41,11 +48,14 @@ function HomePage() {
                 console.error("Error fetching packages:", error);
                 setIsLoading(false); // End loading
             });
-    }, []);    
+    }, []);
 
     const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        const formattedDate = new Date(dateString).toLocaleDateString('en-IN', options);
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        const formattedDate = new Date(dateString).toLocaleDateString(
+            "en-IN",
+            options
+        );
         return formattedDate;
     };
 
@@ -55,11 +65,11 @@ function HomePage() {
             acc[category] = packagesArray.filter((pkg) => pkg.category === category);
             return acc;
         }, {});
-    
+
         console.log("Categorized Packages:", categorized); // Log categorized packages
-    
+
         setPackagesByCategory(categorized);
-    };     
+    };
 
     if (isLoading) {
         return <div>Loading...</div>; // Show loading indicator
@@ -68,19 +78,155 @@ function HomePage() {
     return (
         <>
             <Header />
-            <section id="banner">
+            <Hero />
+            <section className="layout-pt-lg layout-pb-md bg-light">
+                <div className="container">
+                    <div className="row y-gap-20 justify-between items-end">
+                        <div className="col-auto">
+                            <div className="sectionTitle -md text-left">
+                                <h2 className="sectionTitle__title">Most Popular Tours</h2>
+                                <p className=" sectionTitle__text mt-5 sm:mt-0">
+                                    Discover World's rich culture, stunning landscapes, and
+                                    unforgettable experiences.
+                                </p>
+                            </div>
+                        </div>
+                        {/* End .col */}
+
+                        <div className="col-auto">
+                            <Link
+                                to="#"
+                                className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                            >
+                                More <div className="icon-arrow-top-right ml-15" />
+                            </Link>
+                        </div>
+                        {/* End .col */}
+                    </div>
+                    {/* End .row */}
+
+                    <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                        <Tours2 />
+                    </div>
+                    {/* End .row */}
+                </div>
+                {/* End .container */}
+            </section>
+            {/* End Tours Sections */}
+
+            <section className="layout-pt-md layout-pb-md bg-light">
+                <div className="container">
+                    <div className="row y-gap-20 justify-between items-end">
+                        <div className="col-auto">
+                            <div className="sectionTitle -md">
+                                <h2 className="sectionTitle__title text-left">Explore Hot Locations</h2>
+                                <p className=" sectionTitle__text mt-5 sm:mt-0 text-left">
+                                    Interdum et malesuada fames ac ante ipsum
+                                </p>
+                            </div>
+                        </div>
+                        {/* End .col */}
+
+                        <div className="col-auto">
+                            <a
+                                href="#"
+                                className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                            >
+                                More <div className="icon-arrow-top-right ml-15" />
+                            </a>
+                        </div>
+                        {/* End .col */}
+                    </div>
+                    {/* End .row */}
+
+                    <div className="row y-gap-30 pt-40 sm:pt-20">
+                        <Locations />
+                    </div>
+                    {/* End .row */}
+                </div>
+                {/* End .container */}
+            </section>
+            {/* End Explore Hot Locations */}
+
+            <section className="layout-pt-md layout-pb-lg bg-light">
+                <div className="container">
+                    <div className="row justify-center text-center">
+                        <Counter3 />
+                    </div>
+                </div>
+            </section>
+            {/* End counter up Section */}
+
+            <section className="section-bg bg-light-yellow layout-pt-lg md:pt-0 md:pb-60 sm:pb-40 layout-pb-lg bg-blue-1-05">
+                <WhyChooseUs />
+            </section>
+            {/* End whycosse Section */}
+
+            <section className="section-bg layout-pt-lg bg-light">
+                <div className="section-bg__item col-12">
+                    <img src="/img/backgrounds/testimonials/bg.png" alt="image" />
+                </div>
+                {/* End bg image */}
+
+                <div data-aos="fade-up" data-aos-delay="100" className="container">
+                    <div className="row justify-center text-center">
+                        <div className="col-auto">
+                            <div className="sectionTitle -md">
+                                <h2 className="sectionTitle__title">Customer Reviews</h2>
+                                <p className=" sectionTitle__text mt-5 sm:mt-0">
+                                    Interdum et malesuada fames ac ante ipsum
+                                </p>
+                            </div>
+                        </div>
+                        {/* End .col-auto */}
+                    </div>
+                    {/* End .row */}
+
+                    <div className="row justify-center pt-60 md:pt-30">
+                        <div className="col-xl-5 col-lg-8 col-md-11">
+                            <div className="overflow-hidden">
+                                <Testimonial />
+                            </div>
+                        </div>
+                        {/* End .col */}
+                    </div>
+                    {/* End .row */}
+                </div>
+                {/* End .container */}
+            </section>
+            {/* End Customer review Section */}
+
+            <section className="layout-pt-lg layout-pb-md bg-light">
+                <div className="container">
+                    <div className="row justify-center text-center">
+                        <div className="col-auto">
+                            <div className="text-15 lh-1">Trusted by the world’s best</div>
+                        </div>
+                    </div>
+                    {/* End .row */}
+
+                    <div className="row y-gap-40 justify-between items-center pt-60 lg:pt-40 sm:pt-20">
+                        <Brand2 />
+                    </div>
+                    {/* End .row */}
+                </div>
+                {/* End .container */}
+            </section>
+            {/* End brand partner Section */}
+
+            {/* <section id="banner">
                 <ImageSlider images={images} />
                 <div className="css-zixqbe e7svxqc1"></div>
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12 col-md-12  col-12">
                             <div className="inner_banner">
-                                {/* <h1>
+                                <h1>
                                     Affortability, Comfortability 
                                     now comes <br/>in budget with
                                     <span>The Pilgrim Beez</span>
-                                </h1> */}
-                                {/* <a href="#our-packages">
+                                </h1>
+                                <a href="#our-packages">
                                     <button className="button button--surtur">
                                         <svg className="textcircle" viewBox="0 0 500 500">
                                             <title>Scroll Down &amp; OUR PACKAGES </title>
@@ -101,14 +247,14 @@ function HomePage() {
                                             <circle className="eye__inner" cx="35" cy="35.31" r="10.041"></circle>
                                         </svg>
                                     </button>
-                                </a> */}
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
             {/* Packages by Category */}
-            {categories.map((category, index) => (
+            {/* {categories.map((category, index) => (
                 <section id="our-packages" key={category} className={index % 2 === 0 ? "alternate-class" : "gray_bg"}>
                     <div className="container">
                         <div className="row">
@@ -166,7 +312,7 @@ function HomePage() {
                                                                     </h3>
                                                                 </span>
                                                             </div>
-                                                            {/* <div className="btn_yellow">View Package Details</div> */}
+                                                            <div className="btn_yellow">View Package Details</div>
                                                         </div>
                                                     </div>
                                                 </Link>
@@ -180,8 +326,8 @@ function HomePage() {
                         </div>
                     </div>
                 </section>
-            ))}
-            <section id="about_us">
+            ))} */}
+            {/* <section id="about_us">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12 col-md-12 col-12">
@@ -227,7 +373,7 @@ function HomePage() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
             <Footer />
         </>
     );

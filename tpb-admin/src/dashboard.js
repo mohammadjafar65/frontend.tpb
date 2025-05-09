@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
+import Header from "./dashboard/Header/Header";
+import Sidebar from "./dashboard/Sidebar/Sidebar";
 import { Link } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // import styles
@@ -233,123 +235,24 @@ function Dashboard() {
         {isAuthenticated ? (
           <div>
             <div className="wrapper">
-              <div className="main-header">
-                <div className="logo-header">
-                  <h6>TPB Admin</h6>
-                  <button
-                    className="navbar-toggler sidenav-toggler ml-auto"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="collapse"
-                    aria-controls="sidebar"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                  >
-                    <span className="navbar-toggler-icon"></span>
-                  </button>
-                  <button className="topbar-toggler more">
-                    <i className="la la-ellipsis-v"></i>
-                  </button>
-                </div>
-                <nav className="navbar navbar-header navbar-expand-lg">
-                  <div className="container-fluid">
-                    <ul className="navbar-nav topbar-nav ml-md-auto align-items-center">
-                      <li className="nav-item dropdown">
-                        <a
-                          className="dropdown-toggle profile-pic"
-                          data-toggle="dropdown"
-                          href="#"
-                          aria-expanded="false"
-                        >
-                          {" "}
-                          <img
-                            src="assets/img/profile.jpg"
-                            alt="user-img"
-                            width="36"
-                            className="img-circle"
-                          />
-                          <span>Admin</span>{" "}
-                        </a>
-                        <ul className="dropdown-menu dropdown-user">
-                          <li>
-                            <div className="user-box">
-                              <div className="u-img">
-                                <img src="assets/img/profile.jpg" alt="user" />
-                              </div>
-                              <div className="u-text">
-                                <h4>Admin</h4>
-                                <p className="text-muted">hello@tpb.com</p>
-                              </div>
-                            </div>
-                          </li>
-                          <div className="dropdown-divider"></div>
-                          <button
-                            onClick={() =>
-                              logout({
-                                logoutParams: {
-                                  returnTo: window.location.origin,
-                                },
-                              })
-                            }
-                          >
-                            <i className="fa fa-power-off"></i> Log Out
-                          </button>
-                          {/* <a className="dropdown-item" href="#">
-                              <i className="fa fa-power-off"></i> Logout
-                            </a> */}
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </nav>
-              </div>
-              <div className="sidebar">
-                <div className="scrollbar-inner sidebar-wrapper">
-                  <div className="user">
-                    <div className="photo">
-                      <img src="assets/img/profile.jpg" alt="" />
-                    </div>
-                    <div className="info">
-                      <a
-                        className=""
-                        data-toggle="collapse"
-                        href="#collapseExample"
-                        aria-expanded="true"
-                      >
-                        <span>
-                          Juned S
-                          <span className="user-level">Administrator</span>
-                        </span>
-                      </a>
-                    </div>
-                  </div>
-                  <ul className="nav">
-                    <li className="nav-item active">
-                      <a href="#">
-                        <i className="la la-dashboard"></i>
-                        <p>Dashboard</p>
-                      </a>
-                      {/* <Link to="/visa">
-                        <i className="la la-fire"></i>
-                        <p>Visa</p>
-                      </Link> */}
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <Header />
+              <Sidebar />
               <div className="main-panel">
                 <div className="content">
                   <div className="container-fluid">
                     <div className="mini_header">
                       <h4 className="page-title">Dashboard</h4>
-                      <button
+                      {/* <button
                         type="button"
                         className="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#addPackageModel"
                       >
                         <i className="la la-plus"></i> Add New Package
-                      </button>
+                      </button> */}
+                      <a href="/add-hotel" className="btn btn-primary">
+                        <i className="la la-plus"></i> Add Tour Package
+                      </a>
                     </div>
                     <div className="row">
                       <div className="col-md-12">

@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from "../header/header";
-import Footer from "../footer/footer";
+import Header from "../main-components/header/header";
+import Footer from "../main-components/footer";
 
 function AboutPage() {
     return (

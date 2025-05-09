@@ -1,9 +1,12 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./dashboard.js";
+import VendorAddHotel from "./dashboard/add-hotel";
 // import AddVisa from "./addVisa.js";
 import "./App.css";
-import { Auth0Provider } from '@auth0/auth0-react';
+import "./styles/index.scss";
+import { Auth0Provider } from "@auth0/auth0-react";
+import AddPackages from "./add-packages.js";
 
 function App() {
   return (
@@ -20,7 +23,11 @@ function App() {
             {/* <Route path="/" component={MaintenancePage} /> */}
             {/* <Route path="/" element={<Home />}></Route> */}
             <Route path="/" element={<Dashboard />}></Route>
+            <Route path="/add-hotel" element={<AddPackages />}></Route>
             {/* <Route path="/visa" element={<AddVisa />}></Route> */}
+            {/* <Route path="vendor-dashboard">
+              <Route path="add-hotel" element={<VendorAddHotel />} />
+            </Route> */}
           </Routes>
         </BrowserRouter>
       </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import Header from "./header/header";
-import Footer from "./footer/footer";
+import Header from "./main-components/header/header";
+import Footer from "./main-components/footer";
 import { Link } from 'react-router-dom';
 
 const CategoryPackages = () => {
