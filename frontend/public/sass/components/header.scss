@@ -90,9 +90,7 @@
 
   &.-type-2 {
     margin-top: 20px;
-    transition:
-      background-color 0.4s $easeOutQuart,
-      margin 0.1s $easeOutQuart;
+    transition: background-color 0.4s $easeOutQuart, margin 0.1s $easeOutQuart;
 
     @include media-below(xl) {
       margin-top: 0;
@@ -528,6 +526,7 @@
     }
     .header-logo {
       order: 1;
+      margin: 0 !important;
     }
   }
 }

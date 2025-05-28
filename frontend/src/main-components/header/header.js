@@ -59,11 +59,11 @@ const Header = () => {
 
                 <Link to="/" className="header-logo mr-20">
                   <img
-                    src="https://thepilgrimbeez.com/img/tpb-logo.png"
+                    src="../img/tpb-logo.png"
                     alt="logo icon"
                   />
                   <img
-                    src="https://thepilgrimbeez.com/img/tpb-logo.png"
+                    src="../img/tpb-logo.png"
                     alt="logo icon"
                   />
                 </Link>
@@ -83,20 +83,20 @@ const Header = () => {
             <div className="col-auto">
               <div className="d-flex items-center ml-20 is-menu-opened-hide md:d-none">
                 {/* Start btn-group */}
-                {/* <div className="header__buttons d-flex items-center is-menu-opened-hide">
-                  <Link
+                <div className="header__buttons d-flex items-center is-menu-opened-hide">
+                  {/* <Link
                     to="/login"
                     className="button h-50 px-30 fw-400 text-14 -blue-1 bg-white text-dark-1 sm:d-none"
                   >
                     Become An Expert
-                  </Link>
+                  </Link> */}
                   <Link
                     to="/signup"
-                    className="button h-50 px-30 fw-400 text-14 -outline-white text-white ml-20 sm:ml-0"
+                    className="button h-50 px-30 fw-400 text-14 -outline-black text-black ml-20 sm:ml-0 bg-transparent"
                   >
                     Sign In / Register
                   </Link>
-                </div> */}
+                </div>
                 {/* End btn-group */}
               </div>
             </div>

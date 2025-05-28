@@ -6,7 +6,7 @@ function Sidebar() {
             <div className="scrollbar-inner sidebar-wrapper">
                 <div className="user">
                     <div className="photo">
-                        <img src="assets/img/profile.jpg" alt="" />
+                        <img src="https://admin.thepilgrimbeez.com/assets/img/profile.jpg" alt="" />
                     </div>
                     <div className="info">
                         <a

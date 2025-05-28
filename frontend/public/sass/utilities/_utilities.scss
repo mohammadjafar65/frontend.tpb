@@ -764,6 +764,10 @@ $_displays: none, inline-block, block, flex;
   max-width: 100%;
 }
 
+.h-text {
+  height: 60px;
+}
+
 .halfMap {
   display: flex;
   width: 100%;

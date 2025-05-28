@@ -12,7 +12,7 @@ const index = () => {
         <div className="pt-60 pb-60">
           <div className="row y-gap-40 justify-between xl:justify-start">
             <div className="col-xl-4 col-lg-6 text-left pt-60">
-              <img src="https://thepilgrimbeez.com/img/white-tpb-logo.png" alt="image" className="footer_logo" />
+              <img src="../img/white-tpb-logo.png" alt="image" className="footer_logo" />
               <div className="row y-gap-30 justify-between pt-30 text-left">
                 <ContactInfo />
               </div>

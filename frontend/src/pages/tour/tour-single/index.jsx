@@ -14,6 +14,8 @@ import { Link, useParams } from "react-router-dom";
 import Itinerary from "../../../main-components/tour-single/itinerary";
 import ImportantInfo from "../../../main-components/tour-single/ImportantInfo";
 import TourGallery from "../../../main-components/tour-single/TourGallery";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 import MetaComponent from "../../../main-components/common/MetaComponent";
 
@@ -23,9 +25,17 @@ const metadata = {
 };
 
 const TourSingleV1Dynamic = () => {
-  let params = useParams();
-  const id = params.id;
-  const tour = toursData.find((item) => item.id == id) || toursData[0];
+  const { id } = useParams();
+  const [tour, setTour] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/packages/id/${id}`)
+      .then((res) => setTour(res.data))
+      .catch((err) => console.error("Error loading tour:", err));
+  }, [id]);
+
+  if (!tour) return <div>Loading...</div>;
 
   return (
     <>
@@ -45,9 +55,9 @@ const TourSingleV1Dynamic = () => {
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">
-              <h1 className="text-30 fw-600">{tour?.title}</h1>
+              <h1 className="text-30 fw-600">{tour.packageName}</h1>
               <div className="row x-gap-20 y-gap-20 items-center pt-10">
-                <div className="col-auto">
+                {/* <div className="col-auto">
                   <div className="d-flex items-center">
                     <div className="d-flex x-gap-5 items-center">
                       <i className="icon-star text-10 text-yellow-1"></i>
@@ -65,7 +75,7 @@ const TourSingleV1Dynamic = () => {
                       {tour?.numberOfReviews} reviews
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="col-auto">
                   <div className="row x-gap-10 items-center">
@@ -73,26 +83,26 @@ const TourSingleV1Dynamic = () => {
                       <div className="d-flex x-gap-5 items-center">
                         <i className="icon-placeholder text-16 text-light-1"></i>
                         <div className="text-15 text-light-1">
-                          {tour?.location}
+                          {tour.packageLocation}
                         </div>
                       </div>
                     </div>
 
-                    <div className="col-auto">
+                    {/* <div className="col-auto">
                       <button
                         data-x-click="mapFilter"
                         className="text-blue-1 text-15 underline"
                       >
                         Show on map
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
             </div>
             {/* End .col */}
 
-            <div className="col-auto">
+            {/* <div className="col-auto">
               <div className="row x-gap-10 y-gap-10">
                 <div className="col-auto">
                   <button className="button px-15 py-10 -blue-1">
@@ -108,7 +118,7 @@ const TourSingleV1Dynamic = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </div> */}
             {/* End .col */}
           </div>
           {/* End .row */}
@@ -130,7 +140,7 @@ const TourSingleV1Dynamic = () => {
               </div>
             </div>
             {/* End row */}
-            <ImportantInfo />
+            <ImportantInfo tour={tour} />
           </div>
           {/* End pt-40 */}
         </div>
@@ -216,7 +226,7 @@ const TourSingleV1Dynamic = () => {
       </section> */}
       {/* End Reply Comment box section */}
 
-      <section className="layout-pt-lg layout-pb-lg bg-white border-top-light text-left">
+      <section className="pt-50 pb-50 bg-white border-top-light text-left">
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">

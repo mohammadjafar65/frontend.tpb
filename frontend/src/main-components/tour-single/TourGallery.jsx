@@ -5,9 +5,9 @@ import TourSnapShot from "./TourSnapShot";
 import { Gallery, Item } from "react-photoswipe-gallery";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-import 'swiper/css';             
-import 'swiper/css/navigation';  
-import 'swiper/css/pagination';  
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import ModalVideo from "react-modal-video";
 
 export default function TourGallery({ tour }) {
@@ -29,49 +29,55 @@ export default function TourGallery({ tour }) {
               <div className="relative d-flex justify-center overflow-hidden js-section-slider">
                 <Swiper
                   modules={[Navigation]}
-                  loop={true}
+                  loop={
+                    (tour.gallery ? JSON.parse(tour.gallery).length : 0) > 1
+                  }
                   navigation={{
                     nextEl: ".js-img-next",
                     prevEl: ".js-img-prev",
                   }}
                 >
-                  {tour?.slideImg?.map((slide, i) => (
-                    <SwiperSlide key={i}>
-                      <img
-                        src={slide}
-                        alt="image"
-                        style={{ height: "501px" }}
-                        className="rounded-4 col-12 cover object-cover"
-                      />
-                    </SwiperSlide>
-                  ))}
+                  {(tour.gallery ? JSON.parse(tour.gallery) : []).map(
+                    (slide, i) => (
+                      <SwiperSlide key={i}>
+                        <img
+                          src={`${process.env.REACT_APP_UPLOAD_API_URL}${slide}`}
+                          alt="image"
+                          style={{ height: "501px" }}
+                          className="rounded-4 col-12 cover object-cover"
+                        />
+                      </SwiperSlide>
+                    )
+                  )}
                 </Swiper>
 
                 <Gallery>
-                  {tour?.slideImg?.map((slide, i) => (
-                    <div
-                      className="absolute px-10 py-10 col-12 h-full d-flex justify-end items-end z-2 bottom-0 end-0"
-                      key={i}
-                    >
-                      <Item
-                        original={slide}
-                        thumbnail={slide}
-                        width={451}
-                        height={450}
+                  {(tour.gallery ? JSON.parse(tour.gallery) : []).map(
+                    (slide, i) => (
+                      <div
+                        className="absolute px-10 py-10 col-12 h-full d-flex justify-end items-end z-2 bottom-0 end-0"
+                        key={i}
                       >
-                        {({ ref, open }) => (
-                          <div
-                            className="button -blue-1 px-24 py-15 bg-white text-dark-1 js-gallery"
-                            ref={ref}
-                            onClick={open}
-                            role="button"
-                          >
-                            See All Photos
-                          </div>
-                        )}
-                      </Item>
-                    </div>
-                  ))}
+                        <Item
+                          original={`${process.env.REACT_APP_UPLOAD_API_URL}${slide}`}
+                          thumbnail={`${process.env.REACT_APP_UPLOAD_API_URL}${slide}`}
+                          width={451}
+                          height={450}
+                        >
+                          {({ ref, open }) => (
+                            <div
+                              className="button -blue-1 px-24 py-15 bg-white text-dark-1 js-gallery"
+                              ref={ref}
+                              onClick={open}
+                              role="button"
+                            >
+                              See All Photos
+                            </div>
+                          )}
+                        </Item>
+                      </div>
+                    )
+                  )}
                 </Gallery>
 
                 <div className="absolute h-full col-11">
@@ -89,11 +95,11 @@ export default function TourGallery({ tour }) {
               {/* slider gallery */}
 
               <h3 className="text-22 fw-500 mt-40 text-left">Tour snapshot</h3>
-              <TourSnapShot />
+              <TourSnapShot tour={tour} />
               {/* End toursnapshot */}
               <div className="border-top-light mt-40 mb-40"></div>
 
-              <Overview />
+              <Overview tour={tour} />
               {/* End  Overview */}
             </div>
             {/* End .col-xl-8 */}

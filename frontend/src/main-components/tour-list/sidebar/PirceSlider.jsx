@@ -16,8 +16,8 @@ const PirceSlider = () => {
 
       <div className="d-flex justify-between mb-20">
         <div className="text-15 text-dark-1">
-          <span className="js-lower mx-1">${price.value.min}</span>-
-          <span className="js-upper mx-1">${price.value.max}</span>
+          <span className="js-lower mx-1">₹{price.value.min}</span>-
+          <span className="js-upper mx-1">₹{price.value.max}</span>
         </div>
       </div>
 

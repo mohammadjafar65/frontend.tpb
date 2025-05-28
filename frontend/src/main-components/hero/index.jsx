@@ -42,7 +42,7 @@ const Index = () => {
       {/* End .container */}
 
       <div className="masthead__image" data-aos="fade">
-        <img src="/img/masthead/5/1.png" alt="image" />
+        <img src="/img/masthead/5/12.png" alt="image" />
       </div>
       {/* End .masthead__image */}
     </section>

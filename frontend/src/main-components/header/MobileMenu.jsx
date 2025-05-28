@@ -44,7 +44,7 @@ const MobileMenu = () => {
     <>
       <div className="pro-header d-flex align-items-center justify-between border-bottom-light">
         <Link to="/">
-          <img src="/img/general/logo-dark.svg" alt="brand" />
+          <img src="./img/tpb-logo.png" alt="brand" />
         </Link>
         {/* End logo */}
 
@@ -194,7 +194,7 @@ const MobileMenu = () => {
           </SubMenu>
           {/* End  All Pages Menu */}
 
-          <SubMenu
+          {/* <SubMenu
             label="Dashboard"
             className={
               pathname.split("/")[1] == "dashboard" ||
@@ -216,7 +216,7 @@ const MobileMenu = () => {
                 {item.name}
               </MenuItem>
             ))}
-          </SubMenu>
+          </SubMenu> */}
           {/* End  All Dashboard Menu */}
 
           <MenuItem
@@ -239,14 +239,14 @@ const MobileMenu = () => {
             {/* <Social /> */}
           </div>
         </div>
-        <div className="mt-20">
+        {/* <div className="mt-20">
           <Link
             className=" button -dark-1 px-30 fw-400 text-14 bg-blue-1 h-50 text-white"
             to="/login"
           >
             Become An Expert
           </Link>
-        </div>
+        </div> */}
       </div>
       {/* End pro-footer */}
     </>

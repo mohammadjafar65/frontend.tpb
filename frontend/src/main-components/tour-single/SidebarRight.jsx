@@ -8,7 +8,7 @@ const SidebarRight = ({ tour }) => {
           <div className="text-14 text-light-1">
             From{" "}
             <span className="text-20 fw-500 text-dark-1 ml-5">
-              ₹{tour?.price}
+              ₹{tour?.packagePrice}
             </span>
           </div>
           {/* End div */}

@@ -1,13 +1,43 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-import 'swiper/css';             
-import 'swiper/css/navigation';  
-import 'swiper/css/pagination';  
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import toursData from "../data/tours";
 import isTextMatched from "../../utils/isTextMatched";
 
-const Tours2 = () => {
+const Tours2 = ({ category, indexColor }) => {
+  const [categoryPackages, setCategoryPackages] = useState([]);
+
+  useEffect(() => {
+    const fetchCategoryTours = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/packages`
+        );
+        const filtered = res.data.filter((pkg) => {
+          try {
+            const cats = JSON.parse(pkg.packageCategory || "[]");
+            return cats.includes(category);
+          } catch {
+            return false;
+          }
+        });
+        setCategoryPackages(filtered.slice(0, 6));
+      } catch (err) {
+        console.error("Error fetching category tours:", err);
+      }
+    };
+
+    if (category) fetchCategoryTours();
+  }, [category]);
+
+  if (!categoryPackages.length)
+    return <p>No packages found for this category.</p>;
+
   return (
     <>
       <Swiper
@@ -38,15 +68,18 @@ const Tours2 = () => {
           },
         }}
       >
-        {toursData.slice(0, 6).map((item) => (
-          <SwiperSlide key={item.id}>
+        {categoryPackages.map((item) => (
+          <SwiperSlide key={item.packageId}>
             <div
-              key={item?.id}
+              key={item.packageId}
               data-aos="fade"
+              className={`p-3 rounded-8 h-full ${
+                indexColor % 2 === 0 ? "bg-gray" : "bg-white"
+              }`}
               data-aos-delay={item?.delayAnimation}
             >
               <Link
-                to={`/tour-single/${item.id}`}
+                to={`/tour-single/${item.packageId}`}
                 className="tourCard -type-1 rounded-4"
               >
                 <div className="tourCard__image">
@@ -56,27 +89,23 @@ const Tours2 = () => {
                         <Swiper
                           className="mySwiper"
                           modules={[Pagination, Navigation]}
-                          pagination={{
-                            clickable: true,
-                          }}
-                          navigation={true}
+                          navigation
+                          pagination={{ clickable: true }}
                         >
-                          {item?.slideImg?.map((slide, i) => (
-                            <SwiperSlide key={i}>
-                              <img
-                                className="rounded-4 col-12 js-lazy"
-                                src={slide}
-                                alt="image"
-                              />
-                            </SwiperSlide>
-                          ))}
+                          <SwiperSlide>
+                            <img
+                              className="rounded-4 col-12 js-lazy h-full object-cover"
+                              src={`${process.env.REACT_APP_UPLOAD_API_URL}${item.avatarImage}`}
+                              alt="Tour"
+                            />
+                          </SwiperSlide>
                         </Swiper>
                       </div>
                     </div>
                   </div>
 
                   <div className="cardImage__wishlist">
-                    <button className="button -blue-1 bg-white size-30 rounded-full shadow-2">
+                    <button className="button -blue-1 bg-white size-30 rounded-full shadow-2 mt-2 mr-2">
                       <i className="icon-heart text-12" />
                     </button>
                   </div>
@@ -105,42 +134,45 @@ const Tours2 = () => {
 
                 <div className="tourCard__content mt-10 text-left">
                   <div className="d-flex items-center lh-14 mb-5">
-                    <div className="text-14 text-light-1">
-                      {item?.duration}+ hours
-                    </div>
-                    <div className="size-3 bg-light-1 rounded-full ml-10 mr-10" />
-                    <div className="text-14 text-light-1">{item?.tourType}</div>
+                    {/* <div className="text-14 text-light-1">
+                      {item.packageDurationDate}
+                    </div> */}
+                    {/* <div className="size-3 bg-light-1 rounded-full ml-10 mr-10" /> */}
+                    <div className="text-14 text-light-1">{item.tourType}</div>
                   </div>
-                  <h4 className="tourCard__title text-dark-1 text-18 lh-16 fw-500">
-                    <span>{item?.title}</span>
+                  <h4 className="tourCard__title text-dark-1 text-18 lh-16 fw-500 h-text">
+                    <span>{item.packageName}</span>
                   </h4>
                   <p className="text-light-1 lh-14 text-14 mt-5">
-                    {item?.location}
+                    {item.packageLocation}
                   </p>
 
                   <div className="row justify-between items-center pt-15">
                     <div className="col-auto">
-                      <div className="d-flex items-center">
-                        <div className="d-flex items-center x-gap-5">
-                          <div className="icon-star text-yellow-1 text-10" />
-                          <div className="icon-star text-yellow-1 text-10" />
-                          <div className="icon-star text-yellow-1 text-10" />
-                          <div className="icon-star text-yellow-1 text-10" />
-                          <div className="icon-star text-yellow-1 text-10" />
-                        </div>
-                        {/* End ratings */}
-
-                        <div className="text-14 text-light-1 ml-10">
-                          {item?.numberOfReviews} reviews
-                        </div>
+                      <div className="text-14 text-light-1">
+                        {item.packageDurationDate}
                       </div>
+                      {/* <div className="d-flex items-center"> */}
+                      {/* <div className="d-flex items-center x-gap-5">
+                          <div className="icon-star text-yellow-1 text-10" />
+                          <div className="icon-star text-yellow-1 text-10" />
+                          <div className="icon-star text-yellow-1 text-10" />
+                          <div className="icon-star text-yellow-1 text-10" />
+                          <div className="icon-star text-yellow-1 text-10" />
+                        </div> */}
+                      {/* End ratings */}
+
+                      {/* <div className="text-14 text-light-1 ml-10">
+                          {item.numberOfReviews} reviews
+                        </div> */}
+                      {/* </div> */}
                     </div>
                     <div className="col-auto">
                       <div className="text-14 text-light-1">
                         From
                         <span className="text-16 fw-500 text-dark-1">
                           {" "}
-                          ₹{item.price}
+                          ₹{item.packagePrice}
                         </span>
                       </div>
                     </div>
@@ -154,7 +186,7 @@ const Tours2 = () => {
 
       <div className="d-flex x-gap-15 items-center justify-center pt-40 sm:pt-20">
         <div className="col-auto">
-          <button className="d-flex items-center text-24 arrow-left-hover js-populars-tour-prev">
+          <button className="d-flex items-center text-24 arrow-left-hover js-populars-tour-prev cursor-pointer">
             <i className="icon icon-arrow-left" />
           </button>
         </div>
@@ -166,7 +198,7 @@ const Tours2 = () => {
         {/* End arrow pagination */}
 
         <div className="col-auto">
-          <button className="d-flex items-center text-24 arrow-right-hover js-populars-tour-next">
+          <button className="d-flex items-center text-24 arrow-right-hover js-populars-tour-next cursor-pointer">
             <i className="icon icon-arrow-right" />
           </button>
         </div>

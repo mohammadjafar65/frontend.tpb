@@ -14,207 +14,217 @@ import Counter3 from "../main-components/counter/Counter3";
 import WhyChooseUs from "../main-components/common/WhyChooseUs";
 import Testimonial from "../main-components/common/Testimonial";
 import Brand2 from "../main-components/common/Brand2";
+import CallToActions from "../main-components/common/CallToActions";
 
 function HomePage() {
-    const [packages, setPackages] = useState([]);
-    const [packagesByCategory, setPackagesByCategory] = useState({});
-    const [isLoading, setIsLoading] = useState(true); // Loading state
-    const categories = [
-        "Popular Packages",
-        "The Pilgrimage",
-        "Holidays In 'India'",
-        "The Modern 'Europe'",
-        "The Secrets of Middle East",
-        "Adventurous Africa",
-        "The Asia Pacific",
-    ];
-    const images = [
-        "img/slider_1.jpeg",
-        "img/slider_2.jpeg",
-        "img/slider_3.jpeg",
-    ];
+  const [packages, setPackages] = useState([]);
+  const [packagesByCategory, setPackagesByCategory] = useState({});
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [categories, setCategories] = useState([]);
 
-    useEffect(() => {
-        setIsLoading(true); // Start loading
-        axios
-            .get(`${process.env.REACT_APP_API_URL}/packages`)
-            .then((response) => {
-                console.log("Packages:", response.data); // Log packages data
-                setPackages(response.data);
-                categorizePackages(response.data);
-                setIsLoading(false); // End loading
-            })
-            .catch((error) => {
-                console.error("Error fetching packages:", error);
-                setIsLoading(false); // End loading
-            });
-    }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [packagesRes, categoriesRes] = await Promise.all([
+          axios.get(`${process.env.REACT_APP_API_URL}/packages`),
+          axios.get(`${process.env.REACT_APP_API_URL}/packages/categories`),
+        ]);
 
-    const formatDate = (dateString) => {
-        const options = { year: "numeric", month: "long", day: "numeric" };
-        const formattedDate = new Date(dateString).toLocaleDateString(
-            "en-IN",
-            options
-        );
-        return formattedDate;
+        const packagesData = packagesRes.data;
+        setPackages(packagesData);
+        setCategories(categoriesRes.data);
+        categorizePackages(packagesData, categoriesRes.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    // Function to categorize packages
-    const categorizePackages = (packagesArray) => {
-        const categorized = categories.reduce((acc, category) => {
-            acc[category] = packagesArray.filter((pkg) => pkg.category === category);
-            return acc;
-        }, {});
+    fetchData();
+  }, []);
 
-        console.log("Categorized Packages:", categorized); // Log categorized packages
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-IN",
+      options
+    );
+    return formattedDate;
+  };
 
-        setPackagesByCategory(categorized);
-    };
+  // Function to categorize packages
+  const categorizePackages = (packagesArray, categoryList) => {
+    const categorized = categoryList.reduce((acc, category) => {
+      acc[category] = packagesArray.filter((pkg) =>
+        JSON.parse(pkg.packageCategory || "[]").includes(category)
+      );
+      return acc;
+    }, {});
+    setPackagesByCategory(categorized);
+  };
 
-    if (isLoading) {
-        return <div>Loading...</div>; // Show loading indicator
-    }
+  if (isLoading) {
+    return <div>Loading...</div>; // Show loading indicator
+  }
 
-    return (
-        <>
-            <Header />
-            <Hero />
-            <section className="layout-pt-lg layout-pb-md bg-light">
-                <div className="container">
-                    <div className="row y-gap-20 justify-between items-end">
-                        <div className="col-auto">
-                            <div className="sectionTitle -md text-left">
-                                <h2 className="sectionTitle__title">Most Popular Tours</h2>
-                                <p className=" sectionTitle__text mt-5 sm:mt-0">
-                                    Discover World's rich culture, stunning landscapes, and
-                                    unforgettable experiences.
-                                </p>
-                            </div>
-                        </div>
-                        {/* End .col */}
+  return (
+    <>
+      <Header />
+      <Hero />
 
-                        <div className="col-auto">
-                            <Link
-                                to="#"
-                                className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                            >
-                                More <div className="icon-arrow-top-right ml-15" />
-                            </Link>
-                        </div>
-                        {/* End .col */}
-                    </div>
-                    {/* End .row */}
+      {/* ✅ Top: Hard-coded 'Most Popular Tours' Section */}
+      <section className="pt-50 pb-50 bg-gray">
+        <div className="container">
+          <div className="row y-gap-20 justify-between items-end">
+            <div className="col-auto">
+              <div className="sectionTitle -md text-left">
+                <h2 className="sectionTitle__title">Most Popular Tours</h2>
+                <p className="sectionTitle__text mt-5 sm:mt-0">
+                  Discover world's most popular travel experiences.
+                </p>
+              </div>
+            </div>
+            <div className="col-auto">
+              <Link
+                to={`/tour-list-v2?category=${encodeURIComponent(
+                  "Most Popular Tours"
+                )}`}
+                className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+              >
+                More <div className="icon-arrow-top-right ml-15" />
+              </Link>
+            </div>
+          </div>
+          <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+            <Tours2 category="Most Popular Tours" />
+          </div>
+        </div>
+      </section>
 
-                    <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
-                        <Tours2 />
-                    </div>
-                    {/* End .row */}
+      {/* ✅ Bottom: Other categories except 'Most Popular Tours' */}
+      {categories
+        .filter((cat) => cat !== "Most Popular Tours")
+        .map((category, index) => (
+          <section
+            className={`pt-50 pb-50 ${
+              index % 2 === 0 ? "bg-white" : "bg-gray-100"
+            }`}
+            key={category}
+          >
+            <div className="container">
+              <div className="row y-gap-20 justify-between items-end">
+                <div className="col-auto">
+                  <div className="sectionTitle -md text-left">
+                    <h2 className="sectionTitle__title">{category}</h2>
+                    <p className="sectionTitle__text mt-5 sm:mt-0">
+                      Discover packages in {category}.
+                    </p>
+                  </div>
                 </div>
-                {/* End .container */}
-            </section>
-            {/* End Tours Sections */}
-
-            <section className="layout-pt-md layout-pb-md bg-light">
-                <div className="container">
-                    <div className="row y-gap-20 justify-between items-end">
-                        <div className="col-auto">
-                            <div className="sectionTitle -md">
-                                <h2 className="sectionTitle__title text-left">Explore Hot Locations</h2>
-                                <p className=" sectionTitle__text mt-5 sm:mt-0 text-left">
-                                    Interdum et malesuada fames ac ante ipsum
-                                </p>
-                            </div>
-                        </div>
-                        {/* End .col */}
-
-                        <div className="col-auto">
-                            <a
-                                href="#"
-                                className="button -md -blue-1 bg-blue-1-05 text-blue-1"
-                            >
-                                More <div className="icon-arrow-top-right ml-15" />
-                            </a>
-                        </div>
-                        {/* End .col */}
-                    </div>
-                    {/* End .row */}
-
-                    <div className="row y-gap-30 pt-40 sm:pt-20">
-                        <Locations />
-                    </div>
-                    {/* End .row */}
+                <div className="col-auto">
+                  <Link
+                    to={`/tour-list-v2?category=${encodeURIComponent(
+                      category
+                    )}`}
+                    className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+                  >
+                    More <div className="icon-arrow-top-right ml-15" />
+                  </Link>
                 </div>
-                {/* End .container */}
-            </section>
-            {/* End Explore Hot Locations */}
+              </div>
+              <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+                <Tours2 category={category} indexColor={index} />
+              </div>
+            </div>
+          </section>
+        ))}
 
-            <section className="layout-pt-md layout-pb-lg bg-light">
-                <div className="container">
-                    <div className="row justify-center text-center">
-                        <Counter3 />
-                    </div>
-                </div>
-            </section>
-            {/* End counter up Section */}
+      <section className="layout-pt-md layout-pb-md bg-gray">
+        <div className="container">
+          <div className="row y-gap-20 justify-between items-end">
+            <div className="col-auto">
+              <div className="sectionTitle -md">
+                <h2 className="sectionTitle__title text-left">
+                  Explore Hot Locations
+                </h2>
+                <p className=" sectionTitle__text mt-5 sm:mt-0 text-left">
+                  Interdum et malesuada fames ac ante ipsum
+                </p>
+              </div>
+            </div>
+            {/* End .col */}
 
-            <section className="section-bg bg-light-yellow layout-pt-lg md:pt-0 md:pb-60 sm:pb-40 layout-pb-lg bg-blue-1-05">
-                <WhyChooseUs />
-            </section>
-            {/* End whycosse Section */}
+            {/* <div className="col-auto">
+              <a
+                href="#"
+                className="button -md -blue-1 bg-blue-1-05 text-blue-1"
+              >
+                More <div className="icon-arrow-top-right ml-15" />
+              </a>
+            </div> */}
+            {/* End .col */}
+          </div>
+          {/* End .row */}
 
-            <section className="section-bg layout-pt-lg bg-light">
-                <div className="section-bg__item col-12">
-                    <img src="/img/backgrounds/testimonials/bg.png" alt="image" />
-                </div>
-                {/* End bg image */}
+          <div className="row y-gap-30 pt-40 sm:pt-20">
+            <Locations />
+          </div>
+          {/* End .row */}
+        </div>
+        {/* End .container */}
+      </section>
+      {/* End Explore Hot Locations */}
 
-                <div data-aos="fade-up" data-aos-delay="100" className="container">
-                    <div className="row justify-center text-center">
-                        <div className="col-auto">
-                            <div className="sectionTitle -md">
-                                <h2 className="sectionTitle__title">Customer Reviews</h2>
-                                <p className=" sectionTitle__text mt-5 sm:mt-0">
-                                    Interdum et malesuada fames ac ante ipsum
-                                </p>
-                            </div>
-                        </div>
-                        {/* End .col-auto */}
-                    </div>
-                    {/* End .row */}
+      <section className="section-bg bg-white layout-pt-lg md:pt-0 md:pb-60 sm:pb-40 layout-pb-lg bg-blue-1-05">
+        <WhyChooseUs />
+      </section>
+      {/* End whycosse Section */}
 
-                    <div className="row justify-center pt-60 md:pt-30">
-                        <div className="col-xl-5 col-lg-8 col-md-11">
-                            <div className="overflow-hidden">
-                                <Testimonial />
-                            </div>
-                        </div>
-                        {/* End .col */}
-                    </div>
-                    {/* End .row */}
-                </div>
-                {/* End .container */}
-            </section>
-            {/* End Customer review Section */}
+      <section className="section-bg layout-pt-lg bg-gray layout-pb-lg">
+        <div className="section-bg__item col-12">
+          <img src="/img/backgrounds/testimonials/bg.png" alt="image" />
+        </div>
+        {/* End bg image */}
 
-            <section className="layout-pt-lg layout-pb-md bg-light">
-                <div className="container">
-                    <div className="row justify-center text-center">
-                        <div className="col-auto">
-                            <div className="text-15 lh-1">Trusted by the world’s best</div>
-                        </div>
-                    </div>
-                    {/* End .row */}
+        <div data-aos="fade-up" data-aos-delay="100" className="container">
+          <div className="row justify-center text-center">
+            <div className="col-auto">
+              <div className="sectionTitle -md">
+                <h2 className="sectionTitle__title">Customer Reviews</h2>
+                <p className=" sectionTitle__text mt-5 sm:mt-0">
+                  Interdum et malesuada fames ac ante ipsum
+                </p>
+              </div>
+            </div>
+            {/* End .col-auto */}
+          </div>
+          {/* End .row */}
 
-                    <div className="row y-gap-40 justify-between items-center pt-60 lg:pt-40 sm:pt-20">
-                        <Brand2 />
-                    </div>
-                    {/* End .row */}
-                </div>
-                {/* End .container */}
-            </section>
-            {/* End brand partner Section */}
+          <div className="row justify-center pt-60 md:pt-30">
+            <div className="col-xl-5 col-lg-8 col-md-11">
+              <div className="overflow-hidden">
+                <Testimonial />
+              </div>
+            </div>
+            {/* End .col */}
+          </div>
+          {/* End .row */}
+        </div>
+        {/* End .container */}
+      </section>
+      {/* End Customer review Section */}
 
-            {/* <section id="banner">
+      <section className="layout-pt-lg layout-pb-lg bg-white">
+        <div className="container">
+          <div className="row justify-center text-center">
+            <Counter3 />
+          </div>
+        </div>
+      </section>
+      {/* End counter up Section */}
+
+      {/* <section id="banner">
                 <ImageSlider images={images} />
                 <div className="css-zixqbe e7svxqc1"></div>
                 <div className="container">
@@ -253,8 +263,8 @@ function HomePage() {
                     </div>
                 </div>
             </section> */}
-            {/* Packages by Category */}
-            {/* {categories.map((category, index) => (
+      {/* Packages by Category */}
+      {/* {categories.map((category, index) => (
                 <section id="our-packages" key={category} className={index % 2 === 0 ? "alternate-class" : "gray_bg"}>
                     <div className="container">
                         <div className="row">
@@ -327,7 +337,7 @@ function HomePage() {
                     </div>
                 </section>
             ))} */}
-            {/* <section id="about_us">
+      {/* <section id="about_us">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12 col-md-12 col-12">
@@ -374,9 +384,13 @@ function HomePage() {
                     </div>
                 </div>
             </section> */}
-            <Footer />
-        </>
-    );
+
+      <CallToActions />
+      {/* End Call To Actions Section */}
+
+      <Footer />
+    </>
+  );
 }
 
 export default HomePage;

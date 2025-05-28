@@ -5,8 +5,11 @@ import TopHeaderFilter from "../../../main-components/tour-list/tour-list-v2/Top
 import TourProperties from "../../../main-components/tour-list/tour-list-v2/TourProperties";
 import Pagination from "../../../main-components/tour-list/common/Pagination";
 import Sidebar from "../../../main-components/tour-list/tour-list-v2/Sidebar";
+import queryString from "query-string";
+import { useEffect } from "react";
 
 import MetaComponent from "../../../main-components/common/MetaComponent";
+import { useLocation } from "react-router-dom";
 
 const metadata = {
   title: "Tour List v2 || GoTrip - Travel & Tour ReactJs Template",
@@ -14,6 +17,17 @@ const metadata = {
 };
 
 const TourListPage2 = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const selectedCategory = queryParams.get("category");
+  const selectedCountry = queryParams.get("country");
+
+  // Inside the component
+  useEffect(() => {
+    // Use 'auto' to instantly jump without smooth animation
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
+
   return (
     <>
       <MetaComponent meta={metadata} />
@@ -25,7 +39,21 @@ const TourListPage2 = () => {
       <Header />
       {/* End Header 1 */}
 
-      <section className="layout-pt-md layout-pb-lg">
+      <section class="pt-40 pb-40 bg-light-2">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <div class="text-center">
+                <h1 className="text-30 fw-600">
+                  {selectedCategory || selectedCountry || "All Tours Packages"}
+                </h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="layout-pt-md layout-pb-lg bg-white">
         <div className="container">
           <div className="row y-gap-30">
             <div className="col-xl-3">
@@ -64,14 +92,20 @@ const TourListPage2 = () => {
             {/* End col */}
 
             <div className="col-xl-9 ">
-              <TopHeaderFilter />
+              <TopHeaderFilter
+                selectedCategory={selectedCategory}
+                selectedCountry={selectedCountry}
+              />
               <div className="mt-30"></div>
               {/* End mt--30 */}
-              <div className="row y-gap-30">
-                <TourProperties />
+              <div className="row y-gap-30 pl-5 pr-5">
+                <TourProperties
+                  selectedCategory={selectedCategory}
+                  selectedCountry={selectedCountry}
+                />
               </div>
               {/* End .row */}
-              <Pagination />
+              {/* <Pagination /> */}
             </div>
             {/* End .col for right content */}
           </div>

@@ -1,10 +1,4 @@
-import { Link, useParams } from "react-router-dom";
-import toursData from "../../main-components/data/tours";
-
-const TopBreadCrumb = () => {
-  let params = useParams();
-  const id = params.id;
-  const tour = toursData.find((item) => item.id == id) || toursData[0];
+const TopBreadCrumb = ({ tour }) => {
   return (
     <section className="py-10 d-flex items-center bg-light-2">
       <div className="container">
@@ -15,12 +9,12 @@ const TopBreadCrumb = () => {
               {/* End .col-auto */}
               <div className="col-auto">&gt;</div>
               {/* End .col-auto */}
-              <div className="col-auto">{tour?.location}</div>
+              <div className="col-auto">{tour?.packageLocation}</div>
               {/* End .col-auto */}
               <div className="col-auto">&gt;</div>
               {/* End .col-auto */}
               <div className="col-auto">
-                <div className="text-dark-1">{tour?.title}</div>
+                <div className="text-dark-1">{tour.packageName}</div>
               </div>
               {/* End .col-auto */}
             </div>

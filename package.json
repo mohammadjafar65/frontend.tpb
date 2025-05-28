@@ -1,1 +1,14 @@
-{}
+{
+  "name": "tpb-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run frontend\" \"npm run admin\"",
+    "server": "cd api.thepilgrimbeez.com && node server.js",
+    "frontend": "cd frontend && npm start",
+    "admin": "cd tpb-admin && npm run start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
