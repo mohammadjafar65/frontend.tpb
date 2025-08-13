@@ -12,17 +12,26 @@ const Razorpay = require("razorpay");
 const paymentRoutes = require("./controllers/paymentController");
 
 const app = express();
-app.use(cors()); // CORS middleware applied here
-// Set up CORS headers
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Change * to your specific origin if needed
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
-app.use(express.json());
-
 require("dotenv").config();
+const allowed = (process.env.FRONTEND_ORIGIN || "")
+  .split(",")
+  .map(s => s.trim())
+  .filter(Boolean); // e.g. ["http://localhost:3005","http://localhost:3007","https://thepilgrimbeez.com","https://admin.thepilgrimbeez.com"]
+
+const corsOptions = {
+  origin(origin, cb) {
+    // allow non-browser clients (no Origin) and allowed web origins
+    if (!origin || allowed.includes(origin)) return cb(null, true);
+    cb(new Error("CORS: origin not allowed"));
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // needed if you ever send cookies
+  maxAge: 86400, // cache preflight 1 day
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // handle preflight for all routes
 
 // Razorpay instance
 global.razorpay = new Razorpay({
@@ -88,7 +97,7 @@ require("./controllers/states")(app, db, upload, uuidv4);
 require("./controllers/auth")(app, pool);
 require("./controllers/admin")(app, pool);
 
-const paymentRoutes = require("./controllers/paymentController");
+// const paymentRoutes = require("./controllers/paymentController");
 app.use("/api", paymentRoutes);
 // require('./visaList')(app, db, upload, uuidv4);
 // require('./users')(app, db);
