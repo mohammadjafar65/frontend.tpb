@@ -12,7 +12,7 @@ const Index = () => {
         <div className="row">
           <div className="col-xl-9">
             <h1
-              className="text-60 lg:text-40 md:text-30 text-left"
+              className="text-60 text-black lg:text-40 md:text-30 text-left"
               data-aos="fade-up"
               data-aos-delay="400"
             >
@@ -26,12 +26,11 @@ const Index = () => {
               </span>
             </h1>
             <p
-              className="mt-20 text-left"
+              className="mt-20 text-left text-black"
               data-aos="fade-up"
               data-aos-delay="500"
             >
               Discover thrilling tours, exclusive travel packages.
-              <br className="lg:d-none" /> Find your perfect getaway and create unforgettable memories.
             </p>
 
             <MainFilterSearchBox />
@@ -42,7 +41,7 @@ const Index = () => {
       {/* End .container */}
 
       <div className="masthead__image" data-aos="fade">
-        <img src="/img/masthead/5/12.png" alt="image" />
+        <img src="/img/banner_new.jpg" alt="image" />
       </div>
       {/* End .masthead__image */}
     </section>

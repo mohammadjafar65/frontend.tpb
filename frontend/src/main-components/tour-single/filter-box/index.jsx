@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 const index = () => {
   return (
     <>
-      <div className="col-12">
+      <div className="text-14 text-light-1">Starting From <br /><span className="text-24 fw-600 text-dark-1">₹ 2000/- <span className="text-14 fw-500 text-light-1">person</span></span></div>
+      <div className="col-12 flush mt-20">
         <div className="searchMenu-date px-20 py-10 border-light rounded-4 -right js-form-dd js-calendar">
           <div>
             <h4 className="text-15 fw-500 ls-2 lh-16">Date</h4>
@@ -16,13 +17,13 @@ const index = () => {
       </div>
       {/* End .col-12 */}
 
-      <div className="col-12">
+      <div className="col-12 flush mt-20 mb-20">
         <GuestSearch />
         {/* End guest */}
       </div>
       {/* End .col-12 */}
 
-      <div className="col-12">
+      <div className="col-12 flush">
         <Link
           to="/booking-page"
           className="button -dark-1 py-15 px-35 h-60 col-12 rounded-4 bg-blue-1 text-white"

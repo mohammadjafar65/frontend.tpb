@@ -3,38 +3,36 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Locations = () => {
-  const [country, setLocations] = useState([]);
+  const [states, setLocations] = useState([]);
 
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/country`
-        );
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
         setLocations(res.data);
       } catch (error) {
-        console.error("Failed to fetch country:", error);
+        console.error("Failed to fetch states:", error);
       }
     };
 
     fetchLocations();
   }, []);
 
-  if (!country.length) {
-    return <div>No Country Available</div>;
+  if (!states.length) {
+    return <div>No Destinations Available</div>;
   }
 
   return (
     <>
-      {country.map((item) => (
+      {states.map((item, index) => (
         <div
           className="col-xl-4 col-lg-4 col-md-6"
-          key={item.country}
+          key={item.id}
           data-aos="fade"
-          data-aos-delay={item.delayAnim}
+          data-aos-delay={(index + 1) * 100}
         >
           <Link
-            to={`/tour-list-v2?country=${encodeURIComponent(item.country)}`}
+            to={`/tour-list-v2?states=${encodeURIComponent(item.name)}`}
             className="destCard -type-1 d-block"
           >
             <div className="row x-gap-20 y-gap-20 items-center text-left">
@@ -42,15 +40,15 @@ const Locations = () => {
                 <div className="destCard__image rounded-4">
                   <img
                     className="size-100 rounded-4"
-                    src={`${process.env.REACT_APP_API_URL}/uploads/${item.img}`}
-                    alt={item.country}
+                    src={`${item.photo_url}`}
+                    alt={item.name}
                   />
                 </div>
               </div>
               <div className="col-auto">
-                <div className="text-18 fw-500 text-left">{item.country}</div>
+                <div className="text-18 fw-500 text-left">{item.name}</div>
                 <div className="text-14 lh-14 text-light-1">
-                  {item.packages} Packages
+                  {JSON.parse(item.package_ids || "[]").length} Packages
                 </div>
               </div>
             </div>

@@ -2,70 +2,107 @@ const ImportantInfo = ({ tour }) => {
   const parseArray = (value) => {
     try {
       if (Array.isArray(value)) return value;
-
       const parsed = JSON.parse(value);
-
-      // Sometimes values come as stringified strings: "[\"value1\",\"value2\"]"
-      if (typeof parsed === "string") {
-        return JSON.parse(parsed);
-      }
-
+      if (typeof parsed === "string") return JSON.parse(parsed);
       return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
   };
 
-  const inclusions = parseArray(tour?.inclusions);
-  const exclusions = parseArray(tour?.exclusions);
+  const isMeaningfulHTML = (html) =>
+    typeof html === "string" &&
+    html.trim() !== "" &&
+    html.trim() !== "<p><br></p>";
+
+  const inclusions = parseArray(tour?.included);
+  const exclusions = parseArray(tour?.excluded);
   const additionalInfo = parseArray(tour?.additionalInformation);
 
-  return (
-    <div className="row x-gap-40 y-gap-40 justify-between pt-20 text-left">
-      <div className="col-lg-6 col-md-6">
-        <div className="fw-500 mb-10">Inclusions</div>
-        <ul className="list-disc">
-          {inclusions.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-      </div>
+  const {
+    specialInstructions,
+    conditionsOfTravel,
+    thingsToMaintain,
+    policies,
+    terms,
+  } = tour || {};
 
-      {/* <div className="col-lg-4 col-md-6">
-        <div className="fw-500 mb-10">Departure details</div>
-        <div className="text-15">
-          Departures from 01st April 2022: Tour departs at 8 am (boarding at
-          7.30 am), Victoria Coach Station Gate 1-5
+  const hasContent =
+    inclusions.length > 0 ||
+    exclusions.length > 0 ||
+    additionalInfo.length > 0 ||
+    isMeaningfulHTML(specialInstructions) ||
+    isMeaningfulHTML(conditionsOfTravel) ||
+    isMeaningfulHTML(thingsToMaintain) ||
+    isMeaningfulHTML(policies) ||
+    isMeaningfulHTML(terms);
+
+  if (!hasContent) return null;
+
+  return (
+    <section className="pt-40 pb-40 bg-white">
+      <div className="container">
+        <div className="pt-40 border-top-light">
+          <div className="row x-gap-40 y-gap-40">
+            <div className="col-auto">
+              <h3 className="text-22 fw-500">Additional Information</h3>
+            </div>
+          </div>
+
+          <div className="row x-gap-40 y-gap-40 justify-between pt-20 text-left">
+            {isMeaningfulHTML(specialInstructions) && (
+              <div className="col-12">
+                <div className="fw-600 mb-10">Special Instructions</div>
+                <div
+                  className="text-15"
+                  dangerouslySetInnerHTML={{ __html: specialInstructions }}
+                />
+              </div>
+            )}
+
+            {isMeaningfulHTML(conditionsOfTravel) && (
+              <div className="col-12">
+                <div className="fw-600 mb-10">Conditions of Travel</div>
+                <div
+                  className="text-15"
+                  dangerouslySetInnerHTML={{ __html: conditionsOfTravel }}
+                />
+              </div>
+            )}
+
+            {isMeaningfulHTML(thingsToMaintain) && (
+              <div className="col-12">
+                <div className="fw-600 mb-10">Things to Maintain</div>
+                <div
+                  className="text-15"
+                  dangerouslySetInnerHTML={{ __html: thingsToMaintain }}
+                />
+              </div>
+            )}
+
+            {isMeaningfulHTML(policies) && (
+              <div className="col-12">
+                <div className="fw-600 mb-10">Policies</div>
+                <div
+                  className="text-15"
+                  dangerouslySetInnerHTML={{ __html: policies }}
+                />
+              </div>
+            )}
+
+            {isMeaningfulHTML(terms) && (
+              <div className="col-12">
+                <div className="fw-600 mb-10">Terms & Conditions</div>
+                <div
+                  className="text-15"
+                  dangerouslySetInnerHTML={{ __html: terms }}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      <div className="col-lg-3 col-md-6">
-        <div className="fw-500 mb-10">Know before you go</div>
-        <ul className="list-disc">
-          <li>Duration: 11h</li>
-          <li>Mobile tickets accepted</li>
-          <li>Instant confirmation</li>
-        </ul>
-      </div> */}
-
-      <div className="col-lg-6 col-md-6">
-        <div className="fw-500 mb-10">Exclusions</div>
-        <ul className="list-disc">
-          {exclusions.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="col-12">
-        <div className="fw-500 mb-10">Additional information</div>
-        <ul className="list-disc">
-          {additionalInfo.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    </section>
   );
 };
 

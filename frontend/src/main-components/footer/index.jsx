@@ -39,7 +39,7 @@ const index = () => {
             </div>
             {/* End .col */}
 
-            <div className="col-lg-6 pt-60">
+            <div className="col-lg-4 pt-60">
               <div className="row y-gap-30">
                 {/* <div className="col-12">
                   <h5 className="text-16 fw-500 mb-15">

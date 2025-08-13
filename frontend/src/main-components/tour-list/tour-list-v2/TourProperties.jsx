@@ -8,157 +8,185 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import isTextMatched from "../../../utils/isTextMatched";
 
-const TourProperties = ({ selectedCategory, selectedCountry }) => {
+// Helper to get first avatar image (or placeholder)
+const getImageArray = (avatarImage) => {
+  // Try parse avatarImage as JSON array, or fallback
+  try {
+    const arr = JSON.parse(avatarImage);
+    if (Array.isArray(arr) && arr.length > 0) return arr;
+    return ["https://thepilgrimbeez.com/img/tpb-logo.png"];
+  } catch {
+    // single string, fallback
+    return avatarImage
+      ? [avatarImage]
+      : ["https://thepilgrimbeez.com/img/tpb-logo.png"];
+  }
+};
+
+const TourProperties = ({ selectedState, category }) => {
   const [packages, setPackages] = useState([]);
+  const [categoryPackages, setCategoryPackages] = useState([]);
+  const [allStates, setAllStates] = useState([]);
+  const [allCountries, setAllCountries] = useState([]);
 
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/packages`
-        );
+        let url = "";
+        // If both state and category, use /by-state-category
+        if (selectedState && category) {
+          url = `${process.env.REACT_APP_API_URL}/packages/by-state-category/${encodeURIComponent(selectedState)}/${encodeURIComponent(category)}`;
+        }
+        // If only state, use /by-state (smart backend handles name or ID)
+        else if (selectedState) {
+          url = `${process.env.REACT_APP_API_URL}/packages/by-state/${encodeURIComponent(selectedState)}`;
+        }
+        // If only category, use /by-category
+        else if (category) {
+          url = `${process.env.REACT_APP_API_URL}/packages/by-category/${encodeURIComponent(category)}`;
+        } else {
+          setPackages([]);
+          return;
+        }
+        const res = await axios.get(url);
+        setPackages(res.data || []);
 
-        const filtered = res.data.filter((pkg) => {
-          let matchCategory = true;
-          let matchCountry = true;
+        // 2. Fetch all states
+        const statesRes = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
+        setAllStates(statesRes.data);
 
-          if (selectedCategory) {
-            try {
-              const cats = JSON.parse(pkg.packageCategory || "[]");
-              matchCategory = cats.includes(selectedCategory);
-            } catch {
-              matchCategory = false;
-            }
-          }
-
-          if (selectedCountry) {
-            matchCountry =
-              pkg.country?.toLowerCase() === selectedCountry.toLowerCase();
-          }
-
-          return matchCategory && matchCountry;
-        });
-
-        setPackages(filtered);
-      } catch (err) {
-        console.error("Failed to fetch packages", err);
+        // 3. Fetch all countries
+        const countriesRes = await axios.get(`${process.env.REACT_APP_API_URL}/countries`);
+        setAllCountries(countriesRes.data);
+      } catch (e) {
+        setPackages([]);
       }
     };
-
     fetchPackages();
-  }, [selectedCategory, selectedCountry]);
+  }, [selectedState, category]);
 
-  if (!packages.length)
-    return <p className="text-center">No packages found.</p>;
+  const getLocationString = (pkg) => {
+    // Find state by packageId
+    const state = allStates.find(state =>
+      Array.isArray(JSON.parse(state.package_ids || "[]")) &&
+      JSON.parse(state.package_ids).includes(pkg.packageId)
+    );
+    if (!state) return "-";
+    // Find country by state name in its states array
+    const country = allCountries.find(country =>
+      Array.isArray(JSON.parse(country.states || "[]")) &&
+      JSON.parse(country.states).includes(state.name)
+    );
+    return country
+      ? `${state.name}`
+      : state.name;
+  };
+
+  if (!packages.length) return <p className="text-center">No packages found.</p>;
 
   return (
-    <>
+    <div className="row y-gap-30 mx-1">
       {packages.map((item) => (
-        <div
-          className="col-lg-4 col-sm-6 text-left"
-          key={item?.packageId}
-          data-aos="fade"
-          data-aos-delay={item?.delayAnimation}
-        >
+        <div key={item.packageId} className="col-lg-3 col-md-6 bg-gray rounded-4">
           <Link
             to={`/tour-single/${item.packageId}`}
-            className="tourCard -type-1 rounded-4 position-relative"
+            className="tourCard -type-1 rounded-4"
           >
             <div className="tourCard__image">
               <div className="cardImage ratio ratio-1:1">
                 <div className="cardImage__content">
+                  {/* Avatar Image Swiper */}
                   <div className="cardImage-slider rounded-4 overflow-hidden custom_inside-slider">
                     <Swiper
                       className="mySwiper"
                       modules={[Pagination, Navigation]}
                       pagination={{ clickable: true }}
-                      navigation
+                      navigation={true}
                     >
-                      <SwiperSlide>
-                        <img
-                          className="rounded-4 col-12 js-lazy"
-                          src={`${process.env.REACT_APP_UPLOAD_API_URL}${item.avatarImage}`}
-                          alt="tour"
-                        />
-                      </SwiperSlide>
+                      {getImageArray(item.avatarImage).map((img, i) => (
+                        <SwiperSlide key={i}>
+                          <img
+                            className="rounded-4 col-12 js-lazy h-full object-cover"
+                            src={img}
+                            alt="Avatar"
+                          />
+                        </SwiperSlide>
+                      ))}
                     </Swiper>
                   </div>
                 </div>
               </div>
 
               <div className="cardImage__wishlist">
-                <button className="button -blue-1 bg-white size-30 rounded-full shadow-2">
+                <button className="button -blue-1 bg-white size-30 rounded-full shadow-2 mt-2 mr-2">
                   <i className="icon-heart text-12" />
                 </button>
               </div>
 
               <div className="cardImage__leftBadge">
                 <div
-                  className={`py-5 px-15 rounded-right-4 text-12 lh-16 fw-500 uppercase ${
-                    isTextMatched(item?.tag, "likely to sell out*")
-                      ? "bg-dark-1 text-white"
-                      : isTextMatched(item?.tag, "best seller")
+                  className={`py-5 px-15 rounded-right-4 text-12 lh-16 fw-500 uppercase ${isTextMatched(item?.tag, "likely to sell out*")
+                    ? "bg-dark-1 text-white"
+                    : ""
+                    } ${isTextMatched(item?.tag, "best seller")
                       ? "bg-blue-1 text-white"
-                      : isTextMatched(item?.tag, "top rated")
+                      : ""
+                    }  ${isTextMatched(item?.tag, "top rated")
                       ? "bg-yellow-1 text-dark-1"
                       : ""
-                  }`}
+                    }`}
                 >
                   {item.tag}
                 </div>
               </div>
             </div>
+            {/* End .tourCard__image */}
 
             <div className="tourCard__content mt-10 text-left">
               <div className="d-flex items-center lh-14 mb-5">
-                {/* <div className="text-14 text-light-1">
-                      {item.packageDurationDate}
-                    </div> */}
-                {/* <div className="size-3 bg-light-1 rounded-full ml-10 mr-10" /> */}
-                <div className="text-14 text-light-1">{item.tourType}</div>
+                <i className="icon-placeholder text-16 text-light-1 mr-5"></i>
+                <span className="text-13 text-light-1">
+                  {getLocationString(item)}
+                </span>
               </div>
-              <h4 className="tourCard__title text-dark-1 text-18 lh-16 fw-500">
+              <div className="d-flex items-center lh-14 mb-5">
+                <div className="text-14 text-light-1">{item.tourType || ""}</div>
+              </div>
+              <h4 className="tourCard__title text-dark-1 text-18 lh-15 fw-600 h-text">
                 <span>{item.packageName}</span>
               </h4>
-              <p className="text-light-1 lh-14 text-14 mt-5">
-                {item.packageLocation}
-              </p>
 
-              <div className="row justify-between items-center pt-15">
+              <div className="row justify-between items-center pt-10">
                 <div className="col-auto">
-                  <div className="text-14 text-light-1">
-                    {item.packageDurationDate}
+                  <div className="text-16 text-light-1">
+                    {item.packageDuration || ""}
                   </div>
-                  {/* <div className="d-flex items-center"> */}
-                  {/* <div className="d-flex items-center x-gap-5">
-                          <div className="icon-star text-yellow-1 text-10" />
-                          <div className="icon-star text-yellow-1 text-10" />
-                          <div className="icon-star text-yellow-1 text-10" />
-                          <div className="icon-star text-yellow-1 text-10" />
-                          <div className="icon-star text-yellow-1 text-10" />
-                        </div> */}
-                  {/* End ratings */}
-
-                  {/* <div className="text-14 text-light-1 ml-10">
-                          {item.numberOfReviews} reviews
-                        </div> */}
-                  {/* </div> */}
                 </div>
                 <div className="col-auto">
                   <div className="text-14 text-light-1">
                     From
-                    <span className="text-16 fw-500 text-dark-1">
+                    <span className="text-16 fw-600 text-dark-1">
                       {" "}
-                      ₹{item.packagePrice}
+                      ₹{item.basePrice || 0}/-
                     </span>
                   </div>
                 </div>
+              </div>
+
+              <div className="pt-10 text-center">
+                <Link
+                  to={`/tour-single/${item.packageId}`}
+                  className="button -md -blue-1 bg-blue-1 text-white"
+                  style={{ minWidth: 120 }}
+                >
+                  Book Now
+                </Link>
               </div>
             </div>
           </Link>
         </div>
       ))}
-    </>
+    </div>
   );
 };
 

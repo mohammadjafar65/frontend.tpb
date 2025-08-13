@@ -9,7 +9,7 @@ const TopBreadCrumb = ({ tour }) => {
               {/* End .col-auto */}
               <div className="col-auto">&gt;</div>
               {/* End .col-auto */}
-              <div className="col-auto">{tour?.packageLocation}</div>
+              <div className="col-auto">{tour?.stateName}</div>
               {/* End .col-auto */}
               <div className="col-auto">&gt;</div>
               {/* End .col-auto */}

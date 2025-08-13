@@ -27,12 +27,50 @@ const metadata = {
 const TourSingleV1Dynamic = () => {
   const { id } = useParams();
   const [tour, setTour] = useState(null);
+  const [stateName, setStateName] = useState(null);
+  const [countryName, setCountryName] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/packages/id/${id}`)
-      .then((res) => setTour(res.data))
-      .catch((err) => console.error("Error loading tour:", err));
+    const fetchData = async () => {
+      try {
+        // 1. Get the travel package
+        const packageRes = await axios.get(`${process.env.REACT_APP_API_URL}/packages/id/${id}`);
+        const packageData = packageRes.data;
+        setTour(packageData);
+
+        // 2. Get all states
+        const statesRes = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
+        const allStates = statesRes.data;
+
+        // Find the state that contains this packageId
+        const matchingState = allStates.find(state =>
+          Array.isArray(JSON.parse(state.package_ids || "[]")) &&
+          JSON.parse(state.package_ids).includes(packageData.packageId)
+        );
+
+        if (matchingState) {
+          setStateName(matchingState.name);
+
+          // 3. Get all countries
+          const countriesRes = await axios.get(`${process.env.REACT_APP_API_URL}/countries`);
+          const allCountries = countriesRes.data;
+
+          // Match country by checking if state's name exists in its "states" array
+          const matchingCountry = allCountries.find(country =>
+            Array.isArray(JSON.parse(country.states || "[]")) &&
+            JSON.parse(country.states).includes(matchingState.name)
+          );
+
+          if (matchingCountry) {
+            setCountryName(matchingCountry.name);
+          }
+        }
+      } catch (err) {
+        console.error("Error loading data:", err);
+      }
+    };
+
+    fetchData();
   }, [id]);
 
   if (!tour) return <div>Loading...</div>;
@@ -82,8 +120,10 @@ const TourSingleV1Dynamic = () => {
                     <div className="col-auto">
                       <div className="d-flex x-gap-5 items-center">
                         <i className="icon-placeholder text-16 text-light-1"></i>
-                        <div className="text-15 text-light-1">
-                          {tour.packageLocation}
+                        <div className="text-15 text-light-1 text-uppercase">
+                          {stateName && countryName
+                            ? `${stateName}, ${countryName}`
+                            : "Loading location..."}
                         </div>
                       </div>
                     </div>
@@ -128,25 +168,7 @@ const TourSingleV1Dynamic = () => {
       {/* End gallery grid wrapper */}
 
       <TourGallery tour={tour} />
-
-      {/* End single page content */}
-
-      <section className="pt-40 pb-40 bg-white">
-        <div className="container">
-          <div className="pt-40 border-top-light">
-            <div className="row x-gap-40 y-gap-40">
-              <div className="col-auto">
-                <h3 className="text-22 fw-500">Important information</h3>
-              </div>
-            </div>
-            {/* End row */}
-            <ImportantInfo tour={tour} />
-          </div>
-          {/* End pt-40 */}
-        </div>
-        {/* End .container */}
-      </section>
-      {/* End important info */}
+      <ImportantInfo tour={tour} />
 
       {/* <section className="border-top-light pt-40 pb-40 bg-white">
         <div className="container">

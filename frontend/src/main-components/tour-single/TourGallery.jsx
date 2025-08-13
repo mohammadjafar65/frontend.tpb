@@ -22,7 +22,7 @@ export default function TourGallery({ tour }) {
         onClose={() => setOpen(false)}
       />
 
-      <section className="pt-40 js-pin-container bg-white">
+      <section className="pt-20 js-pin-container bg-white">
         <div className="container">
           <div className="row y-gap-30">
             <div className="col-xl-8">
@@ -41,7 +41,7 @@ export default function TourGallery({ tour }) {
                     (slide, i) => (
                       <SwiperSlide key={i}>
                         <img
-                          src={`${process.env.REACT_APP_UPLOAD_API_URL}${slide}`}
+                          src={`${slide}`}
                           alt="image"
                           style={{ height: "501px" }}
                           className="rounded-4 col-12 cover object-cover"
@@ -59,8 +59,8 @@ export default function TourGallery({ tour }) {
                         key={i}
                       >
                         <Item
-                          original={`${process.env.REACT_APP_UPLOAD_API_URL}${slide}`}
-                          thumbnail={`${process.env.REACT_APP_UPLOAD_API_URL}${slide}`}
+                          original={`${slide}`}
+                          thumbnail={`${slide}`}
                           width={451}
                           height={450}
                         >

@@ -1,84 +1,67 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-const TopHeaderFilter = ({ selectedCategory, selectedCountry }) => {
+
+const TopHeaderFilter = ({ selectedState }) => {
   const [packageCount, setPackageCount] = useState(0);
+  const [stateLabel, setStateLabel] = useState("");
 
   useEffect(() => {
-    const fetchCount = async () => {
+    let cancelled = false;
+
+    const load = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/packages`
-        );
-        const filtered = res.data.filter((pkg) => {
-          let matchCategory = true;
-          let matchCountry = true;
+        // 1) Count
+        let count = 0;
+        if (selectedState) {
+          // filtered by state (name or id)
+          const url = `${process.env.REACT_APP_API_URL}/packages/by-state/${encodeURIComponent(
+            selectedState
+          )}`;
+          const res = await axios.get(url);
+          count = Array.isArray(res.data) ? res.data.length : 0;
+        } else {
+          // no state filter → get total count
+          const res = await axios.get(`${process.env.REACT_APP_API_URL}/packages`);
+          count = Array.isArray(res.data) ? res.data.length : 0;
+        }
+        if (!cancelled) setPackageCount(count);
 
-          if (selectedCategory) {
-            try {
-              const cats = JSON.parse(pkg.packageCategory || "[]");
-              matchCategory = cats.includes(selectedCategory);
-            } catch {
-              matchCategory = false;
-            }
-          }
-
-          if (selectedCountry) {
-            matchCountry =
-              pkg.country?.toLowerCase() === selectedCountry.toLowerCase();
-          }
-
-          return matchCategory && matchCountry;
-        });
-
-        setPackageCount(filtered.length);
-      } catch (err) {
-        console.error("Error fetching package count:", err);
+        // 2) Label
+        if (!selectedState) {
+          if (!cancelled) setStateLabel(""); // show "All Tours Packages" header, no suffix
+        } else if (isNaN(selectedState)) {
+          if (!cancelled) setStateLabel(selectedState); // already a name
+        } else {
+          // numeric id → fetch name
+          const stateRes = await axios.get(
+            `${process.env.REACT_APP_API_URL}/states/id/${selectedState}`
+          );
+          if (!cancelled) setStateLabel(stateRes.data?.name || "");
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setPackageCount(0);
+          setStateLabel(selectedState && isNaN(selectedState) ? selectedState : "");
+        }
+        console.error("TopHeaderFilter load error:", e);
       }
     };
 
-    fetchCount();
-  }, [selectedCategory, selectedCountry]);
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedState]);
 
   return (
-    <>
-      <div className="row y-gap-10 items-center justify-between">
-        <div className="col-auto">
-          <div className="text-18">
-            <span className="fw-500">{packageCount} packages</span>
-            {selectedCategory && ` in ${selectedCategory}`}
-            {selectedCountry && ` from ${selectedCountry}`}
-          </div>
+    <div className="row y-gap-10 items-center justify-between">
+      <div className="col-auto">
+        <div className="text-18">
+          <span className="fw-500">{packageCount} packages</span>
+          {stateLabel ? ` in ${stateLabel}` : ""}
         </div>
-        {/* End .col */}
-
-        {/* <div className="col-auto">
-          <div className="row x-gap-20 y-gap-20">
-            <div className="col-auto">
-              <button className="button -blue-1 h-40 px-20 rounded-100 bg-blue-1-05 text-15 text-blue-1">
-                <i className="icon-up-down text-14 mr-10" />
-                Sort
-              </button>
-            </div> */}
-        {/* End .col */}
-
-        {/* <div className="col-auto d-none xl:d-block">
-              <button
-                data-bs-toggle="offcanvas"
-                data-bs-target="#listingSidebar"
-                className="button -blue-1 h-40 px-20 rounded-100 bg-blue-1-05 text-15 text-blue-1"
-              >
-                <i className="icon-up-down text-14 mr-10" />
-                Filter
-              </button>
-            </div> */}
-        {/* End .col */}
-        {/* </div> */}
-        {/* End .row */}
-        {/* </div> */}
-        {/* End .col */}
       </div>
-      {/* End .row */}
-    </>
+    </div>
   );
 };
 

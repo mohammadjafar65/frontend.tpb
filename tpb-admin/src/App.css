@@ -1,3 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.button_set_submit {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    z-index: 10;
+}

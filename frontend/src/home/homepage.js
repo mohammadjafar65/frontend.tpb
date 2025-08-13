@@ -10,17 +10,21 @@ import ImageSlider from "../components/ImageSlider";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Locations from "../main-components/tours/Locations";
+import PopularDestinations from "../main-components/destinations/PopularDestinations";
+import TestimonialLeftCol from "../main-components/TestimonialLeftCol";
 import Counter3 from "../main-components/counter/Counter3";
 import WhyChooseUs from "../main-components/common/WhyChooseUs";
 import Testimonial from "../main-components/common/Testimonial";
 import Brand2 from "../main-components/common/Brand2";
 import CallToActions from "../main-components/common/CallToActions";
+import AuthModal from "../main-components/header/AuthModal";
 
 function HomePage() {
   const [packages, setPackages] = useState([]);
   const [packagesByCategory, setPackagesByCategory] = useState({});
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [categories, setCategories] = useState([]);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,8 +74,12 @@ function HomePage() {
 
   return (
     <>
-      <Header />
+      <Header setShowAuth={setShowAuth} />
       <Hero />
+
+      <div className="authModal">
+        <AuthModal open={showAuth} onClose={() => setShowAuth(false)} />
+      </div>
 
       {/* ✅ Top: Hard-coded 'Most Popular Tours' Section */}
       <section className="pt-50 pb-50 bg-gray">
@@ -96,20 +104,19 @@ function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
+          <div className="row y-gap-30 pt-20 sm:pt-20 item_gap-x30">
             <Tours2 category="Most Popular Tours" />
           </div>
         </div>
       </section>
 
       {/* ✅ Bottom: Other categories except 'Most Popular Tours' */}
-      {categories
+      {/* {categories
         .filter((cat) => cat !== "Most Popular Tours")
         .map((category, index) => (
           <section
-            className={`pt-50 pb-50 ${
-              index % 2 === 0 ? "bg-white" : "bg-gray-100"
-            }`}
+            className={`pt-50 pb-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-100"
+              }`}
             key={category}
           >
             <div className="container">
@@ -138,90 +145,78 @@ function HomePage() {
               </div>
             </div>
           </section>
-        ))}
+        ))} */}
 
-      <section className="layout-pt-md layout-pb-md bg-gray">
+      <section className="layout-pt-md layout-pb-md bg-white overflow-hidden" data-aos="fade-up">
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">
               <div className="sectionTitle -md">
-                <h2 className="sectionTitle__title text-left">
-                  Explore Hot Locations
-                </h2>
+                <h2 className="sectionTitle__title text-left">Trending Destinations</h2>
                 <p className=" sectionTitle__text mt-5 sm:mt-0 text-left">
-                  Interdum et malesuada fames ac ante ipsum
+                  Explore new places and create unforgettable memories.
                 </p>
               </div>
             </div>
-            {/* End .col */}
+            {/* End col-auto */}
 
-            {/* <div className="col-auto">
-              <a
-                href="#"
+            <div className="col-auto md:d-none">
+              <Link
+                to="/destinations"
                 className="button -md -blue-1 bg-blue-1-05 text-blue-1"
               >
-                More <div className="icon-arrow-top-right ml-15" />
-              </a>
-            </div> */}
-            {/* End .col */}
+                View All Destinations
+                <div className="icon-arrow-top-right ml-15" />
+              </Link>
+            </div>
+            {/* End col-auto */}
           </div>
           {/* End .row */}
 
-          <div className="row y-gap-30 pt-40 sm:pt-20">
-            <Locations />
+          <div className="relative pt-40 sm:pt-20">
+            <PopularDestinations />
           </div>
-          {/* End .row */}
         </div>
         {/* End .container */}
       </section>
-      {/* End Explore Hot Locations */}
+      {/* End Popular Destinations */}
 
-      <section className="section-bg bg-white layout-pt-lg md:pt-0 md:pb-60 sm:pb-40 layout-pb-lg bg-blue-1-05">
+      <section className="section-bg bg-gray layout-pt-lg md:pt-0 md:pb-60 sm:pb-40 layout-pb-lg bg-blue-1-05">
         <WhyChooseUs />
       </section>
       {/* End whycosse Section */}
 
-      <section className="section-bg layout-pt-lg bg-gray layout-pb-lg">
-        <div className="section-bg__item col-12">
-          <img src="/img/backgrounds/testimonials/bg.png" alt="image" />
-        </div>
-        {/* End bg image */}
-
-        <div data-aos="fade-up" data-aos-delay="100" className="container">
-          <div className="row justify-center text-center">
-            <div className="col-auto">
-              <div className="sectionTitle -md">
-                <h2 className="sectionTitle__title">Customer Reviews</h2>
-                <p className=" sectionTitle__text mt-5 sm:mt-0">
-                  Interdum et malesuada fames ac ante ipsum
-                </p>
-              </div>
+      <section className="layout-pt-lg layout-pb-lg bg-white">
+        <div className="container">
+          <div className="row y-gap-40 justify-between">
+            <div className="col-xl-5 col-lg-6" data-aos="fade-up">
+              <TestimonialLeftCol />
             </div>
-            {/* End .col-auto */}
-          </div>
-          {/* End .row */}
+            {/* End col */}
 
-          <div className="row justify-center pt-60 md:pt-30">
-            <div className="col-xl-5 col-lg-8 col-md-11">
-              <div className="overflow-hidden">
+            <div className="col-lg-6">
+              <div
+                className="overflow-hidden js-testimonials-slider-3"
+                data-aos="fade-up"
+                data-aos-delay="50"
+              >
                 <Testimonial />
               </div>
             </div>
-            {/* End .col */}
           </div>
           {/* End .row */}
         </div>
-        {/* End .container */}
+        {/* End container */}
       </section>
-      {/* End Customer review Section */}
+      {/* End testimonial Section */}
 
-      <section className="layout-pt-lg layout-pb-lg bg-white">
+      {/* <section className="layout-pt-lg layout-pb-lg bg-white">
         <div className="container">
           <div className="row justify-center text-center">
             <Counter3 />
           </div>
         </div>
-      </section>
+      </section> */}
       {/* End counter up Section */}
 
       {/* <section id="banner">

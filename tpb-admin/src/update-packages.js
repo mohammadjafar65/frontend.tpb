@@ -311,7 +311,7 @@ function UpdatePackages() {
                             />
                             <button
                               type="button"
-                              className="bg-green-600 text-white px-3 py-1 rounded"
+                              className="bg-primary text-white px-3 py-1 rounded"
                               onClick={() => {
                                 const newOption = {
                                   value: newCategory,
@@ -476,7 +476,7 @@ function UpdatePackages() {
                       <button
                         type="button"
                         onClick={handleSubmit(onSubmit)}
-                        className="ml-auto px-4 py-2 bg-green-600 text-white rounded"
+                        className="ml-auto px-4 py-2 bg-primary text-white rounded"
                       >
                         {packageId ? "Update" : "Submit"}
                       </button>

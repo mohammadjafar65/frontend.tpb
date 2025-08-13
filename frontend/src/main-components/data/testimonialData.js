@@ -102,7 +102,7 @@ export const testimonial3 = [
   {
     id: 1,
     meta: "Hotel Equatorial Melaka",
-    avatar: "/img/testimonials/2/1.png",
+    avatar: "/img/ag_1.jpeg",
     name: "Annette Black",
     designation: "UX / UI Designer",
     text: `"Our family was traveling via bullet train between cities in
@@ -112,7 +112,7 @@ export const testimonial3 = [
   {
     id: 2,
     meta: "Hotel Equatorial Melaka",
-    avatar: "/img/testimonials/2/2.png",
+    avatar: "/img/ag_1.jpeg",
     name: "Annette Black",
     designation: "UX / UI Designer",
     text: `"Our family was traveling via bullet train between cities in
@@ -122,7 +122,7 @@ export const testimonial3 = [
   {
     id: 3,
     meta: "Hotel Equatorial Melaka",
-    avatar: "/img/testimonials/2/3.png",
+    avatar: "/img/ag_1.jpeg",
     name: "Annette Black",
     designation: "UX / UI Designer",
     text: `"Our family was traveling via bullet train between cities in
@@ -132,7 +132,7 @@ export const testimonial3 = [
   {
     id: 4,
     meta: "Hotel Equatorial Melaka",
-    avatar: "/img/testimonials/2/4.png",
+    avatar: "/img/ag_1.jpeg",
     name: "Annette Black",
     designation: "UX / UI Designer",
     text: `"Our family was traveling via bullet train between cities in
@@ -142,7 +142,7 @@ export const testimonial3 = [
   {
     id: 5,
     meta: "Hotel Equatorial Melaka",
-    avatar: "/img/testimonials/2/5.png",
+    avatar: "/img/ag_1.jpeg",
     name: "Annette Black",
     designation: "UX / UI Designer",
     text: `"Our family was traveling via bullet train between cities in
