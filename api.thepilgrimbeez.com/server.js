@@ -1,59 +1,30 @@
-// server.js  (replace your DB+controllers section with this)
 const express = require("express");
+const formidable = require("express-formidable");
 const cors = require("cors");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const cookieParser = require("cookie-parser");
 const multer = require("multer");
-const path = require("path");
 const fs = require("fs");
+const mysql = require("mysql");
+const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+const nodemailer = require("nodemailer");
+const bodyParser = require("body-parser");
 const Razorpay = require("razorpay");
-require("dotenv").config();
+const paymentRoutes = require("./controllers/paymentController");
 
 const app = express();
+app.use(cors()); // CORS middleware applied here
+// Set up CORS headers
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Change * to your specific origin if needed
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+app.use(express.json());
 
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-app.use(express.json({ limit: "1mb" }));
-app.use(cookieParser());
+require("dotenv").config();
 
-// CORS: allow credentials for cookie-based auth
-const allowedOrigins = (process.env.FRONTEND_ORIGIN || "")
-  .split(",")
-  .map(s => s.trim())
-  .filter(Boolean);
-
-app.use(
-  cors({
-    origin(origin, cb) {
-      // allow same-origin / server-to-server / curl (no Origin header)
-      if (!origin) return cb(null, true);
-      // allow if matches one of the approved origins
-      if (allowedOrigins.includes(origin)) return cb(null, true);
-      // otherwise block
-      return cb(new Error(`CORS blocked: ${origin} not allowed`));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-// Fast preflight handler (ensures OPTIONS returns headers too)
-app.options("*", cors({
-  origin(origin, cb) {
-    if (!origin) return cb(null, true);
-    if (allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(new Error(`CORS blocked: ${origin} not allowed`));
-  },
-  credentials: true,
-}));
-
-// Rate-limit auth endpoints
-const authLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 100 });
-app.use("/auth", authLimiter);
-
-// Razorpay
+// Razorpay instance
 global.razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -61,66 +32,68 @@ global.razorpay = new Razorpay({
 
 const port = process.env.PORT || 3000;
 
-// uploads
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => cb(null, "uploads/"),
-  filename: (_, file, cb) => cb(null, uuidv4() + path.extname(file.originalname)),
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
 });
-const upload = multer({ storage });
-if (!fs.existsSync("uploads")) fs.mkdirSync("uploads", { recursive: true });
 
-app.use("/uploads", express.static("uploads"));
-app.get("/", (_, res) => res.send("Hello, World!"));
-
-// ---------- DB + controller boot
-(async () => {
-  try {
-    const mysql = require("mysql2/promise");
-    const pool = await mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-    });
-    await pool.query("SELECT 1");
-    console.log("Connected to database.");
-
-    // Adapter so legacy controllers using db.query(sql, params, cb) keep working
-    const db = {
-      query(sql, params, cb) {
-        if (typeof params === "function") { cb = params; params = []; }
-        pool
-          .query(sql, params)
-          .then(([rows]) => cb && cb(null, rows))
-          .catch((err) => cb && cb(err));
-      },
-      _pool: pool, // expose if you want promise queries somewhere else
-    };
-
-    // Load controllers AFTER db exists (very important)
-    require("./controllers/travelPackages")(app, db, upload, uuidv4);
-    require("./controllers/continents")(app, db, upload, uuidv4);
-    require("./controllers/countries")(app, db, upload, uuidv4);
-    require("./controllers/states")(app, db, upload, uuidv4);
-
-    // New auth uses promise-style pool directly:
-    require("./controllers/auth")(app, pool);
-    require("./controllers/admin")(app, pool);
-
-    const paymentRoutes = require("./controllers/paymentController");
-    app.use("/api", paymentRoutes);
-
-    // Global error last
-    app.use((err, req, res, next) => {
-      console.error(err);
-      res.status(500).send("Something went wrong!");
-    });
-
-    app.listen(port, () => console.log(`Server running on port ${port}`));
-  } catch (err) {
-    console.error("DB init failed:", err);
-    process.exit(1);
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection failed: " + err.stack);
+    return;
   }
-})();
+  console.log("Connected to database.");
+});
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, uuidv4() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+app.use("/testapi", express.static("This is test api"));
+app.use("/uploads", express.static("uploads"));
+app.use("/static", express.static(path.join(__dirname, "public")));
+app.get("/", (req, res) => {
+  res.send("Hello, World!"); // Send a response to the client
+});
+
+app.use(bodyParser.json());
+
+// Middleware to handle errors globally
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something went wrong!");
+});
+
+// Routes and middleware for handling travel packages
+require("./controllers/travelPackages")(app, db, upload, uuidv4);
+require("./controllers/continents")(app, db, upload, uuidv4);
+require("./controllers/countries")(app, db, upload, uuidv4);
+require("./controllers/states")(app, db, upload, uuidv4);
+
+// New auth uses promise-style pool directly:
+require("./controllers/auth")(app, pool);
+require("./controllers/admin")(app, pool);
+
+const paymentRoutes = require("./controllers/paymentController");
+app.use("/api", paymentRoutes);
+// require('./visaList')(app, db, upload, uuidv4);
+// require('./users')(app, db);
+
+// Other routes and logic...
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
