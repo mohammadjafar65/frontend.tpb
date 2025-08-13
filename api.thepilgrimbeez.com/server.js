@@ -12,69 +12,32 @@ const Razorpay = require("razorpay");
 require("dotenv").config();
 
 const app = express();
-app.set("trust proxy", 1);
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 
 // CORS: allow credentials for cookie-based auth
-// const allowedOrigins = (process.env.FRONTEND_ORIGIN || "")
-//   .split(",")
-//   .map(s => s.trim())
-//   .filter(Boolean);
-
-// --- CORS (normalized + wildcard for subdomains) ---
-const rawOrigins = (process.env.FRONTEND_ORIGIN || "")
+const allowedOrigins = (process.env.FRONTEND_ORIGIN || "")
   .split(",")
   .map(s => s.trim())
   .filter(Boolean);
 
-// normalize: drop trailing slashes
-const normalize = o => (o || "").replace(/\/+$/, "");
-const allowedList = rawOrigins.map(normalize);
-
-// allow any HTTPS subdomain of your domain (e.g., https://admin.thepilgrimbeez.com)
-const wildcardRules = [
-  /^https:\/\/([a-z0-9-]+\.)*thepilgrimbeez\.com$/i,
-];
-
-function isAllowedOrigin(origin) {
-  if (!origin) return true; // curl/Postman/server-to-server
-  const o = normalize(origin);
-  if (allowedList.includes(o)) return true;
-  if (wildcardRules.some(r => r.test(o))) return true;
-  return false;
-}
-
-const corsOptionsDelegate = (req, cb) => {
-  const origin = req.headers.origin || "";
-  cb(null, {
-    origin: isAllowedOrigin(origin),
+app.use(
+  cors({
+    origin(origin, cb) {
+      // allow same-origin / server-to-server / curl (no Origin header)
+      if (!origin) return cb(null, true);
+      // allow if matches one of the approved origins
+      if (allowedOrigins.includes(origin)) return cb(null, true);
+      // otherwise block
+      return cb(new Error(`CORS blocked: ${origin} not allowed`));
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
-  });
-};
-
-app.use(cors(corsOptionsDelegate));
-app.options("*", cors(corsOptionsDelegate));
-
-// app.use(
-//   cors({
-//     origin(origin, cb) {
-//       // allow same-origin / server-to-server / curl (no Origin header)
-//       if (!origin) return cb(null, true);
-//       // allow if matches one of the approved origins
-//       if (allowedOrigins.includes(origin)) return cb(null, true);
-//       // otherwise block
-//       return cb(new Error(`CORS blocked: ${origin} not allowed`));
-//     },
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Fast preflight handler (ensures OPTIONS returns headers too)
 app.options("*", cors({
