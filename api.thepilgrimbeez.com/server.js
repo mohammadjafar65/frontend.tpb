@@ -1,18 +1,18 @@
+// --- top of file ---
+require("dotenv").config();
+
 const express = require("express");
-const formidable = require("express-formidable");
 const cors = require("cors");
-const multer = require("multer");
-const fs = require("fs");
-const mysql = require("mysql");
 const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+const mysql = require("mysql");
 const { v4: uuidv4 } = require("uuid");
-const nodemailer = require("nodemailer");
-const bodyParser = require("body-parser");
 const Razorpay = require("razorpay");
-const paymentRoutes = require("./controllers/paymentController");
 
 const app = express();
-require("dotenv").config();
+
+// ---- CORS: allow only configured origins, handle OPTIONS globally
 const allowed = (process.env.FRONTEND_ORIGIN || "")
   .split(",")
   .map(s => s.trim())
@@ -22,87 +22,93 @@ const corsOptions = {
   origin(origin, cb) {
     // allow non-browser clients (no Origin) and allowed web origins
     if (!origin || allowed.includes(origin)) return cb(null, true);
-    cb(new Error("CORS: origin not allowed"));
+    return cb(new Error("CORS: origin not allowed"));
   },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // needed if you ever send cookies
-  maxAge: 86400, // cache preflight 1 day
+  credentials: true,
+  maxAge: 86400,
 };
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // handle preflight for all routes
+app.use((req, res, next) => {
+  // Ensure CORS headers are present on *all* responses (incl. 404/500)
+  const origin = req.headers.origin;
+  if (!origin || allowed.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin || "*");
+    res.header("Vary", "Origin"); // avoid CDN/proxy cache issues
+    res.header("Access-Control-Allow-Credentials", "true");
+  }
+  next();
+});
 
-// Razorpay instance
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // handle preflight for every route
+
+// ---- parsers
+app.use(express.json());
+
+// ---- Razorpay
 global.razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-const port = process.env.PORT || 3000;
-
+// ---- DB
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
 });
-
-db.connect((err) => {
-  if (err) {
-    console.error("Database connection failed: " + err.stack);
-    return;
-  }
+db.connect(err => {
+  if (err) { console.error("DB connect failed:", err.stack); return; }
   console.log("Connected to database.");
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, uuidv4() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage: storage });
-
+// ---- uploads
 const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
-app.use("/testapi", express.static("This is test api"));
-app.use("/uploads", express.static("uploads"));
+const multerStorage = multer.diskStorage({
+  destination: (_, __, cb) => cb(null, "uploads/"),
+  filename: (_, file, cb) => cb(null, uuidv4() + path.extname(file.originalname)),
+});
+const upload = multer({ storage: multerStorage });
+
+// ---- static
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/static", express.static(path.join(__dirname, "public")));
-app.get("/", (req, res) => {
-  res.send("Hello, World!"); // Send a response to the client
-});
 
-app.use(bodyParser.json());
+// simple test route
+app.get("/testapi", (_, res) => res.send("This is test api"));
 
-// Middleware to handle errors globally
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something went wrong!");
-});
+// health
+app.get("/", (_, res) => res.send("Hello, World!"));
 
-// Routes and middleware for handling travel packages
+// ---- ROUTES (make sure these are AFTER CORS + parsers)
 require("./controllers/travelPackages")(app, db, upload, uuidv4);
 require("./controllers/continents")(app, db, upload, uuidv4);
 require("./controllers/countries")(app, db, upload, uuidv4);
 require("./controllers/states")(app, db, upload, uuidv4);
 
-// New auth uses promise-style pool directly:
-require("./controllers/auth")(app, pool);
-require("./controllers/admin")(app, pool);
+// If your auth/admin controllers expect a pool, change them to accept `db` or create a real pool.
+// For now, pass `db` so this file is consistent with your connection above.
+require("./controllers/auth")(app, db);
+require("./controllers/admin")(app, db);
 
-// const paymentRoutes = require("./controllers/paymentController");
+// Payment routes (declare ONCE)
+const paymentRoutes = require("./controllers/paymentController");
 app.use("/api", paymentRoutes);
-// require('./visaList')(app, db, upload, uuidv4);
-// require('./users')(app, db);
 
-// Other routes and logic...
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// ---- 404 with CORS headers intact
+app.use((req, res) => res.status(404).json({ error: "Not Found" }));
+
+// ---- error handler LAST (keeps CORS headers we added above)
+app.use((err, req, res, _next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something went wrong!" });
 });
+
+// ---- start
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server running on port ${port}`));
