@@ -1,0 +1,21 @@
+# public_html/admin.thepilgrimbeez.com/.htaccess  (admin -> React build)
+<IfModule mod_rewrite.c>
+  Options -Indexes -MultiViews
+  RewriteEngine On
+
+  # Force HTTPS
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  # Send everything to /tpb-admin/build first (no loop)
+  RewriteCond %{REQUEST_URI} !^/tpb-admin/build/
+  RewriteRule ^(.*)$ /tpb-admin/build/$1 [L]
+
+  # If a real file/dir inside /tpb-admin/build exists, serve it
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # SPA fallback
+  RewriteRule ^ /tpb-admin/build/index.html [L]
+</IfModule>

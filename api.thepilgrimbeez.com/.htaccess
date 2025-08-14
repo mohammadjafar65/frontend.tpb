@@ -1,0 +1,18 @@
+# public_html/api.thepilgrimbeez.com/.htaccess  (Node app via Passenger)
+Options -Indexes -MultiViews
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Force HTTPS
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+# Passenger (CloudLinux/cPanel)
+PassengerEnabled on
+PassengerAppType node
+PassengerStartupFile server.js
+PassengerAppEnv production
+PassengerAppRoot /home/USERNAME/public_html/api.thepilgrimbeez.com
+# If your host requires a specific Node, uncomment and adjust:
+# PassengerNodejs /opt/cpanel/ea-nodejs20/bin/node
