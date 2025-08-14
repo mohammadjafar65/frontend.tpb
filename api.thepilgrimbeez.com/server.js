@@ -50,7 +50,7 @@ global.razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3002;
 
 // ---- DB (mysql2/promise pool)
 const db = mysql.createPool({
