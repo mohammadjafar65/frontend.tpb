@@ -50,6 +50,8 @@ global.razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
+const port = process.env.PORT || 3000;
+
 // ---- DB (mysql2/promise pool)
 const db = mysql.createPool({
   host: process.env.DB_HOST,
@@ -98,9 +100,6 @@ require("./controllers/admin")(app, db);
 const paymentRoutes = require("./controllers/paymentController");
 app.use("/api", paymentRoutes);
 
-// 404
-app.use((req, res) => res.status(404).json({ error: "Not Found" }));
-
 // error handler
 app.use((err, req, res, _next) => {
   console.error(err.stack);
@@ -108,5 +107,4 @@ app.use((err, req, res, _next) => {
 });
 
 // start
-const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
