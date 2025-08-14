@@ -5,11 +5,12 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); // Initialize useNavigate
+  const { REACT_APP_API_URL, REACT_APP_UPLOAD_API_URL } = process.env;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("https://api.thepilgrimbeez.com/login", {
+      const response = await fetch(`${REACT_APP_API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
