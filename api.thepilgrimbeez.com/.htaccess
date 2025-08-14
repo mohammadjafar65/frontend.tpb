@@ -13,6 +13,6 @@ PassengerEnabled on
 PassengerAppType node
 PassengerStartupFile server.js
 PassengerAppEnv production
-PassengerAppRoot /home/USERNAME/public_html/api.thepilgrimbeez.com
+PassengerAppRoot /home/agatqdbc/nodevenv/public_html/api.thepilgrimbeez.com
 # If your host requires a specific Node, uncomment and adjust:
 # PassengerNodejs /opt/cpanel/ea-nodejs20/bin/node
