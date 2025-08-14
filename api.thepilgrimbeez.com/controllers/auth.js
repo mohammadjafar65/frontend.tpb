@@ -5,7 +5,10 @@ const { z } = require("zod");
 require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const COOKIE_NAME = process.env.COOKIE_NAME || "tpb_auth";
+const COOKIE_NAME = process.env.COOKIENAME || "tpb_auth";
+
+// Use a parent-domain cookie for all subdomains
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || ".thepilgrimbeez.com";
 
 module.exports = (app, pool) => {
   // ---- Email (uses app password or SMTP creds in .env)
@@ -20,15 +23,21 @@ module.exports = (app, pool) => {
   const sendAuthCookie = (res, token) => {
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
-      secure: true,              // set true in production (HTTPS)
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV !== "development", // true on prod HTTPS
+      sameSite: "lax", // fine for same-site subdomains
+      domain: COOKIE_DOMAIN,
       path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
   };
 
   const clearAuthCookie = (res) => {
-    res.clearCookie(COOKIE_NAME, { httpOnly: true, sameSite: "lax", path: "/" });
+    res.clearCookie(COOKIE_NAME, {
+      httpOnly: true,
+      sameSite: "lax",
+      domain: COOKIE_DOMAIN,
+      path: "/",
+    });
   };
 
   const SignupSchema = z.object({
