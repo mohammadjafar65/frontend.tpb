@@ -8,24 +8,24 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import isTextMatched from "../../../utils/isTextMatched";
 
-// Helper to get first avatar image (or placeholder)
+// Helpers
 const getImageArray = (avatarImage) => {
-  // Try parse avatarImage as JSON array, or fallback
   try {
     const arr = JSON.parse(avatarImage);
     if (Array.isArray(arr) && arr.length > 0) return arr;
     return ["https://thepilgrimbeez.com/img/tpb-logo.png"];
   } catch {
-    // single string, fallback
-    return avatarImage
-      ? [avatarImage]
-      : ["https://thepilgrimbeez.com/img/tpb-logo.png"];
+    return avatarImage ? [avatarImage] : ["https://thepilgrimbeez.com/img/tpb-logo.png"];
   }
+};
+
+const formatINR = (n) => {
+  const num = Number(n || 0);
+  return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(num);
 };
 
 const TourProperties = ({ selectedState, category }) => {
   const [packages, setPackages] = useState([]);
-  const [categoryPackages, setCategoryPackages] = useState([]);
   const [allStates, setAllStates] = useState([]);
   const [allCountries, setAllCountries] = useState([]);
 
@@ -33,32 +33,33 @@ const TourProperties = ({ selectedState, category }) => {
     const fetchPackages = async () => {
       try {
         let url = "";
-        // If both state and category, use /by-state-category
         if (selectedState && category) {
-          url = `${process.env.REACT_APP_API_URL}/packages/by-state-category/${encodeURIComponent(selectedState)}/${encodeURIComponent(category)}`;
-        }
-        // If only state, use /by-state (smart backend handles name or ID)
-        else if (selectedState) {
-          url = `${process.env.REACT_APP_API_URL}/packages/by-state/${encodeURIComponent(selectedState)}`;
-        }
-        // If only category, use /by-category
-        else if (category) {
-          url = `${process.env.REACT_APP_API_URL}/packages/by-category/${encodeURIComponent(category)}`;
+          url = `${process.env.REACT_APP_API_URL}/packages/by-state-category/${encodeURIComponent(
+            selectedState
+          )}/${encodeURIComponent(category)}`;
+        } else if (selectedState) {
+          url = `${process.env.REACT_APP_API_URL}/packages/by-state/${encodeURIComponent(
+            selectedState
+          )}`;
+        } else if (category) {
+          url = `${process.env.REACT_APP_API_URL}/packages/by-category/${encodeURIComponent(
+            category
+          )}`;
         } else {
           setPackages([]);
           return;
         }
+
         const res = await axios.get(url);
         setPackages(res.data || []);
 
-        // 2. Fetch all states
         const statesRes = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
         setAllStates(statesRes.data);
 
-        // 3. Fetch all countries
         const countriesRes = await axios.get(`${process.env.REACT_APP_API_URL}/countries`);
         setAllCountries(countriesRes.data);
       } catch (e) {
+        console.error("Fetch packages failed:", e);
         setPackages([]);
       }
     };
@@ -66,126 +67,100 @@ const TourProperties = ({ selectedState, category }) => {
   }, [selectedState, category]);
 
   const getLocationString = (pkg) => {
-    // Find state by packageId
-    const state = allStates.find(state =>
-      Array.isArray(JSON.parse(state.package_ids || "[]")) &&
-      JSON.parse(state.package_ids).includes(pkg.packageId)
+    const state = allStates.find(
+      (s) =>
+        Array.isArray(JSON.parse(s.package_ids || "[]")) &&
+        JSON.parse(s.package_ids).includes(pkg.packageId)
     );
     if (!state) return "-";
-    // Find country by state name in its states array
-    const country = allCountries.find(country =>
-      Array.isArray(JSON.parse(country.states || "[]")) &&
-      JSON.parse(country.states).includes(state.name)
+    const country = allCountries.find(
+      (c) =>
+        Array.isArray(JSON.parse(c.states || "[]")) &&
+        JSON.parse(c.states).includes(state.name)
     );
-    return country
-      ? `${state.name}`
-      : state.name;
+    return country ? `${state.name}` : state.name;
   };
 
   if (!packages.length) return <p className="text-center">No packages found.</p>;
 
   return (
-    <div className="row y-gap-30 mx-1">
-      {packages.map((item) => (
-        <div key={item.packageId} className="col-lg-3 col-md-6 bg-gray rounded-4">
-          <Link
-            to={`/tour-single/${item.packageId}`}
-            className="tourCard -type-1 rounded-4"
-          >
-            <div className="tourCard__image">
-              <div className="cardImage ratio ratio-1:1">
-                <div className="cardImage__content">
-                  {/* Avatar Image Swiper */}
-                  <div className="cardImage-slider rounded-4 overflow-hidden custom_inside-slider">
-                    <Swiper
-                      className="mySwiper"
-                      modules={[Pagination, Navigation]}
-                      pagination={{ clickable: true }}
-                      navigation={true}
+    <div className="row y-gap-30">
+      {packages.map((item, idx) => {
+        const images = getImageArray(item.avatarImage);
+        const to = `/tour-single/${item.packageId}`;
+
+        return (
+          <div key={item.packageId} className="col-xl-3 col-lg-4 col-md-6">
+            <article
+              data-aos="fade"
+              className={`tpb-card ${idx % 2 === 0 ? "tpb-card--alt" : ""}`}
+            >
+              {/* IMAGE */}
+              <div className="tpb-card__image">
+                <Link to={to} className="tpb-card__mediaLink" aria-label={item.packageName}>
+                  <Swiper
+                    className="tpb-card__mediaSwiper"
+                    modules={[Pagination, Navigation]}
+                    pagination={{ clickable: true }}
+                    navigation
+                  >
+                    {images.map((src, i) => (
+                      <SwiperSlide key={i}>
+                        <img src={src} alt={item.packageName} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </Link>
+
+                {item.tag && (
+                  <div className="tpb-card__badge">
+                    <span
+                      className={[
+                        "tpb-badge",
+                        isTextMatched(item?.tag, "likely to sell out*") && "tpb-badge--dark",
+                        isTextMatched(item?.tag, "best seller") && "tpb-badge--blue",
+                        isTextMatched(item?.tag, "top rated") && "tpb-badge--yellow",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
                     >
-                      {getImageArray(item.avatarImage).map((img, i) => (
-                        <SwiperSlide key={i}>
-                          <img
-                            className="rounded-4 col-12 js-lazy h-full object-cover"
-                            src={img}
-                            alt="Avatar"
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </div>
-                </div>
-              </div>
-
-              <div className="cardImage__wishlist">
-                <button className="button -blue-1 bg-white size-30 rounded-full shadow-2 mt-2 mr-2">
-                  <i className="icon-heart text-12" />
-                </button>
-              </div>
-
-              <div className="cardImage__leftBadge">
-                <div
-                  className={`py-5 px-15 rounded-right-4 text-12 lh-16 fw-500 uppercase ${isTextMatched(item?.tag, "likely to sell out*")
-                    ? "bg-dark-1 text-white"
-                    : ""
-                    } ${isTextMatched(item?.tag, "best seller")
-                      ? "bg-blue-1 text-white"
-                      : ""
-                    }  ${isTextMatched(item?.tag, "top rated")
-                      ? "bg-yellow-1 text-dark-1"
-                      : ""
-                    }`}
-                >
-                  {item.tag}
-                </div>
-              </div>
-            </div>
-            {/* End .tourCard__image */}
-
-            <div className="tourCard__content mt-10 text-left">
-              <div className="d-flex items-center lh-14 mb-5">
-                <i className="icon-placeholder text-16 text-light-1 mr-5"></i>
-                <span className="text-13 text-light-1">
-                  {getLocationString(item)}
-                </span>
-              </div>
-              <div className="d-flex items-center lh-14 mb-5">
-                <div className="text-14 text-light-1">{item.tourType || ""}</div>
-              </div>
-              <h4 className="tourCard__title text-dark-1 text-18 lh-15 fw-600 h-text">
-                <span>{item.packageName}</span>
-              </h4>
-
-              <div className="row justify-between items-center pt-10">
-                <div className="col-auto">
-                  <div className="text-16 text-light-1">
-                    {item.packageDuration || ""}
-                  </div>
-                </div>
-                <div className="col-auto">
-                  <div className="text-14 text-light-1">
-                    From
-                    <span className="text-16 fw-600 text-dark-1">
-                      {" "}
-                      ₹{item.basePrice || 0}/-
+                      {item.tag}
                     </span>
                   </div>
-                </div>
+                )}
               </div>
 
-              <div className="pt-10 text-center">
-                <Link
-                  to={`/tour-single/${item.packageId}`}
-                  className="button -md -blue-1 bg-blue-1 text-white"
-                  style={{ minWidth: 120 }}
-                >
-                  Book Now
-                </Link>
+              {/* CONTENT */}
+              <div className="tpb-card__content">
+                <div className="tpb-card__meta">
+                  <i className="icon-placeholder" />
+                  <span>{getLocationString(item)}</span>
+                </div>
+
+                {item.tourType && <div className="tpb-card__type">{item.tourType}</div>}
+
+                <h3 className="tpb-card__title">
+                  <Link to={to}>{item.packageName}</Link>
+                </h3>
+
+                {item.packageDuration && (
+                  <div className="tpb-card__duration">{item.packageDuration}</div>
+                )}
+
+                <div className="tpb-card__bottom">
+                  <div className="tpb-card__price">
+                    From <strong>₹{formatINR(item.basePrice)}/-</strong>
+                  </div>
+
+                  <Link to={to} className="tpb-card__cta">
+                    Book Now
+                  </Link>
+                </div>
               </div>
-            </div>
-          </Link>
-        </div>
-      ))}
+            </article>
+          </div>
+        );
+      })}
     </div>
   );
 };

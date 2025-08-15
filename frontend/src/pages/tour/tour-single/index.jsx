@@ -86,7 +86,7 @@ const TourSingleV1Dynamic = () => {
       <Header />
       {/* End Header 1 */}
 
-      <TopBreadCrumb tour={{ tour, stateName, countryName }} />
+      {/* <TopBreadCrumb tour={{ tour, stateName, countryName }} /> */}
       {/* End top breadcrumb */}
 
       <section className="pt-40 bg-white">
@@ -243,7 +243,7 @@ const TourSingleV1Dynamic = () => {
       </section> */}
       {/* End Reply Comment box section */}
 
-      <section className="pt-50 pb-50 bg-white border-top-light text-left">
+      {/* <section className="pt-50 pb-50 bg-white border-top-light text-left">
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">
@@ -254,7 +254,6 @@ const TourSingleV1Dynamic = () => {
                 </p>
               </div>
             </div>
-            {/* End .col */}
 
             <div className="col-auto">
               <Link
@@ -264,17 +263,13 @@ const TourSingleV1Dynamic = () => {
                 More <div className="icon-arrow-top-right ml-15" />
               </Link>
             </div>
-            {/* End .col */}
           </div>
-          {/* End .row */}
 
           <div className="row y-gap-30 pt-40 sm:pt-20 item_gap-x30">
             <Tours />
           </div>
-          {/* End .row */}
         </div>
-        {/* End .container */}
-      </section>
+      </section> */}
       {/* End Tours Sections */}
 
       <CallToActions />
