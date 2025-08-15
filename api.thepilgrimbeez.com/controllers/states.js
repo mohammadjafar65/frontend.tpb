@@ -1,10 +1,11 @@
 // controllers/states.js
-// Assumes:
-//   - db is a mysql2/promise pool
-//   - table `states` has: id, name, photo_url, package_ids (JSON/TEXT), country_id
-//   - table `travel_packages` has: packageId (PK), state_ids (JSON/TEXT array of numbers)
+// Works with mysql2/promise pool.
+// Tables assumed:
+//   states(id INT PK, name VARCHAR, photo_url TEXT NULL, package_ids JSON/TEXT NULL, country_id INT NULL)
+//   travel_packages(packageId VARCHAR(64) PK (UUID), state_ids JSON/TEXT NULL, ...)
 
 module.exports = (app, db) => {
+  // ---------- helpers ----------
   const toJson = (v) => (v == null ? null : JSON.stringify(v));
   const parseArr = (v) => {
     try {
@@ -17,10 +18,18 @@ module.exports = (app, db) => {
     }
   };
 
-  // ---- helpers (promise/async) ---------------------------------------------
+  // accept only UUID-ish strings (very loose check), drop falsy/0/null
+  const sanitizePkgIds = (ids) => {
+    if (!Array.isArray(ids)) return [];
+    const uuidish = /^[0-9a-fA-F-]{16,}$/; // loose; good enough to reject 0/null
+    return ids
+      .map((x) => (x == null ? "" : String(x).trim()))
+      .filter((x) => x && uuidish.test(x));
+  };
 
+  // packages read/writes (packageId is STRING)
   async function getPackagesByIds(ids) {
-    if (!ids?.length) return [];
+    if (!ids.length) return [];
     const [rows] = await db.query(
       "SELECT packageId, state_ids FROM travel_packages WHERE packageId IN (?)",
       [ids]
@@ -29,10 +38,9 @@ module.exports = (app, db) => {
   }
 
   async function getPackagesHavingState(stateId) {
-    // COALESCE for NULL; JSON_ARRAY(?) so numeric search works
     const [rows] = await db.query(
       "SELECT packageId, state_ids FROM travel_packages " +
-      "WHERE JSON_CONTAINS(COALESCE(state_ids, JSON_ARRAY()), JSON_ARRAY(?))",
+        "WHERE JSON_CONTAINS(COALESCE(state_ids, JSON_ARRAY()), JSON_ARRAY(?))",
       [stateId]
     );
     return rows;
@@ -46,28 +54,28 @@ module.exports = (app, db) => {
   }
 
   /**
-   * Ensure ONLY packages in `packageIds` have `stateId` present in their state_ids array.
-   * - Add stateId to any package in `packageIds` that doesn't have it
-   * - Remove stateId from any package that currently has it but is not in `packageIds`
+   * Ensure ONLY packages in `pkgIds` (UUID strings) have the numeric `stateId` in their state_ids array.
+   * - remove stateId from packages that currently have it but are not in pkgIds
+   * - add stateId to packages in pkgIds that don't have it yet
    */
-  async function syncStateOnPackages(stateId, packageIds) {
-    const targetIds = new Set(packageIds || []);
+  async function syncStateOnPackages(stateId, pkgIds) {
+    const target = new Set(pkgIds || []);
 
-    // 1) Remove from packages that currently have stateId but are NOT in target list
+    // Remove from packages that currently have stateId but are NOT in target
     const withState = await getPackagesHavingState(stateId);
-    const toRemove = withState.filter((r) => !targetIds.has(r.packageId));
-    for (const row of toRemove) {
-      let arr = parseArr(row.state_ids);
-      arr = arr.filter((id) => id !== Number(stateId));
-      await setPackageStateIds(row.packageId, arr);
+    for (const row of withState) {
+      if (!target.has(row.packageId)) {
+        let arr = parseArr(row.state_ids).map(Number).filter((id) => id !== Number(stateId));
+        await setPackageStateIds(row.packageId, arr);
+      }
     }
 
-    // 2) Add to packages that should have it
-    if (targetIds.size) {
-      const wanted = await getPackagesByIds([...targetIds]);
-      const haveMap = new Map(wanted.map((r) => [r.packageId, parseArr(r.state_ids)]));
+    // Add to packages that should have it
+    if (target.size) {
+      const wanted = await getPackagesByIds([...target]);
+      const haveMap = new Map(wanted.map((r) => [r.packageId, parseArr(r.state_ids).map(Number)]));
 
-      for (const pkgId of targetIds) {
+      for (const pkgId of target) {
         const arr = haveMap.get(pkgId) ?? [];
         if (!arr.includes(Number(stateId))) {
           arr.push(Number(stateId));
@@ -77,7 +85,7 @@ module.exports = (app, db) => {
     }
   }
 
-  // ---- routes ---------------------------------------------------------------
+  // ---------- routes ----------
 
   // Get all states
   app.get("/states", async (_req, res) => {
@@ -86,7 +94,7 @@ module.exports = (app, db) => {
       res.json(rows);
     } catch (err) {
       console.error("GET /states failed:", err);
-      res.status(500).json({ error: "DB_ERROR", code: err.code, message: err.message });
+      res.status(500).json({ error: "DB_ERROR", details: err.message });
     }
   });
 
@@ -96,7 +104,8 @@ module.exports = (app, db) => {
       const { name, photo_url, package_ids, country_id } = req.body;
       if (!name) return res.status(400).json({ error: "NAME_REQUIRED" });
 
-      const pkgIds = Array.isArray(package_ids) ? package_ids.map(Number) : [];
+      const pkgIds = sanitizePkgIds(package_ids);
+
       const [r] = await db.query(
         "INSERT INTO states (name, photo_url, package_ids, country_id) VALUES (?, ?, ?, ?)",
         [name, photo_url || null, toJson(pkgIds), country_id || null]
@@ -106,7 +115,7 @@ module.exports = (app, db) => {
       res.status(201).json({ message: "State created", id: r.insertId });
     } catch (err) {
       console.error("POST /states/create failed:", err);
-      res.status(500).json({ error: "DB_ERROR", code: err.code, message: err.message });
+      res.status(500).json({ error: "DB_ERROR", details: err.message });
     }
   });
 
@@ -115,7 +124,8 @@ module.exports = (app, db) => {
     try {
       const id = Number(req.params.id);
       const { name, photo_url, package_ids, country_id } = req.body;
-      const pkgIds = Array.isArray(package_ids) ? package_ids.map(Number) : [];
+
+      const pkgIds = sanitizePkgIds(package_ids);
 
       const [r] = await db.query(
         "UPDATE states SET name = ?, photo_url = ?, package_ids = ?, country_id = ? WHERE id = ?",
@@ -127,19 +137,18 @@ module.exports = (app, db) => {
       res.json({ message: "State updated" });
     } catch (err) {
       console.error("PUT /states/update/:id failed:", err);
-      res.status(500).json({ error: "DB_ERROR", code: err.code, message: err.message });
+      res.status(500).json({ error: "DB_ERROR", details: err.message });
     }
   });
 
-  // Delete state
+  // Delete state (also remove its id from any packages that still reference it)
   app.delete("/states/delete/:id", async (req, res) => {
     try {
       const id = Number(req.params.id);
 
-      // remove this state from any packages that still reference it
       const withState = await getPackagesHavingState(id);
       for (const row of withState) {
-        let arr = parseArr(row.state_ids).filter((v) => v !== id);
+        let arr = parseArr(row.state_ids).map(Number).filter((v) => v !== id);
         await setPackageStateIds(row.packageId, arr);
       }
 
@@ -148,7 +157,7 @@ module.exports = (app, db) => {
       res.json({ message: "State deleted" });
     } catch (err) {
       console.error("DELETE /states/delete/:id failed:", err);
-      res.status(500).json({ error: "DB_ERROR", code: err.code, message: err.message });
+      res.status(500).json({ error: "DB_ERROR", details: err.message });
     }
   });
 
@@ -160,11 +169,11 @@ module.exports = (app, db) => {
       res.json(rows[0]);
     } catch (err) {
       console.error("GET /states/:id failed:", err);
-      res.status(500).json({ error: "DB_ERROR", code: err.code, message: err.message });
+      res.status(500).json({ error: "DB_ERROR", details: err.message });
     }
   });
 
-  // Get state id+name only
+  // Minimal: id + name
   app.get("/states/id/:id", async (req, res) => {
     try {
       const [rows] = await db.query("SELECT id, name FROM states WHERE id = ?", [req.params.id]);
@@ -172,7 +181,18 @@ module.exports = (app, db) => {
       res.json(rows[0]);
     } catch (err) {
       console.error("GET /states/id/:id failed:", err);
-      res.status(500).json({ error: "DB_ERROR", code: err.code, message: err.message });
+      res.status(500).json({ error: "DB_ERROR", details: err.message });
+    }
+  });
+
+  // Optional convenience: by name (often used by UI)
+  app.get("/states/name/:name", async (req, res) => {
+    try {
+      const [rows] = await db.query("SELECT id, name FROM states WHERE name = ?", [req.params.name]);
+      res.json(rows?.[0] || {});
+    } catch (err) {
+      console.error("GET /states/name/:name failed:", err);
+      res.status(500).json({ error: "DB_ERROR", details: err.message });
     }
   });
 };
