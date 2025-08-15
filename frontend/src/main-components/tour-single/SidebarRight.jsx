@@ -54,6 +54,7 @@ const SidebarRight = ({ tour }) => {
             setStartDate={setStartDate}
             setEndDate={setEndDate}
             setGuestCount={setGuestCount}
+            basePrice={Number(tour?.basePrice ?? 0)}
           />
 
           {/* Recommendation */}

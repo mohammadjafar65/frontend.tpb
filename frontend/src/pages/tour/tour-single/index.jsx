@@ -86,7 +86,7 @@ const TourSingleV1Dynamic = () => {
       <Header />
       {/* End Header 1 */}
 
-      <TopBreadCrumb tour={tour} />
+      <TopBreadCrumb tour={{ tour, stateName, countryName }} />
       {/* End top breadcrumb */}
 
       <section className="pt-40 bg-white">
@@ -178,7 +178,7 @@ const TourSingleV1Dynamic = () => {
       </section> */}
       {/* End Itinerary */}
 
-      <section className="bg-white pb-40 text-left">
+      {/* <section className="bg-white pb-40 text-left">
         <div className="container ">
           <div className="pt-40 border-top-light">
             <div className="row y-gap-20">
@@ -188,7 +188,6 @@ const TourSingleV1Dynamic = () => {
                   <br /> The Crown Hotel
                 </h2>
               </div>
-              {/* End .row */}
 
               <div className="col-lg-8">
                 <div
@@ -198,14 +197,10 @@ const TourSingleV1Dynamic = () => {
                   <Faq />
                 </div>
               </div>
-              {/* End .col */}
             </div>
-            {/* End .row */}
           </div>
-          {/* End .pt-40 */}
         </div>
-        {/* End .container */}
-      </section>
+      </section> */}
       {/* End Faq about sections */}
 
       {/* <section className="bg-white border-top-light pt-40 pb-40">

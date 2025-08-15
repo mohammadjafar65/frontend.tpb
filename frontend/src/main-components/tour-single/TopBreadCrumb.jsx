@@ -1,4 +1,4 @@
-const TopBreadCrumb = ({ tour }) => {
+const TopBreadCrumb = ({ tour, stateName, countryName  }) => {
   return (
     <section className="py-10 d-flex items-center bg-light-2">
       <div className="container">
@@ -9,7 +9,7 @@ const TopBreadCrumb = ({ tour }) => {
               {/* End .col-auto */}
               <div className="col-auto">&gt;</div>
               {/* End .col-auto */}
-              <div className="col-auto">{tour?.stateName}</div>
+              <div className="col-auto">{stateName}</div>
               {/* End .col-auto */}
               <div className="col-auto">&gt;</div>
               {/* End .col-auto */}

@@ -2,10 +2,20 @@ import GuestSearch from "./GuestSearch";
 import DateSearch from "./DateSearch";
 import { Link } from "react-router-dom";
 
-const index = () => {
+const formatINR = (n) =>
+  new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(Number(n || 0));
+
+const index = ({ basePrice = 0 }) => {
   return (
     <>
-      <div className="text-14 text-light-1">Starting From <br /><span className="text-24 fw-600 text-dark-1">₹ 2000/- <span className="text-14 fw-500 text-light-1">person</span></span></div>
+      <div className="text-14 text-light-1">
+        Starting From <br />
+        <span className="text-24 fw-600 text-dark-1">
+          ₹ {formatINR(basePrice)}/-{" "}
+          <span className="text-14 fw-500 text-light-1">per person</span>
+        </span>
+      </div>
+
       <div className="col-12 flush mt-20">
         <div className="searchMenu-date px-20 py-10 border-light rounded-4 -right js-form-dd js-calendar">
           <div>
@@ -13,15 +23,11 @@ const index = () => {
             <DateSearch />
           </div>
         </div>
-        {/* End check-in-out */}
       </div>
-      {/* End .col-12 */}
 
       <div className="col-12 flush mt-20 mb-20">
         <GuestSearch />
-        {/* End guest */}
       </div>
-      {/* End .col-12 */}
 
       <div className="col-12 flush">
         <Link
@@ -31,7 +37,6 @@ const index = () => {
           Book Now
         </Link>
       </div>
-      {/* End .col-12 */}
     </>
   );
 };
