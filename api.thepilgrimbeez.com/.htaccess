@@ -1,0 +1,18 @@
+# Generated/maintained by cPanel Node.js App (Passenger)
+<IfModule mod_passenger.c>
+  PassengerAppRoot "/home/agatqdbc/nodevenv/public_html/api.thepilgrimbeez.com"
+  PassengerBaseURI "/"
+  PassengerAppType node
+  PassengerStartupFile server.js
+  # Use a modern Node runtime installed on the server (change to 20 if available)
+  PassengerNodejs /opt/alt/alt-nodejs18/root/usr/bin/node
+  PassengerEnvVar NODE_ENV production
+</IfModule>
+
+# Let real files pass through (uploads, etc)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+</IfModule>

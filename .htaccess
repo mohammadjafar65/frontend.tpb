@@ -1,31 +1,31 @@
 <IfModule mod_rewrite.c>
-    RewriteEngine On
+  RewriteEngine On
 
-    # Redirect to HTTPS
-    RewriteCond %{HTTPS} off
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Force HTTPS for root domain & admin (safe now that certs are live)
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP_HOST} ^(www\.)?thepilgrimbeez\.com$ [OR]
+  RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com$ 
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # Rewrite rule for the frontend project
-    RewriteCond %{HTTP_HOST} ^thepilgrimbeez\.com [NC,OR]
-    RewriteCond %{HTTP_HOST} ^thepilgrimbeez\.com [NC]
-    RewriteCond %{REQUEST_URI} !^/frontend/build/
-    RewriteRule ^(.*)$ /frontend/build/$1 [L]
+  # -------- ROOT DOMAIN: frontend build --------
+  RewriteCond %{HTTP_HOST} ^(www\.)?thepilgrimbeez\.com$ [NC]
+  RewriteCond %{REQUEST_URI} !^/frontend/build/
+  RewriteRule ^(.*)$ /frontend/build/$1 [L]
 
-    # Rewrite rule for the frontend project
-    RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com [NC,OR]
-    RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com [NC]
-    RewriteCond %{REQUEST_URI} !^/tpb-admin/build/
-    RewriteRule ^(.*)$ /tpb-admin/build/$1 [L]
+  # SPA fallback (root)
+  RewriteCond %{HTTP_HOST} ^(www\.)?thepilgrimbeez\.com$ [NC]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ /frontend/build/index.html [L]
 
-    # Rewrite rule for the backend project
-    RewriteCond %{HTTP_HOST} ^api\.thepilgrimbeez\.com$ [NC]
-    RewriteRule ^(.*)$ https://api.thepilgrimbeez.com:3000/$1 [P,L]
+  # -------- ADMIN SUBDOMAIN: static build --------
+  RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com$ [NC]
+  RewriteCond %{REQUEST_URI} !^/tpb-admin/build/
+  RewriteRule ^(.*)$ /tpb-admin/build/$1 [L]
 
-    # If the request is for a file or directory that exists, serve it directly
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # If the requested resource does not exist, send it to index.html
-    RewriteRule ^ /frontend/build/index.html [L]
+  # SPA fallback (admin)
+  RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com$ [NC]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ /tpb-admin/build/index.html [L]
 </IfModule>

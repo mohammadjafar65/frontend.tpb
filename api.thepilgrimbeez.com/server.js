@@ -19,13 +19,14 @@ app.set("trust proxy", 1); // behind nginx/cloudflare etc.
 // --- CORS (credentials across subdomains)
 const ALLOWED_ORIGINS = [
   "https://thepilgrimbeez.com",
+  "https://admin.thepilgrimbeez.com",
   "http://localhost:3000",
   "http://localhost:5173",
 ];
 
 const corsOptions = {
   origin(origin, cb) {
-    if (!origin) return cb(null, true); // SSR/tools
+    if (!origin) return cb(null, true);
     if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
     try {
       const host = new URL(origin).hostname;
@@ -39,7 +40,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // preflight
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
