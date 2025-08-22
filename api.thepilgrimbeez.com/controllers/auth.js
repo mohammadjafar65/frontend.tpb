@@ -5,13 +5,13 @@ const { z } = require("zod");
 require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const COOKIE_NAME = process.env.COOKIENAME || "tpb_auth";
+const COOKIE_NAME = process.env.COOKIE_NAME || "tpb_auth"; // <- use COOKIE_NAME
+const IS_DEV = process.env.NODE_ENV !== "production";
 
-// Use a parent-domain cookie for all subdomains
-const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || ".thepilgrimbeez.com";
+// Only set a cookie domain in prod. In dev, omit it so the cookie is set for "localhost".
+const PROD_COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || ".thepilgrimbeez.com";
 
 module.exports = (app, pool) => {
-  // ---- Email (uses app password or SMTP creds in .env)
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT || 465),
@@ -19,25 +19,27 @@ module.exports = (app, pool) => {
     auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
   });
 
-  // ---- Helpers
   const sendAuthCookie = (res, token) => {
-    res.cookie(COOKIE_NAME, token, {
+    const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV !== "development", // true on prod HTTPS
-      sameSite: "lax", // fine for same-site subdomains
-      domain: COOKIE_DOMAIN,
+      secure: !IS_DEV,         // HTTPS only in prod
+      sameSite: "lax",         // good for same-site subdomains
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    };
+    // Only attach domain in prod; for localhost this must be omitted
+    if (!IS_DEV) cookieOptions.domain = PROD_COOKIE_DOMAIN;
+    res.cookie(COOKIE_NAME, token, cookieOptions);
   };
 
   const clearAuthCookie = (res) => {
-    res.clearCookie(COOKIE_NAME, {
+    const cookieOptions = {
       httpOnly: true,
       sameSite: "lax",
-      domain: COOKIE_DOMAIN,
       path: "/",
-    });
+    };
+    if (!IS_DEV) cookieOptions.domain = PROD_COOKIE_DOMAIN;
+    res.clearCookie(COOKIE_NAME, cookieOptions);
   };
 
   const SignupSchema = z.object({

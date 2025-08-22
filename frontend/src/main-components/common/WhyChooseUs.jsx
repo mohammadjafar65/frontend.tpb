@@ -4,19 +4,19 @@ const WhyChooseUs = () => {
       id: 1,
       icon: "/img/featureIcons/1/1.svg",
       title: "Best Price Guarantee",
-      text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+      text: `Get the real local rate no middle layers. If you find a lower price for the same itinerary, we’ll match it. Simple.`,
     },
     {
       id: 2,
       icon: "/img/featureIcons/1/2.svg",
       title: "Easy & Quick Booking",
-      text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+      text: `Plan in minutes: transparent itineraries, instant confirmations, secure payments. Everything just… works.`,
     },
     {
       id: 3,
       icon: "/img/featureIcons/1/3.svg",
       title: "Customer Care 24/7",
-      text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+      text: `Travel changes. We respond. Real humans on chat, call, or WhatsApp before, during, and after your trip.`,
     },
   ];
 
@@ -29,10 +29,10 @@ const WhyChooseUs = () => {
 
       <div className="container">
         <div className="row">
-          <div className="col-xl-4 col-md-7 text-left">
-            <h2 className="text-30 fw-600">Why be a Local Expert</h2>
+          <div className="col-xl-5 col-md-7 text-left">
+            <h2 className="text-30 fw-600">Why book with expert</h2>
             <p className="mt-5">
-              These popular destinations have a lot to offer
+              Handled by people who live there.
             </p>
             <div className="row y-gap-30 pt-60 md:pt-40">
               {expertContent.map((item) => (

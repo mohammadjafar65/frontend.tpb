@@ -17,16 +17,25 @@ const app = express();
 app.set("trust proxy", 1); // behind nginx/cloudflare etc.
 
 // --- CORS (credentials across subdomains)
-const ALLOWED_ORIGINS = [
+const defaultAllowed = [
   "https://thepilgrimbeez.com",
   "https://admin.thepilgrimbeez.com",
-  "http://localhost:3000",
-  "http://localhost:5173",
+  "http://localhost:3005",
+  "http://localhost:3007",
 ];
+
+// Allow comma-separated list via FRONTEND_ORIGIN (optional)
+const envAllowed =
+  (process.env.FRONTEND_ORIGIN || "")
+    .split(",")
+    .map(s => s.trim())
+    .filter(Boolean);
+
+const ALLOWED_ORIGINS = Array.from(new Set([...defaultAllowed, ...envAllowed]));
 
 const corsOptions = {
   origin(origin, cb) {
-    if (!origin) return cb(null, true);
+    if (!origin) return cb(null, true); // curl/postman
     if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
     try {
       const host = new URL(origin).hostname;

@@ -94,7 +94,7 @@ const Tours2 = ({ category, indexColor }) => {
               <article
                 data-aos="fade"
                 data-aos-delay={item?.delayAnimation}
-                className={`tpb-card ${indexColor % 2 === 0 ? "tpb-card--alt" : ""}`}
+                className={`tpb-card tpb-card--compact ${indexColor % 2 === 0 ? "tpb-card--alt" : ""}`}
               >
                 {/* IMAGE */}
                 <div className="tpb-card__image">

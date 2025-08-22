@@ -95,14 +95,13 @@ const ContactPage = () => {
               <div className="media">
                 <img src="/img/placeholder.png" className="mr-4" alt="..." />
                 <div className="media-body">
-                  <h5 className="mt-0 mb-0">Dholka Office</h5>
+                  <h5 className="mt-0 mb-0">Ahmedabad Office</h5>
                   <p className="text-white">
-                    D98, Aman Complex, near Balas Lake, Kalikund, Dholka,
-                    Gujarat 382225
+                    202 Blue Water Tower, Jawaharlal Nehru Road Sarkhej Ahmedabad, 380055
                   </p>
                 </div>
               </div>
-              <div className="media">
+              {/* <div className="media">
                 <img src="/img/placeholder.png" className="mr-4" alt="..." />
                 <div className="media-body">
                   <h5 className="mt-0 mb-0">Mehsana Office</h5>
@@ -111,7 +110,7 @@ const ContactPage = () => {
                     (PRASHANT) CINEMA ROAD
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="col-lg-6 col-md-6 col-12">
               <form onSubmit={handleSubmit}>

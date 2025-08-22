@@ -43,13 +43,11 @@ export const testimonial1 = [
 export const testimonial2 = [
   {
     id: 1,
-    meta: "Hotel Equatorial Melaka",
+    meta: "Kedarnath Trek & Pilgrimage",
     avatar: "/img/avatars/testimonials/1.png",
     name: "Annette Black",
     designation: "UX / UI Designer",
-    text: `"Our family was traveling via bullet train between cities in
-    Japan with our luggage - the location for this hotel made that so
-    easy. Agoda price was fantastic."`,
+    text: `"From permits to ponies, everything was handled. The route, halts, hot tea at the right time—beautifully planned and priced right."`,
     dealyAnimation: "100",
   },
   {
@@ -101,52 +99,26 @@ export const testimonial2 = [
 export const testimonial3 = [
   {
     id: 1,
-    meta: "Hotel Equatorial Melaka",
+    meta: "Kedarnath Trek & Pilgrimage",
     avatar: "/img/ag_1.jpeg",
-    name: "Annette Black",
-    designation: "UX / UI Designer",
-    text: `"Our family was traveling via bullet train between cities in
-    Japan with our luggage - the location for this hotel made that so
-    easy. Agoda price was fantastic."`,
+    name: "Rahul Mehta",
+    // designation: "UX / UI Designer",
+    text: `"From permits to ponies, everything was handled. The route, halts, hot tea at the right time beautifully planned and priced right."`,
   },
   {
     id: 2,
-    meta: "Hotel Equatorial Melaka",
+    meta: "Jaipur Heritage Weekend",
     avatar: "/img/ag_1.jpeg",
-    name: "Annette Black",
-    designation: "UX / UI Designer",
-    text: `"Our family was traveling via bullet train between cities in
-    Japan with our luggage - the location for this hotel made that so
-    easy. Agoda price was fantastic."`,
+    name: "Aisha Khan",
+    // designation: "UX / UI Designer",
+    text: `"Booked on a Thursday, left on Saturday. Local guide was incredible, the haveli stay was spotless, and the airport pickup was right on time."`,
   },
   {
     id: 3,
-    meta: "Hotel Equatorial Melaka",
+    meta: "Kerala Backwaters Escape",
     avatar: "/img/ag_1.jpeg",
-    name: "Annette Black",
-    designation: "UX / UI Designer",
-    text: `"Our family was traveling via bullet train between cities in
-    Japan with our luggage - the location for this hotel made that so
-    easy. Agoda price was fantastic."`,
-  },
-  {
-    id: 4,
-    meta: "Hotel Equatorial Melaka",
-    avatar: "/img/ag_1.jpeg",
-    name: "Annette Black",
-    designation: "UX / UI Designer",
-    text: `"Our family was traveling via bullet train between cities in
-    Japan with our luggage - the location for this hotel made that so
-    easy. Agoda price was fantastic."`,
-  },
-  {
-    id: 5,
-    meta: "Hotel Equatorial Melaka",
-    avatar: "/img/ag_1.jpeg",
-    name: "Annette Black",
-    designation: "UX / UI Designer",
-    text: `"Our family was traveling via bullet train between cities in
-    Japan with our luggage - the location for this hotel made that so
-    easy. Agoda price was fantastic."`,
-  },
+    name: "Daniel Rodrigues",
+    // designation: "UX / UI Designer",
+    text: `"Glassy water, fresh food on board, and a host who knew every hidden canal. It felt personal, not packaged."`,
+  }
 ];

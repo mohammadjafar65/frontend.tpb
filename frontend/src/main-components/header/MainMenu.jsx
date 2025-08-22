@@ -141,6 +141,9 @@ const MainMenu = ({ style = "" }) => {
             ))}
           </ul>
         </li> */}
+        <li className={pathname === "/about" ? "current" : ""}>
+          <Link to="/about">About Us</Link>
+        </li>
 
         <li className={pathname === "/contact" ? "current" : ""}>
           <Link to="/contact">Contact</Link>

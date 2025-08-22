@@ -28,14 +28,14 @@ const index = () => {
               </div> */}
               {/* End .row */}
 
-              <div className="mt-60">
+              {/* <div className="mt-60">
                 <h5 className="text-16 fw-500 mb-10 text-left">
                   Follow us on social media
                 </h5>
-                <div className="d-flex x-gap-20 items-center">
+                <div className="d-flex x-gap-20 items-center"> */}
                   {/* <Social /> */}
-                </div>
-              </div>
+                {/* </div>
+              </div> */}
             </div>
             {/* End .col */}
 

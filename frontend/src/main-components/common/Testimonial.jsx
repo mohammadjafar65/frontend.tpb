@@ -24,10 +24,10 @@ const Testimonial = () => {
         {testimonial3.map((item) => (
           <SwiperSlide key={item.id}>
             <div className="testimonials -type-2 text-left">
-              <div className="testimonials__image mb-24 md:mb-20 justify-start">
+              {/* <div className="testimonials__image mb-24 md:mb-20 justify-start"> */}
                 {/* <img src="./img/testimonials/2/quote.svg" alt="quote" /> */}
-                <img src={item.avatar} alt="avatar" />
-              </div>
+                {/* <img src={item.avatar} alt="avatar" /> */}
+              {/* </div> */}
               <h4 className="text-16 fw-500 text-blue-1">{item.meta}</h4>
               <div className="fw-500 text-dark-1 mt-20">{item.text}</div>
               <div className="testimonials__author mt-40">
