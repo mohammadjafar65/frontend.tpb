@@ -93,7 +93,7 @@ const TourSingleV1Dynamic = () => {
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">
-              <h1 className="text-30 fw-600">{tour.packageName}</h1>
+              <h1 className="text-30 fw-600 text-left">{tour.packageName}</h1>
               <div className="row x-gap-20 y-gap-20 items-center pt-10">
                 {/* <div className="col-auto">
                   <div className="d-flex items-center">

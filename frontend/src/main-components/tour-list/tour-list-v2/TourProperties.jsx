@@ -93,7 +93,7 @@ const TourProperties = ({ selectedState, category }) => {
           <div key={item.packageId} className="col-xl-3 col-lg-4 col-md-6">
             <article
               data-aos="fade"
-              className={`tpb-card tpb-card--compact ${idx % 2 === 0 ? "tpb-card--alt" : ""}`}
+              className={`tpb-card tpb-card--alt tpb-card--compact`}
             >
               {/* IMAGE */}
               <div className="tpb-card__image">

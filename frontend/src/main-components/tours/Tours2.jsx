@@ -31,18 +31,12 @@ const Tours2 = ({ category, indexColor }) => {
   useEffect(() => {
     const fetchCategoryTours = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/packages/with-state`);
-        const filtered = res.data.filter((pkg) => {
-          try {
-            const cats = JSON.parse(pkg.packageCategory || "[]");
-            return cats.some(
-              (c) => String(c).trim().toLowerCase() === String(category).trim().toLowerCase()
-            );
-          } catch {
-            return false;
-          }
-        });
-        setCategoryPackages(filtered.slice(0, 6));
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/packages/by-category/${encodeURIComponent(
+            String(category).trim()
+          )}?with_state=1`
+        );
+        setCategoryPackages((Array.isArray(res.data) ? res.data : []).slice(0, 6));
 
         const statesRes = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
         setAllStates(statesRes.data);

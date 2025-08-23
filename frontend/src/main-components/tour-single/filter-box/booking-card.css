@@ -1,0 +1,210 @@
+/* Theming tokens */
+:root{
+  --bc-border:#eee;
+  --bc-muted:#7a7f87;
+  --bc-text:#0a1845;
+  --bc-subtext:#2d3340;
+  --bc-chip-bg:#f6f7f9;
+  --bc-chip-text:#5d6470;
+  --bc-cta-from:#ffc972;
+  --bc-cta-to:#f5a947;
+  --bc-cta-shadow:rgba(245,169,71,.35);
+}
+
+/* Container */
+.booking-card{
+  position: relative;
+  width:100%;
+  max-width:420px;
+  padding:24px;
+  border:1px solid var(--color-border, var(--bc-border));
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  overflow: visible;            /* allow popovers to escape */
+  z-index: 0;
+}
+
+/* Header price */
+.booking-card__header{ margin-bottom:12px; }
+.booking-card__kicker{ font-size:12px; color:var(--bc-muted); letter-spacing:.02em; }
+.booking-card__price{ font-size:28px; font-weight:800; color:var(--bc-text); }
+.booking-card__per{ font-size:13px; font-weight:500; color:var(--bc-muted); margin-left:4px; }
+
+/* Sections */
+.booking-card__section{ margin-top:16px; }
+.booking-card__section-title{
+  font-size:14px; font-weight:600; color:var(--bc-text);
+  display:flex; align-items:center;
+  margin-bottom: 10px;
+}
+.card-block{ padding:14px; border:1px solid #f0f1f3; border-radius:12px; background:#fff; }
+.divider{ height:1px; background:#f0f1f3; margin:14px 0; }
+
+/* Chips & helpers */
+.chip{
+  display:inline-flex; align-items:center; height:22px;
+  border-radius:999px; padding:0 10px; font-size:12px; font-weight:600;
+}
+.chip--muted{ background:var(--bc-chip-bg); color:var(--bc-chip-text); }
+
+.label{ display:block; font-size:13px; font-weight:600; color:var(--bc-subtext); margin-bottom:6px; }
+.help{ font-size:12px; color:var(--bc-muted); margin-top:6px; }
+
+/* Date layout */
+.date-grid{ display:grid; grid-template-columns: 1fr; gap:12px; }
+@media (min-width: 560px){ .date-grid{ grid-template-columns:1fr 1fr; } }
+.custom_container-picker{ width:100%; }
+.custom_input-picker{
+  width:100%;
+  height:44px;
+  border:1px solid #e6e8eb !important;
+  border-radius:10px;
+  padding:0 12px !important;
+  font-size:14px;
+  color:#1b1f2a;
+  background:#fff;
+}
+.custom_input-picker:focus{ outline:none; border-color:#c6cbd3; box-shadow:0 0 0 3px rgba(34,150,255,.12); }
+.custom_input-picker.is-readonly{ background:#fafbfc; color:#5d6470; }
+
+/* make sure calendar popover floats above everything */
+.rmdp-container, .rmdp-wrapper, .rmdp-calendar { z-index: 9999 !important; }
+
+/* Guests (trigger) */
+.guests{ position: relative; }
+.guests__trigger{
+  width:100%; text-align:left; background:#fff;
+  border:1px solid #e6e8eb; border-radius:10px; padding:10px 12px;
+  cursor:pointer; display:flex; flex-direction:column; gap:2px;
+}
+.guests__trigger:focus{ outline:none; border-color:#c6cbd3; box-shadow:0 0 0 3px rgba(34,150,255,.12); }
+.guests__label{ font-size:13px; font-weight:600; color:var(--bc-subtext); }
+.guests__summary{ font-size:14px; color:#5d6470; }
+
+/* Guests popover (no bootstrap) */
+.dropdown-card{
+  position:absolute; top:calc(100% + 8px); left:0;
+  width:100%; max-width:400px;
+  background:#fff; border:1px solid #eceff3; border-radius:12px;
+  box-shadow:0 10px 22px rgba(0,0,0,.08);
+  z-index: 30;
+}
+.counter-box{ padding:16px; }
+.dropdown-card__apply{
+  margin-top:10px; width:100%; height:40px; border:1px solid #e6e8eb;
+  background:#f8fafc; border-radius:10px; font-weight:600; cursor:pointer;
+}
+.dropdown-card__apply:hover{ background:#eef2f7; }
+
+/* Counter */
+.counter{ display:flex; align-items:center; }
+.counter__btn{
+  width:36px; height:36px; border-radius:8px; border:1px solid #e6e8eb; background:#f8fafc;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:transform .12s ease, background-color .12s ease;
+}
+.counter__btn:hover{ background:#eef2f7; transform:translateY(-1px); }
+.counter__val{ min-width:28px; text-align:center; font-weight:600; margin:0 10px; }
+
+/* CTA */
+.booking-card__cta{
+  width:100%; height:56px; border:0; border-radius:12px; cursor:pointer;
+  font-weight:700; font-size:16px; color:#0a1845; background: linear-gradient(180deg,var(--bc-cta-from) 0%, var(--bc-cta-to) 100%);
+  box-shadow:0 8px 16px var(--bc-cta-shadow);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease, opacity .12s ease;
+}
+.booking-card__cta:hover{ transform:translateY(-1px); filter:brightness(.98); }
+.booking-card__cta:disabled{ opacity:.6; cursor:not-allowed; box-shadow:none; }
+.booking-card__hint{ font-size:12px; color:var(--bc-muted); margin-top:8px; }
+
+/* Total */
+.booking-card__total{ border:1px solid #f0f1f3; border-radius:12px; padding:12px; background:#fbfcff; }
+.booking-card__row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.booking-card__label{ font-size:14px; color:var(--bc-subtext); }
+.booking-card__total-amount{ font-size:22px; font-weight:800; color:#EFA852; }
+.booking-card__sub{ font-size:12px; color:var(--bc-muted); margin-top:4px; }
+
+/* Trust */
+.booking-card__footer{ margin-top:14px; }
+.trust{ display:flex; align-items:center; gap:10px; }
+.trust__icon{
+  width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center;
+  border-radius:999px; background:#e9f8ef; color:#1a8f43;
+}
+.trust__text{ font-size:13px; color:var(--bc-subtext); }
+
+/* Utility (if not present in your stack) */
+.position-sticky{ position: sticky; }
+.top-20{ top:20px; }
+
+/* --- Total card (enhanced) --- */
+.total-card{
+  padding:14px 16px;
+  border:1px solid #ffe3b2;
+  border-radius:14px;
+  background:linear-gradient(180deg,#fff9ef 0%, #ffffff 100%);
+  box-shadow:0 6px 18px rgba(255,187,62,.12);
+}
+
+.total-card__top{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:8px;
+}
+
+.total-card__label{
+  font-size:14px;
+  color:#2d3340;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  height:20px;
+  padding:0 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+
+.badge--soft{
+  background:#fff2d8;
+  color:#a66300;
+  border:1px solid #ffe3b2;
+}
+
+.total-card__amount{
+  font-size:24px;
+  font-weight:900;
+  line-height:1;
+  background:linear-gradient(90deg,#ffb23f 0%, #ff8b00 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.total-card__meta{
+  margin-top:6px;
+  font-size:12px;
+  color:#6b7280;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.total-card__meta .save{
+  font-weight:700;
+  color:#0a8f4a;
+  background:#e7f8ee;
+  border-radius:999px;
+  padding:2px 8px;
+}

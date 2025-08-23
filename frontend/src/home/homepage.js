@@ -31,7 +31,7 @@ function HomePage() {
       try {
         const [packagesRes, categoriesRes] = await Promise.all([
           axios.get(`${process.env.REACT_APP_API_URL}/packages`),
-          axios.get(`${process.env.REACT_APP_API_URL}/packages/categories`),
+          axios.get(`${process.env.REACT_APP_API_URL}/packages/categories?with_state=1`),
         ]);
 
         const packagesData = packagesRes.data;

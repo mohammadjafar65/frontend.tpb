@@ -27,7 +27,7 @@ function App() {
           <Route path="/contact" element={<ContactPage />}></Route>
           <Route path="/tour-list-v2" element={<TourListPage2 />} />
           <Route path="/tour-single/:id" element={<TourSingleV1Dynamic />} />
-          <Route path="booking-page" element={<BookingPage />} />
+          <Route path="/booking-page" element={<BookingPage />} />
 
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsAndConditions />} />
