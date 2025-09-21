@@ -24,12 +24,19 @@ function parseDurationDays(raw) {
 
   return 1;
 }
-
 const addDays = (d, n) => {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
   x.setDate(x.getDate() + n);
   return x;
+};
+// ✅ local Y-M-D (avoid timezone shift of toISOString())
+const toYMDLocal = (date) => {
+  const d = new Date(date);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 };
 
 // tiny animated number hook
@@ -64,6 +71,7 @@ function useAnimatedNumber(value, { duration = 350 } = {}) {
 
 export default function SidebarRight({ tour }) {
   const navigate = useNavigate();
+
   // dates
   const [startDate, setStartDate] = useState(() => {
     const d = new Date(); d.setHours(0, 0, 0, 0); return d;
@@ -92,21 +100,31 @@ export default function SidebarRight({ tour }) {
 
   const handleBookNow = () => {
     if (!canBook) return;
-    const toYMD = (d) => new Date(d).toISOString().slice(0, 10);
-    navigate("/booking-page", {
-      state: {
-        tourId: tour?.packageId || tour?.id,
-        startDate: toYMD(startDate),
-        endDate: toYMD(endDate),
+    const pkgId = tour?.packageId || tour?.id;
+    if (!pkgId) return;
+
+    const start = toYMDLocal(startDate);
+    const end = toYMDLocal(endDate);
+
+    // Save details for checkout to prefill (read on booking page)
+    sessionStorage.setItem(
+      "prebooking",
+      JSON.stringify({
+        packageId: pkgId,
+        startDate: start,
+        endDate: end,
         guests: guestCount,
         pricePerPerson: perPerson,
-        total
-      }
-    });
+        total,
+      })
+    );
+
+    // ✅ navigate with query param (your checkout reads ?packageId=..)
+    navigate(`/booking-page?packageId=${encodeURIComponent(pkgId)}`);
   };
 
   return (
-    <div className="d-flex justify-end js-pin-content text-left position-sticky top-20">
+    <div className="d-flex justify-end js-pin-content text-left">
       <div className="w-full lg:w-full d-flex flex-column items-center">
         <aside className="booking-card position-sticky top-20" aria-label="Booking panel">
           {/* Header price */}
@@ -122,9 +140,7 @@ export default function SidebarRight({ tour }) {
           <section className="booking-card__section">
             <div className="booking-card__section-title">
               <i className="icon-calendar mr-10" /> Date
-              {durationDays ? (
-                <span className="chip chip--muted ml-10">{durationDays} days</span>
-              ) : null}
+              {durationDays ? <span className="chip chip--muted ml-10">{durationDays} days</span> : null}
             </div>
 
             <FilterBox
@@ -142,16 +158,14 @@ export default function SidebarRight({ tour }) {
           <section className="booking-card__section">
             <button
               type="button"
-              className="booking-card__cta"
+              className="booking-card__cta text-white"
               disabled={!canBook}
               aria-disabled={!canBook}
               onClick={handleBookNow}
             >
               {canBook ? "Book Now" : "Contact for Pricing"}
             </button>
-            <div className="booking-card__hint">
-              Free cancellation up to 24 hours before start.
-            </div>
+            <div className="booking-card__hint">Free cancellation up to 24 hours before start.</div>
           </section>
 
           {/* Total */}
@@ -162,36 +176,19 @@ export default function SidebarRight({ tour }) {
                   Total for <strong>{guestCount}</strong> {guestCount > 1 ? "guests" : "guest"}
                   <span className="badge badge--soft text-black">No hidden fees</span>
                 </div>
-
                 <div className="total-card__amount" key={total}>
                   {formatINR(Math.round(animatedTotal))}
                 </div>
               </div>
-
               <div className="total-card__meta">
                 {perPerson ? `${formatINR(perPerson)} × ${guestCount}` : "Pricing to be confirmed"}
-                {/* Optional savings pill if you pass a strike/original price */}
                 {Number(tour?.strikePrice || 0) > total && (
-                  <span className="save">
-                    You save {formatINR(Number(tour.strikePrice) - total)}
-                  </span>
+                  <span className="save">You save {formatINR(Number(tour.strikePrice) - total)}</span>
                 )}
               </div>
             </div>
           </section>
         </aside>
-
-        {/* Trust */}
-        {/* <footer className="booking-card__footer">
-          <div className="trust">
-            <span className="trust__icon">
-              <i className="icon-check" />
-            </span>
-            <span className="trust__text">
-              94% of travelers recommend this experience
-            </span>
-          </div>
-        </footer> */}
       </div>
     </div>
   );

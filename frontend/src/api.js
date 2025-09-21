@@ -1,8 +1,16 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-  withCredentials: true, // important for httpOnly cookie auth
+const API = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:3002",
+  withCredentials: true, 
 });
 
-export default api;
+API.interceptors.response.use(
+  (r) => r,
+  (err) => {
+    console.error("[API ERROR]", err?.response?.data || err.message);
+    return Promise.reject(err);
+  }
+);
+
+export default API;

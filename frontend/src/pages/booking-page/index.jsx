@@ -16,13 +16,7 @@ const BookingPage = () => {
       <MetaComponent meta={metadata} />
       {/* End Page Title */}
 
-      <div className="header-margin"></div>
-      {/* header top margin */}
-
-      <Header />
-      {/* End Header 1 */}
-
-      <section className="pt-40 layout-pb-md bg-white">
+      <section className="padding_top layout-pb-md bg-white">
         <div className="container">
           <StepperBooking />
         </div>
@@ -32,8 +26,6 @@ const BookingPage = () => {
 
       <CallToActions />
       {/* End Call To Actions Section */}
-
-      <DefaultFooter />
     </>
   );
 };

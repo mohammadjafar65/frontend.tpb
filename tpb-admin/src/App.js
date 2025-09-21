@@ -14,6 +14,8 @@ import StateDetails from "./pages/StateDetails.jsx";
 import Login from "./pages/Login.jsx";
 import RequireAuth from "./components/RequireAuth.jsx";
 import Users from "./pages/Users.jsx";
+import BookingDetails from "./pages/BookingDetails.jsx";
+import Bookings from "./pages/Bookings.jsx";
 
 function App() {
   return (
@@ -100,6 +102,22 @@ function App() {
             element={
               <RequireAdmin>
                 <StateDetails />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/bookings"
+            element={
+              <RequireAdmin>
+                <Bookings />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/bookings/:id"
+            element={
+              <RequireAdmin>
+                <BookingDetails />
               </RequireAdmin>
             }
           />

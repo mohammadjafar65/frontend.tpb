@@ -121,11 +121,11 @@ module.exports = (app, db) => {
 
       const sql = `
         INSERT INTO travel_packages (
-          packageId, avatarImage, bannerImage, featuredImage, packageName, packageCategory,
-          packageDuration, packageDescription, slug, rating, reviewCount,
-          gallery, itinerary, included, specialInstructions, conditionsOfTravel,
-          thingsToMaintain, policies, terms, basePrice, state_ids
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            packageId, avatarImage, bannerImage, featuredImage, packageName, packageCategory,
+            packageDuration, packageDescription, slug, rating, reviewCount,
+            gallery, itinerary, included, specialInstructions, conditionsOfTravel,
+            thingsToMaintain, policies, terms, basePrice, state_ids, isVisible
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       const values = [
@@ -150,6 +150,7 @@ module.exports = (app, db) => {
         pickField(fields, "terms") || "",
         num(pickField(fields, "basePrice"), 0),
         parseField(fields, "state_ids"), // JSON string like "[1,2]"
+        num(pickField(fields, "isVisible"), 1),
       ];
 
       await db.query(sql, values);
@@ -169,7 +170,7 @@ module.exports = (app, db) => {
           avatarImage=?, bannerImage=?, featuredImage=?, packageName=?, packageCategory=?,
           packageDuration=?, packageDescription=?, slug=?, rating=?, reviewCount=?,
           gallery=?, itinerary=?, included=?, specialInstructions=?, conditionsOfTravel=?,
-          thingsToMaintain=?, policies=?, terms=?, basePrice=?, state_ids=?
+          thingsToMaintain=?, policies=?, terms=?, basePrice=?, state_ids=?, isVisible=?
         WHERE packageId=?
       `;
 
@@ -194,6 +195,7 @@ module.exports = (app, db) => {
         pickField(fields, "terms") || "",
         num(pickField(fields, "basePrice"), 0),
         parseField(fields, "state_ids"),
+        num(pickField(fields, "isVisible"), 1),
         req.params.packageId,
       ];
 
@@ -245,46 +247,43 @@ module.exports = (app, db) => {
         packageId, avatarImage, bannerImage, featuredImage, packageName, packageCategory,
         packageDuration, packageDescription, slug, rating, reviewCount,
         gallery, itinerary, included, specialInstructions, conditionsOfTravel,
-        thingsToMaintain, policies, terms, basePrice, state_ids
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        thingsToMaintain, policies, terms, basePrice, state_ids, isVisible
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
       const values = [
         newId,
-        original.avatarImage,     // already valid JSON/TEXT from DB
-        original.bannerImage,     // ^
+        original.avatarImage,
+        original.bannerImage,
         original.featuredImage || "",
         `${original.packageName} (Copy)`,
-        original.packageCategory, // valid JSON/TEXT string
+        original.packageCategory,
         original.packageDuration,
         original.packageDescription,
         newSlug,
         original.rating,
         original.reviewCount,
-        original.gallery,         // valid JSON/TEXT
-        original.itinerary,       // valid JSON/TEXT
-        original.included,        // valid JSON/TEXT
+        original.gallery,
+        original.itinerary,
+        original.included,
         original.specialInstructions,
         original.conditionsOfTravel,
         original.thingsToMaintain,
         original.policies,
         original.terms,
         original.basePrice,
-        original.state_ids || "[]", // keep same states so the copy remains visible
-        // If you want duplicates to be hidden until re-assigned,
-        // change to: JSON.stringify([])
+        original.state_ids || "[]",
+        original.isVisible,
       ];
 
       await conn.query(sql, values);
 
-      // ---- keep states <-> packages mapping in sync so UI can find the new copy
       await addPkgToStates(conn, newId, stateIds);
 
       await conn.commit();
       res.json({ message: "Package duplicated", newPackageId: newId, slug: newSlug });
     } catch (e) {
       try { await (conn && conn.rollback()); } catch { }
-      // Optional: auto-retry on duplicate slug
       if (e && e.code === "ER_DUP_ENTRY") {
         return res.status(409).json({ error: "SLUG_CONFLICT", details: "Duplicate slug. Retry." });
       }
@@ -322,7 +321,7 @@ module.exports = (app, db) => {
 
       const [rows] = await db.query(
         "SELECT * FROM travel_packages " +
-        "WHERE JSON_CONTAINS(COALESCE(state_ids, JSON_ARRAY()), JSON_ARRAY(?))",
+        "WHERE isVisible = 1 AND JSON_CONTAINS(COALESCE(state_ids, JSON_ARRAY()), JSON_ARRAY(?))",
         [stateId]
       );
       res.json(rows);
@@ -338,7 +337,7 @@ module.exports = (app, db) => {
       if (!s?.length) return res.json([]);
       const [rows] = await db.query(
         "SELECT * FROM travel_packages " +
-        "WHERE JSON_CONTAINS(COALESCE(state_ids, JSON_ARRAY()), JSON_ARRAY(?))",
+        "WHERE isVisible = 1 AND JSON_CONTAINS(COALESCE(state_ids, JSON_ARRAY()), JSON_ARRAY(?))",
         [s[0].id]
       );
       res.json(rows);
@@ -352,7 +351,7 @@ module.exports = (app, db) => {
     try {
       const [rows] = await db.query(
         "SELECT * FROM travel_packages " +
-        "WHERE JSON_LENGTH(COALESCE(state_ids, JSON_ARRAY())) > 0"
+        "WHERE isVisible = 1 AND JSON_LENGTH(COALESCE(state_ids, JSON_ARRAY())) > 0"
       );
       res.json(rows);
     } catch (e) {
@@ -461,10 +460,10 @@ module.exports = (app, db) => {
       if (withState) {
         [rows] = await db.query(
           "SELECT * FROM travel_packages " +
-          "WHERE JSON_LENGTH(COALESCE(state_ids, JSON_ARRAY())) > 0"
+          "WHERE isVisible = 1 AND JSON_LENGTH(COALESCE(state_ids, JSON_ARRAY())) > 0"
         );
       } else {
-        [rows] = await db.query("SELECT * FROM travel_packages");
+        [rows] = await db.query("SELECT * FROM travel_packages WHERE isVisible = 1");
       }
 
       const filtered = rows.filter((pkg) => {
@@ -482,6 +481,21 @@ module.exports = (app, db) => {
     }
   });
 
+  app.post("/packages/toggle-visibility/:packageId", async (req, res) => {
+    try {
+      const { isVisible } = req.body; // expects { isVisible: 0 or 1 }
+      const [r] = await db.query(
+        "UPDATE travel_packages SET isVisible=? WHERE packageId=?",
+        [Number(isVisible) ? 1 : 0, req.params.packageId]
+      );
+      if (r.affectedRows === 0)
+        return res.status(404).json({ message: "Package not found" });
+      res.json({ message: "Visibility updated successfully" });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to update visibility", details: e.message });
+    }
+  });
+
   // GET /packages/with-geo : only return packages with at least one valid geo chain
   app.get("/packages/with-geo", async (_req, res) => {
     try {
@@ -489,7 +503,7 @@ module.exports = (app, db) => {
 
       // first, only rows that even have some state_ids
       const [rows] = await db.query(
-        "SELECT * FROM travel_packages WHERE JSON_LENGTH(COALESCE(state_ids, JSON_ARRAY())) > 0"
+        "SELECT * FROM travel_packages WHERE isVisible = 1 AND JSON_LENGTH(COALESCE(state_ids, JSON_ARRAY())) > 0"
       );
 
       const filtered = rows.filter(pkg => pkgHasAtLeastOneValidState(pkg, validStateIds));

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import MainMenu from "./MainMenu";
 import MobileMenu from "./MobileMenu";
-import useAuth from "../../hooks/useAuth"; // adjust if needed
+import useAuth from "../../hooks/useAuth";
 
-const Header = ({ setShowAuth }) => {
+const Header = ({ setShowAuth = () => { } }) => {
   const [navbar, setNavbar] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -97,6 +97,7 @@ const Header = ({ setShowAuth }) => {
                   ) : (
                     <div className="relative" ref={menuRef}>
                       {/* Avatar button */}
+                      {/* Avatar button */}
                       <button
                         ref={btnRef}
                         onClick={() => setMenuOpen((s) => !s)}
@@ -109,14 +110,15 @@ const Header = ({ setShowAuth }) => {
                         <span className="avatar">
                           {initials(user?.name, user?.email)}
                         </span>
-                        {/* show name if you want:
-                        <span className="text-dark-1 text-14 fw-500 max-w-120 truncate">
-                          {user?.name || user?.email}
-                        </span> */}
+                        {/* ✅ Show user name with character limit */}
+                        <span className="username text-dark-1 text-14 fw-500 max-w-120 truncate hidden sm:inline">
+                          {(user?.name || user?.email)?.length > 15
+                            ? (user?.name || user?.email).slice(0, 15) + "…"
+                            : user?.name || user?.email}
+                        </span>
                         <i
-                          className={`icon-chevron-down text-12 text-dark-1 caret ${
-                            menuOpen ? "open" : ""
-                          }`}
+                          className={`icon-chevron-down text-12 text-dark-1 caret ${menuOpen ? "open" : ""
+                            }`}
                         />
                       </button>
 
@@ -127,10 +129,20 @@ const Header = ({ setShowAuth }) => {
                         className={`user-menu ${menuOpen ? "open" : ""}`}
                         aria-labelledby="user-menu"
                       >
-                        <div className="px-15 py-10 text-13 text-light-1 truncate">
-                          {user?.email}
+                        <div className="px-15 py-12 border-b border-gray-100 flex items-center gap-10 flas">
+                          <span className="avatar-sm">
+                            {initials(user?.name, user?.email)}
+                          </span>
+                          <div className="flex flex-col side">
+                            <span className="text-14 fw-600 text-dark-1 truncate">
+                              {user?.name || "User"}
+                            </span>
+                            <span className="text-12 text-light-1 truncate">
+                              {user?.email}
+                            </span>
+                          </div>
                         </div>
-                        <div className="menu-sep" />
+
                         <Link
                           to="/account"
                           className="menu-item"
@@ -159,55 +171,6 @@ const Header = ({ setShowAuth }) => {
           </div>
         </div>
       </header>
-
-      {/* Component-scoped styles */}
-      <style>{`
-        /* Avatar/button */
-        .avatar{
-          width:40px;height:40px;border-radius:9999px;
-          display:inline-flex;align-items:center;justify-content:center;
-          background:#f5f5f5;color:#EFA852;font-weight:700;
-          box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-        }
-        .userbtn{ padding:6px 8px; border-radius:10px; transition:background .12s ease; }
-        .userbtn:hover{ background:rgba(0,0,0,.04); }
-        .caret{ transition:transform .15s ease; }
-        .caret.open{ transform:rotate(180deg); }
-
-        /* Dropdown popover */
-        .user-menu{
-          position:absolute; right:0; top:calc(100% + 10px);
-          min-width:240px; background:#fff; border-radius:12px;
-          box-shadow:0 16px 40px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.06);
-          border:1px solid rgba(0,0,0,.06);
-          opacity:0; transform:scale(.98); pointer-events:none;
-          transition:opacity .12s ease, transform .12s ease;
-          z-index:1000;
-        }
-        .user-menu.open{ opacity:1; transform:scale(1); pointer-events:auto; }
-
-        /* little caret tip */
-        .user-menu::before{
-          content:""; position:absolute; top:-6px; right:18px; width:12px; height:12px;
-          background:#fff; transform:rotate(45deg);
-          border-left:1px solid rgba(0,0,0,.06);
-          border-top:1px solid rgba(0,0,0,.06);
-        }
-
-        /* Menu items */
-        .menu-item{
-          display:block; width:100%; text-align:left;
-          padding:10px 15px; font-size:14px; color:#111827;
-          background:transparent; border:0; cursor:pointer;
-        }
-        .menu-item:hover{ background:rgba(59,130,246,.08); color:#2563eb; }
-        .menu-item.danger{ color:#e11d48; }
-        .menu-item.danger:hover{ background:rgba(225,29,72,.06); }
-
-        .menu-sep{ height:1px; background:rgba(0,0,0,.06); margin:4px 0; }
-        .truncate{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .max-w-120{ max-width:120px; }
-      `}</style>
     </>
   );
 };

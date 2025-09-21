@@ -11,6 +11,19 @@ const IS_DEV = process.env.NODE_ENV !== "production";
 // Only set a cookie domain in prod. In dev, omit it so the cookie is set for "localhost".
 const PROD_COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || ".thepilgrimbeez.com";
 
+// ---- Middleware (moved OUTSIDE so it’s reusable)
+function requireAuth(req, res, next) {
+  const token = req.cookies[COOKIE_NAME];
+  if (!token) return res.status(401).json({ error: "Unauthorized" });
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
+    req.user = user;
+    next();
+  } catch {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+}
+
 module.exports = (app, pool) => {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
@@ -77,6 +90,41 @@ module.exports = (app, pool) => {
     } catch (e) {
       if (e.errors) return res.status(400).json({ error: "Invalid input" });
       console.error(e);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // ---- GUEST LOGIN or AUTO-REGISTER (for booking flow)
+  app.post("/auth/guest-login-or-register", async (req, res) => {
+    const { email, name } = req.body || {};
+    if (!email) return res.status(400).json({ error: "Email required" });
+
+    try {
+      // check if user exists
+      const [rows] = await pool.query("SELECT id, name, email FROM users WHERE email = ?", [email]);
+      let user;
+      if (rows.length) {
+        user = rows[0];
+      } else {
+        const id = cryptoRandomId();
+        await pool.query(
+          "INSERT INTO users (id, name, email, role, created_at, updated_at) VALUES (?, ?, ?, 'user', NOW(), NOW())",
+          [id, name || email.split("@")[0], email || null]
+        );
+        user = { id, name: name || email.split("@")[0], email, role: "user" };
+      }
+
+      // issue JWT + cookie
+      const token = jwt.sign(
+        { id: user.id, name: user.name, email: user.email, role: user.role || "user" },
+        JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+      sendAuthCookie(res, token);
+
+      return res.json({ success: true, user });
+    } catch (err) {
+      console.error("guest-login error", err);
       res.status(500).json({ error: "Server error" });
     }
   });
@@ -199,3 +247,6 @@ module.exports = (app, pool) => {
 function cryptoRandomId() {
   return require("crypto").randomBytes(12).toString("hex");
 }
+
+// ✅ Export it for reuse in bookings.js
+module.exports.requireAuth = requireAuth;

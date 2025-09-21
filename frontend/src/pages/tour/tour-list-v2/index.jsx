@@ -66,7 +66,7 @@ const TourListPage2 = () => {
             <div className="col-12">
               <div className="text-center">
                 <h1 className="text-30 fw-600">
-                  {stateName || "All Tours Packages"}
+                  {stateName || queryCategory || "All Tours Packages"}
                 </h1>
               </div>
             </div>

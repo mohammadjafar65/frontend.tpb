@@ -1,147 +1,68 @@
-const OrderSubmittedInfo = () => {
+// OrderSubmittedInfo.jsx
+const OrderSubmittedInfo = ({ summary }) => {
+  const s = summary || {};
   return (
     <>
       <div className="col-xl-8 col-lg-8 text-left">
         <div className="order-completed-wrapper">
-          <div className="d-flex flex-column items-center mt-40 lg:md-40 sm:mt-24">
+          <div className="d-flex flex-column items-center mt-40">
             <div className="size-80 flex-center rounded-full bg-dark-3">
               <i className="icon-check text-30 text-white" />
             </div>
             <div className="text-30 lh-1 fw-600 mt-20">
-              System, your order was submitted successfully!
+              {s.packageName ? `${s.packageName}` : "Your order"} was purchased successfully!
             </div>
             <div className="text-15 text-light-1 mt-10">
-              Booking details has been sent to: admin@bookingcore.test
+              A confirmation has been sent to your email.
             </div>
           </div>
-          {/* End header */}
 
           <div className="border-type-1 rounded-8 px-50 py-35 mt-40">
             <div className="row">
               <div className="col-lg-3 col-md-6">
-                <div className="text-15 lh-12">Order Number</div>
-                <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  13119
-                </div>
+                <div className="text-15 lh-12">Order ID</div>
+                <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">{s.orderId || "-"}</div>
               </div>
-              {/* End .col */}
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Date</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  27/07/2021
+                  {s.purchasedAt ? new Date(s.purchasedAt).toLocaleString() : "-"}
                 </div>
               </div>
-              {/* End .col */}
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Total</div>
                 <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  $40.10
+                  {s.currency || "INR"} {s.amount || "-"}
                 </div>
               </div>
-              {/* End .col */}
               <div className="col-lg-3 col-md-6">
                 <div className="text-15 lh-12">Payment Method</div>
-                <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">
-                  Direct Bank Transfer
+                <div className="text-15 lh-12 fw-500 text-blue-1 mt-10">{s.method || "Razorpay"}</div>
+              </div>
+            </div>
+            <div className="row mt-30">
+              <div className="col-lg-6">
+                <div className="text-15 lh-12">User Name</div>
+                <div className="text-15 fw-500 mt-5">{s.customerName || "-"}</div>
+              </div>
+              <div className="col-lg-6">
+                <div className="text-15 lh-12">Email</div>
+                <div className="text-15 fw-500 mt-5">{s.email || "-"}</div>
+              </div>
+              <div className="col-lg-6 mt-20">
+                <div className="text-15 lh-12">Guests</div>
+                <div className="text-15 fw-500 mt-5">{s.guests || "-"}</div>
+              </div>
+              <div className="col-lg-6 mt-20">
+                <div className="text-15 lh-12">Dates</div>
+                <div className="text-15 fw-500 mt-5">
+                  {s.startDate} → {s.endDate}
                 </div>
               </div>
-              {/* End .col */}
             </div>
           </div>
-          {/* order price info */}
 
-          <div className="border-light rounded-8 px-50 py-40 mt-40">
-            <h4 className="text-20 fw-500 mb-30">Your Information</h4>
-            <div className="row y-gap-10">
-              <div className="col-12">
-                <div className="d-flex justify-between ">
-                  <div className="text-15 lh-16">First name</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1">System</div>
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">Last name</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1">Admin</div>
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">Email</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1">
-                    admin@bookingcore.test
-                  </div>
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">Phone</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1">
-                    112 666 888
-                  </div>
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">Address line 1</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">Address line 2</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">City</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1">
-                    New York
-                  </div>
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">State/Province/Region</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">ZIP code/Postal code</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">Country</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1">
-                    United States
-                  </div>
-                </div>
-              </div>
-              {/* End .col */}
-              <div className="col-12">
-                <div className="d-flex justify-between border-top-light pt-10">
-                  <div className="text-15 lh-16">Special Requirements</div>
-                  <div className="text-15 lh-16 fw-500 text-blue-1" />
-                </div>
-              </div>
-              {/* End .col */}
-            </div>
-            {/* End .row */}
-          </div>
-          {/* End order information */}
+          {/* You can render user/address block here if you collect it */}
         </div>
       </div>
     </>

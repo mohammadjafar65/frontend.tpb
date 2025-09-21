@@ -51,14 +51,24 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-app.use(express.json());
-app.use(cookieParser());
-
 // ---- Razorpay
 global.razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
+
+app.post(
+  "/api/razorpay/webhook",
+  express.raw({ type: "application/json" }),
+  (req, res, next) => {
+    // defer to controller (we pass db pool through req.app locals)
+    req.app.locals.db = db;
+    require("./controllers/paymentWebhook")(req, res);
+  }
+);
+
+app.use(express.json());
+app.use(cookieParser());
 
 const port = process.env.PORT || 3002;
 
@@ -105,15 +115,17 @@ require("./controllers/states")(app, db, upload, uuidv4);
 
 require("./controllers/auth")(app, db);
 require("./controllers/admin")(app, db);
+require("./controllers/bookings")(app, db);
 
 // Payment routes
-const paymentRoutes = require("./controllers/paymentController");
-app.use("/api", paymentRoutes);
+require("./controllers/paymentController")(app, db);
 
 // error handler
 app.use((err, req, res, _next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || "Something went wrong!";
+  if (status >= 500) console.error(err.stack || err);
+  res.status(status).json({ error: message });
 });
 
 // start

@@ -1,5 +1,3 @@
-import Header from "../main-components/header/header";
-import Footer from "../main-components/footer";
 import Hero from "../main-components/hero";
 import Tours2 from "../main-components/tours/Tours2";
 import OwlCarousel from "react-owl-carousel";
@@ -17,14 +15,12 @@ import WhyChooseUs from "../main-components/common/WhyChooseUs";
 import Testimonial from "../main-components/common/Testimonial";
 import Brand2 from "../main-components/common/Brand2";
 import CallToActions from "../main-components/common/CallToActions";
-import AuthModal from "../main-components/header/AuthModal";
 
 function HomePage() {
   const [packages, setPackages] = useState([]);
   const [packagesByCategory, setPackagesByCategory] = useState({});
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [categories, setCategories] = useState([]);
-  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +43,31 @@ function HomePage() {
 
     fetchData();
   }, []);
+
+  const getBannerImage = (pkg) => {
+    if (!pkg) return "/img/default-bg.jpg";
+
+    try {
+      // Prefer bannerImage if exists
+      if (pkg.featuredImage) {
+        const arr = JSON.parse(pkg.featuredImage);
+        if (Array.isArray(arr) && arr.length > 0) return arr[0];
+        return pkg.featuredImage; // fallback if not array
+      }
+
+      // Fallback to avatarImage if banner missing
+      if (pkg.avatarImage) {
+        const arr = JSON.parse(pkg.avatarImage);
+        if (Array.isArray(arr) && arr.length > 0) return arr[0];
+        return pkg.avatarImage;
+      }
+    } catch {
+      // If JSON.parse fails, just return string
+      return pkg.featuredImage || pkg.avatarImage || "/img/default-bg.jpg";
+    }
+
+    return "/img/default-bg.jpg";
+  };
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -74,12 +95,7 @@ function HomePage() {
 
   return (
     <>
-      <Header setShowAuth={setShowAuth} />
       <Hero />
-
-      <div className="authModal">
-        <AuthModal open={showAuth} onClose={() => setShowAuth(false)} />
-      </div>
 
       {/* ✅ Top: Hard-coded 'Most Popular Tours' Section */}
       <section className="pt-50 pb-50 bg-gray">
@@ -146,6 +162,55 @@ function HomePage() {
             </div>
           </section>
         ))} */}
+
+      {/* ✅ Dynamic sections by category */}
+      {categories
+        .filter((cat) => cat !== "Most Popular Tours")
+        .map((category, index) => {
+          const firstPkg = packagesByCategory[category]?.[0];
+          const bgImage = getBannerImage(firstPkg);
+
+          return (
+            <section
+              key={category}
+              className="relative py-60 md:py-40 white-arrow"
+              style={{
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url(${bgImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <div className="container relative z-10">
+                <div className="row y-gap-20 justify-between items-end text-white">
+                  <div className="col-auto">
+                    <div className="sectionTitle -md text-left">
+                      <h2 className="sectionTitle__title">{category}</h2>
+                      <p className="sectionTitle__text text-white mt-5 sm:mt-0">
+                        Explore packages in {category}.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <Link
+                      to={`/tour-list-v2?category=${encodeURIComponent(category)}`}
+                      className="button -md bg-white text-dark-1"
+                    >
+                      View All <div className="icon-arrow-top-right ml-15" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* ✅ Carousel with Tours2 cards */}
+                <div className="row pt-40">
+                  <div className="col-12">
+                    <Tours2 category={category} indexColor={index} />
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        })}
+
 
       <section className="layout-pt-md layout-pb-md bg-white overflow-hidden" data-aos="fade-up">
         <div className="container">
@@ -381,9 +446,6 @@ function HomePage() {
             </section> */}
 
       <CallToActions />
-      {/* End Call To Actions Section */}
-
-      <Footer />
     </>
   );
 }

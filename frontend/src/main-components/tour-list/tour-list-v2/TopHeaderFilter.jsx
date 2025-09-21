@@ -1,64 +1,61 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const TopHeaderFilter = ({ selectedState }) => {
+const TopHeaderFilter = ({ selectedState, category }) => {
   const [packageCount, setPackageCount] = useState(0);
-  const [stateLabel, setStateLabel] = useState("");
+  const [label, setLabel] = useState("");
 
   useEffect(() => {
     let cancelled = false;
 
     const load = async () => {
       try {
-        // 1) Count
-        let count = 0;
-        if (selectedState) {
-          // filtered by state (name or id)
-          const url = `${process.env.REACT_APP_API_URL}/packages/by-state/${encodeURIComponent(
+        let url = "";
+
+        if (selectedState && category) {
+          url = `${process.env.REACT_APP_API_URL}/packages/by-state-category/${encodeURIComponent(
             selectedState
+          )}/${encodeURIComponent(category)}`;
+        } else if (selectedState) {
+          url = `${process.env.REACT_APP_API_URL}/packages/by-state/${encodeURIComponent(
+            selectedState,
           )}`;
-          const res = await axios.get(url);
-          count = Array.isArray(res.data) ? res.data.length : 0;
+        } else if (category) {
+          url = `${process.env.REACT_APP_API_URL}/packages/by-category/${encodeURIComponent(
+            category
+          )}`;
         } else {
-          // no state filter → get total count
-          const res = await axios.get(`${process.env.REACT_APP_API_URL}/packages`);
-          count = Array.isArray(res.data) ? res.data.length : 0;
+          url = `${process.env.REACT_APP_API_URL}/packages`;
         }
+
+        const res = await axios.get(url);
+        const count = Array.isArray(res.data) ? res.data.length : 0;
         if (!cancelled) setPackageCount(count);
 
-        // 2) Label
-        if (!selectedState) {
-          if (!cancelled) setStateLabel(""); // show "All Tours Packages" header, no suffix
-        } else if (isNaN(selectedState)) {
-          if (!cancelled) setStateLabel(selectedState); // already a name
-        } else {
-          // numeric id → fetch name
-          const stateRes = await axios.get(
-            `${process.env.REACT_APP_API_URL}/states/id/${selectedState}`
-          );
-          if (!cancelled) setStateLabel(stateRes.data?.name || "");
-        }
+        // set label
+        let lbl = "";
+        if (selectedState) lbl = selectedState; // can resolve to name via API
+        if (category) lbl = category;
+        if (!cancelled) setLabel(lbl);
       } catch (e) {
         if (!cancelled) {
           setPackageCount(0);
-          setStateLabel(selectedState && isNaN(selectedState) ? selectedState : "");
+          setLabel("");
         }
         console.error("TopHeaderFilter load error:", e);
       }
     };
 
     load();
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedState]);
+    return () => { cancelled = true; };
+  }, [selectedState, category]);
 
   return (
     <div className="row y-gap-10 items-center justify-between">
       <div className="col-auto">
         <div className="text-18">
           <span className="fw-500">{packageCount} packages</span>
-          {stateLabel ? ` in ${stateLabel}` : ""}
+          {label ? ` in ${label}` : ""}
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { House, Globe, Map, MapPin, Package, ChevronRight, User } from 'lucide-react';
+import { House, Globe, Map, MapPin, Package, ChevronRight, User, ListOrdered } from 'lucide-react';
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
@@ -11,7 +11,7 @@ const menuItems = [
     { name: "Users", icon: <User />, path: "/admin/users" },
     // { name: "Hotels", icon: <FaHotel />, path: "/hotels" },
     // { name: "Enquiries", icon: <FaRegEnvelope />, path: "/enquiries" },
-    // { name: "Bookings", icon: <FaCalendarCheck />, path: "/bookings" },
+    { name: "Bookings", icon: <ListOrdered />, path: "/bookings" }
 ];
 
 export default function Sidebar() {

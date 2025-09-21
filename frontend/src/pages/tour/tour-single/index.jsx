@@ -80,16 +80,10 @@ const TourSingleV1Dynamic = () => {
       <MetaComponent meta={metadata} />
       {/* End Page Title */}
 
-      <div className="header-margin"></div>
-      {/* header top margin */}
-
-      <Header />
-      {/* End Header 1 */}
-
       {/* <TopBreadCrumb tour={{ tour, stateName, countryName }} /> */}
       {/* End top breadcrumb */}
 
-      <section className="pt-40 bg-white">
+      <section className="bg-white padding_top">
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">
@@ -274,8 +268,6 @@ const TourSingleV1Dynamic = () => {
 
       <CallToActions />
       {/* End Call To Actions Section */}
-
-      <DefaultFooter />
     </>
   );
 };

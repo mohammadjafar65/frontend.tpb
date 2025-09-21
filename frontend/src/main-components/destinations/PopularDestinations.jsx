@@ -10,6 +10,7 @@ import "swiper/css/scrollbar";
 const PopularDestinations = () => {
   const [states, setStates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [counts, setCounts] = useState({}); // { stateId: packageCount }
 
   // Refs for custom navigation
   const prevRef = useRef(null);
@@ -20,7 +21,24 @@ const PopularDestinations = () => {
     const fetchStates = async () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
-        setStates(res.data || []);
+        const statesData = res.data || [];
+        setStates(statesData);
+
+        // fetch counts for each state
+        const countMap = {};
+        await Promise.all(
+          statesData.map(async (st) => {
+            try {
+              const pkgRes = await axios.get(
+                `${process.env.REACT_APP_API_URL}/packages/by-state/${encodeURIComponent(st.id)}`
+              );
+              countMap[st.id] = Array.isArray(pkgRes.data) ? pkgRes.data.length : 0;
+            } catch {
+              countMap[st.id] = 0;
+            }
+          })
+        );
+        setCounts(countMap);
       } catch (error) {
         setStates([]);
         console.error("Failed to fetch states:", error);
@@ -48,7 +66,6 @@ const PopularDestinations = () => {
           el: scrollbarRef.current,
         }}
         onInit={(swiper) => {
-          // Attach navigation and scrollbar refs after DOM mount
           swiper.params.navigation.prevEl = prevRef.current;
           swiper.params.navigation.nextEl = nextRef.current;
           swiper.params.scrollbar.el = scrollbarRef.current;
@@ -65,14 +82,7 @@ const PopularDestinations = () => {
         }}
       >
         {states.map((item) => {
-          let pkgCount = 0;
-          try {
-            pkgCount = Array.isArray(item.package_ids)
-              ? item.package_ids.length
-              : JSON.parse(item.package_ids || "[]").length;
-          } catch {
-            pkgCount = 0;
-          }
+          const pkgCount = counts[item.id] ?? 0;
           return (
             <SwiperSlide key={item.id}>
               <Link
@@ -108,6 +118,8 @@ const PopularDestinations = () => {
           );
         })}
       </Swiper>
+
+      {/* Navigation buttons */}
       <div>
         <button
           ref={prevRef}

@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../dashboard/Sidebar/Sidebar";
 import Header from "../dashboard/Header/Header";
-import { Trash, ImageIcon } from "lucide-react";
+import { Trash, ImageIcon, Eye, Info } from "lucide-react";
 
 function PackageManagement() {
   const [packages, setPackages] = useState([]);
@@ -223,7 +223,7 @@ function PackageManagement() {
               {filteredPackages.map((pkg) => {
                 // tags
                 let includedItems = [];
-                try { includedItems = pkg.included ? JSON.parse(pkg.included) : []; } catch {}
+                try { includedItems = pkg.included ? JSON.parse(pkg.included) : []; } catch { }
                 if (!Array.isArray(includedItems)) includedItems = [];
 
                 const id = pkg.packageId;
@@ -241,18 +241,18 @@ function PackageManagement() {
                       title="Select"
                     />
 
-                    <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col transition hover:shadow-lg relative ring-1 ring-black/5">
+                    <div className="rounded-2xl shadow-md overflow-hidden flex flex-col relative transition-all hover:shadow-xl hover:scale-[1.01] bg-white/80 backdrop-blur-sm border border-gray-200">
                       <CardImage src={getFirstImage(pkg.avatarImage)} price={priceNum(pkg)} formatINR={formatINR} />
                       <div className="p-4 flex flex-col justify-between flex-grow">
                         <div>
-                          <h3 className="text-base font-bold mb-2 line-clamp-2">{pkg.packageName}</h3>
+                          <h3 className="text-lg font-semibold mb-3 truncate text-gray-900">{pkg.packageName}</h3>
                           <div className="flex flex-wrap gap-2 text-xs mb-3">
                             {includedItems.length
                               ? includedItems.slice(0, 3).map((item, idx) => (
-                                  <span key={idx} className="bg-primaryOpacity text-primary px-2 py-1 rounded-full">
-                                    {item}
-                                  </span>
-                                ))
+                                <span key={idx} className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 shadow-sm">
+                                  {item}
+                                </span>
+                              ))
                               : <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full">No items included</span>
                             }
                             {includedItems.length > 3 && (
@@ -263,17 +263,38 @@ function PackageManagement() {
                           </div>
                         </div>
 
-                        <div className="flex justify-between items-center mt-1">
+                        <div className="flex justify-end gap-2 items-center mt-1">
                           <button
                             onClick={() => navigate(`/package/${id}`)}
-                            className="flex items-center gap-1 text-primary bg-gray-100 hover:bg-primaryOpacity hover:text-primary text-sm px-3 py-1 rounded transition"
+                            className="flex items-center gap-1 text-sm px-4 py-1.5 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition"
                           >
-                            View Details
+                            <Info className="w-4 h-4" /> View Details
                           </button>
+
+                          <button
+                            onClick={async () => {
+                              const token = localStorage.getItem("token");
+                              const newVisibility = pkg.isVisible ? 0 : 1;
+                              await axios.post(`${REACT_APP_API_URL}/packages/toggle-visibility/${id}`,
+                                { isVisible: newVisibility },
+                                { headers: { Authorization: `Bearer ${token}` } }
+                              );
+                              setPackages(prev =>
+                                prev.map(p => p.packageId === id ? { ...p, isVisible: newVisibility } : p)
+                              );
+                            }}
+                            className={`flex items-center gap-1 text-sm px-4 py-1.5 rounded-full border transition ${pkg.isVisible
+                                ? "border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white"
+                                : "border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
+                              }`}
+                          >
+                            <Eye className="w-4 h-4" /> {pkg.isVisible ? "Hide" : "Show"}
+                          </button>
+
                           <button
                             onClick={() => handleDelete(id)}
                             title="Delete Package"
-                            className="flex items-center gap-1 text-red-700 hover:bg-red-100 hover:text-red-800 text-sm px-3 py-1 rounded transition"
+                            className="flex items-center gap-1 text-sm px-4 py-1.5 rounded-full border border-red-500 text-red-600 hover:bg-red-500 hover:text-white transition"
                           >
                             <Trash className="w-4 h-4" />
                             Delete
@@ -312,7 +333,7 @@ function CardImage({ src, price, formatINR }) {
           onError={() => setErr(true)}
         />
       )}
-      <div className="absolute top-2 right-2 bg-white text-black text-xs font-semibold px-2 py-1 rounded-full shadow">
+      <div className="absolute top-3 right-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md">
         {formatINR(price)}
       </div>
     </div>

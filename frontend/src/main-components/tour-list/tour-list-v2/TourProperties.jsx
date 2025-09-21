@@ -33,30 +33,35 @@ const TourProperties = ({ selectedState, category }) => {
     const fetchPackages = async () => {
       try {
         let url = "";
+
         if (selectedState && category) {
+          // filter by both state + category
           url = `${process.env.REACT_APP_API_URL}/packages/by-state-category/${encodeURIComponent(
             selectedState
           )}/${encodeURIComponent(category)}`;
         } else if (selectedState) {
+          // only state
           url = `${process.env.REACT_APP_API_URL}/packages/by-state/${encodeURIComponent(
             selectedState
           )}`;
         } else if (category) {
+          // only category
           url = `${process.env.REACT_APP_API_URL}/packages/by-category/${encodeURIComponent(
             category
           )}`;
         } else {
-          setPackages([]);
-          return;
+          // no filters → show all
+          url = `${process.env.REACT_APP_API_URL}/packages`;
         }
 
         const res = await axios.get(url);
         setPackages(res.data || []);
 
-        const statesRes = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
+        const [statesRes, countriesRes] = await Promise.all([
+          axios.get(`${process.env.REACT_APP_API_URL}/states`),
+          axios.get(`${process.env.REACT_APP_API_URL}/countries`),
+        ]);
         setAllStates(statesRes.data);
-
-        const countriesRes = await axios.get(`${process.env.REACT_APP_API_URL}/countries`);
         setAllCountries(countriesRes.data);
       } catch (e) {
         console.error("Fetch packages failed:", e);

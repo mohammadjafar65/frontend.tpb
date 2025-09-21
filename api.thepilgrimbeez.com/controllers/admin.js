@@ -16,11 +16,28 @@ module.exports = (app, pool) => {
     }
   }
 
-  // ---------- LIST USERS (search + pagination)
-  // GET /admin/users?search=&page=1&pageSize=20
+  function requireAdmin(req, res, next) {
+    try {
+      const token = req.cookies?.[COOKIE_NAME];
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      req.user = jwt.verify(token, JWT_SECRET);
+
+      pool.query("SELECT role FROM users WHERE id=?", [req.user.id])
+        .then(([[me]]) => {
+          if (!me || me.role !== "admin") {
+            return res.status(403).json({ error: "Forbidden" });
+          }
+          next();
+        })
+        .catch(() => res.status(500).json({ error: "Server error" }));
+    } catch {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+  }
+
+  // ---------- LIST USERS
   app.get("/admin/users", requireAuth, async (req, res) => {
     try {
-      // only admins can list users
       const [[me]] = await pool.query("SELECT role FROM users WHERE id = ?", [req.user.id]);
       if (!me || me.role !== "admin") return res.status(403).json({ error: "Forbidden" });
 
@@ -132,4 +149,58 @@ module.exports = (app, pool) => {
       res.status(500).json({ error: "Server error" });
     }
   });
+
+  // ---------- LIST BOOKINGS
+  app.get("/admin/bookings", requireAdmin, async (req, res) => {
+    try {
+      const { search = "", page = 1, pageSize = 20 } = req.query;
+      const offset = (page - 1) * pageSize;
+
+      const [rows] = await pool.query(
+        `SELECT id, customer_name, email, package_name, guests, start_date, end_date,
+              total_amount, currency, status, created_at
+       FROM tpb_bookings
+       WHERE customer_name LIKE ? OR email LIKE ? OR package_name LIKE ?
+       ORDER BY created_at DESC
+       LIMIT ? OFFSET ?`,
+        [`%${search}%`, `%${search}%`, `%${search}%`, Number(pageSize), offset]
+      );
+
+      const [[{ total }]] = await pool.query(
+        `SELECT COUNT(*) as total FROM tpb_bookings
+       WHERE customer_name LIKE ? OR email LIKE ? OR package_name LIKE ?`,
+        [`%${search}%`, `%${search}%`, `%${search}%`]
+      );
+
+      res.json({ bookings: rows, total });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // ---------- GET BOOKING DETAILS
+  app.get("/admin/bookings/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const [[booking]] = await pool.query(
+        `SELECT id, customer_name, email, phone, address1, address2, state, zip,
+              package_name, guests, start_date, end_date,
+              total_amount, price_per_person, currency, status,
+              special_requests, created_at, updated_at
+       FROM tpb_bookings
+       WHERE id = ?`,
+        [id]
+      );
+
+      if (!booking) return res.status(404).json({ error: "Booking not found" });
+
+      res.json({ booking });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
 };
