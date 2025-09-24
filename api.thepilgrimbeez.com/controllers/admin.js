@@ -153,6 +153,7 @@ module.exports = (app, pool) => {
   // ---------- LIST BOOKINGS
   app.get("/admin/bookings", requireAdmin, async (req, res) => {
     try {
+      const search = String(req.query.search || "").trim();
       const page = Math.max(1, parseInt(req.query.page || "1", 10));
       const pageSize = Math.min(100, Math.max(1, parseInt(req.query.pageSize || "20", 10)));
       const offset = (page - 1) * pageSize;
@@ -164,7 +165,7 @@ module.exports = (app, pool) => {
        WHERE customer_name LIKE ? OR email LIKE ? OR package_name LIKE ?
        ORDER BY created_at DESC
        LIMIT ? OFFSET ?`,
-        [ `%${search}%`, `%${search}%`, `%${search}%`, Number(pageSize), Number(offset) ]
+        [`%${search}%`, `%${search}%`, `%${search}%`, pageSize, offset]
       );
 
       const [[{ total }]] = await pool.query(
@@ -173,9 +174,9 @@ module.exports = (app, pool) => {
         [`%${search}%`, `%${search}%`, `%${search}%`]
       );
 
-      res.json({ bookings: rows, total });
+      res.json({ bookings: rows, total, page, pageSize });
     } catch (e) {
-      console.error(e);
+      console.error("Bookings error:", e);
       res.status(500).json({ error: "Server error" });
     }
   });

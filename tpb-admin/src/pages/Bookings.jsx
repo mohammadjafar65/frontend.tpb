@@ -18,7 +18,7 @@ export default function Bookings() {
     setLoading(true);
     try {
       const { data } = await api.get("/admin/bookings", {
-        params: { search: q, page: p, pageSize },
+        params: { search: q, page: Number(p), pageSize: Number(pageSize) },
       });
       setRows(data.bookings || []);
       setTotal(data.total || 0);
