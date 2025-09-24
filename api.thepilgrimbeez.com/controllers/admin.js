@@ -153,7 +153,8 @@ module.exports = (app, pool) => {
   // ---------- LIST BOOKINGS
   app.get("/admin/bookings", requireAdmin, async (req, res) => {
     try {
-      const { search = "", page = 1, pageSize = 20 } = req.query;
+      const page = Math.max(1, parseInt(req.query.page || "1", 10));
+      const pageSize = Math.min(100, Math.max(1, parseInt(req.query.pageSize || "20", 10)));
       const offset = (page - 1) * pageSize;
 
       const [rows] = await pool.query(
@@ -163,7 +164,7 @@ module.exports = (app, pool) => {
        WHERE customer_name LIKE ? OR email LIKE ? OR package_name LIKE ?
        ORDER BY created_at DESC
        LIMIT ? OFFSET ?`,
-        [`%${search}%`, `%${search}%`, `%${search}%`, Number(pageSize), offset]
+        [ `%${search}%`, `%${search}%`, `%${search}%`, Number(pageSize), Number(offset) ]
       );
 
       const [[{ total }]] = await pool.query(
