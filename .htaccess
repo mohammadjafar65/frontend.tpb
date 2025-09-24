@@ -2,33 +2,16 @@
   RewriteEngine On
 
   # ---------- HTTPS redirects ----------
-  # Root domain
   RewriteCond %{HTTPS} off
-  RewriteCond %{HTTP_HOST} ^(www\.)?thepilgrimbeez\.com$ [NC]
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-  # Admin subdomain
-  RewriteCond %{HTTPS} off
-  RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com$ [NC]
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
   # ---------- ROOT DOMAIN: frontend build ----------
-  RewriteCond %{HTTP_HOST} ^(www\.)?thepilgrimbeez\.com$ [NC]
-  RewriteCond %{REQUEST_URI} !^/frontend/build/
-  RewriteRule ^(.*)$ /frontend/build/$1 [L]
-
-  # Frontend SPA fallback
   RewriteCond %{HTTP_HOST} ^(www\.)?thepilgrimbeez\.com$ [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ /frontend/build/index.html [L]
 
   # ---------- ADMIN SUBDOMAIN: static build folder ----------
-  RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com$ [NC]
-  RewriteCond %{REQUEST_URI} !^/tpb-admin/build/
-  RewriteRule ^(.*)$ /tpb-admin/build/$1 [L]
-
-  # Admin SPA fallback
   RewriteCond %{HTTP_HOST} ^admin\.thepilgrimbeez\.com$ [NC]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
