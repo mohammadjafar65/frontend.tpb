@@ -146,6 +146,40 @@ module.exports = (app, db) => {
     return { id, email, name: name || email, role: "user", tempPassword };
   }
 
+  // ---- GET /bookings (list with pagination & search)
+  router.get("/", async (req, res) => {
+    const { search = "", page = 1, pageSize = 20 } = req.query;
+    const offset = (Number(page) - 1) * Number(pageSize);
+
+    try {
+      let sql = "SELECT * FROM tpb_bookings";
+      let countSql = "SELECT COUNT(*) as total FROM tpb_bookings";
+      const params = [];
+
+      if (search) {
+        sql += " WHERE customer_name LIKE ? OR email LIKE ? OR phone LIKE ?";
+        countSql += " WHERE customer_name LIKE ? OR email LIKE ? OR phone LIKE ?";
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+      }
+
+      sql += " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+      params.push(Number(pageSize), offset);
+
+      const [rows] = await db.query(sql, params);
+      const [[countRow]] = await db.query(countSql, params.slice(0, -2));
+
+      res.json({
+        data: rows,
+        total: countRow.total,
+        page: Number(page),
+        pageSize: Number(pageSize),
+      });
+    } catch (err) {
+      console.error("GET /bookings error:", err);
+      res.status(500).json({ error: "Failed to fetch bookings" });
+    }
+  });
+
   // ---- POST /booking/create
   router.post("/create", async (req, res) => {
     const conn = await db.getConnection();
