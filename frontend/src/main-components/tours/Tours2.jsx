@@ -28,6 +28,11 @@ const Tours2 = ({ category, indexColor }) => {
   const [allStates, setAllStates] = useState([]);
   const [allCountries, setAllCountries] = useState([]);
 
+  // 🔑 Generate unique IDs per category (safe for DOM selectors)
+  const navPrevClass = `js-populars-tour-prev-${indexColor}`;
+  const navNextClass = `js-populars-tour-next-${indexColor}`;
+  const pagClass = `js-tour-pag-${indexColor}`;
+
   useEffect(() => {
     const fetchCategoryTours = async () => {
       try {
@@ -63,15 +68,15 @@ const Tours2 = ({ category, indexColor }) => {
     return country ? `${state.name}` : state.name;
   };
 
-  if (!categoryPackages.length) return <p>No packages found for this category.</p>;
+  if (!categoryPackages.length) return null;
 
   return (
     <>
       <Swiper
         spaceBetween={30}
         modules={[Navigation, Pagination]}
-        navigation={{ nextEl: ".js-populars-tour-next", prevEl: ".js-populars-tour-prev" }}
-        pagination={{ el: ".js-tour-pag_active", clickable: true }}
+        navigation={{ nextEl: `.${navNextClass}`, prevEl: `.${navPrevClass}` }}
+        pagination={{ el: `.${pagClass}`, clickable: true }}
         breakpoints={{
           500: { slidesPerView: 2, spaceBetween: 20 },
           768: { slidesPerView: 2, spaceBetween: 22 },
@@ -158,17 +163,18 @@ const Tours2 = ({ category, indexColor }) => {
         })}
       </Swiper>
 
+      {/* 🔑 Unique navigation buttons per slider */}
       <div className="d-flex x-gap-15 items-center justify-center pt-40 sm:pt-20">
         <div className="col-auto">
-          <button className="d-flex items-center text-24 arrow-left-hover js-populars-tour-prev cursor-pointer">
+          <button className={`d-flex items-center text-24 arrow-left-hover ${navPrevClass} cursor-pointer`}>
             <i className="icon icon-arrow-left" />
           </button>
         </div>
         <div className="col-auto">
-          <div className="pagination -dots text-border js-tour-pag_active" />
+          <div className={`pagination -dots text-border ${pagClass}`} />
         </div>
         <div className="col-auto">
-          <button className="d-flex items-center text-24 arrow-right-hover js-populars-tour-next cursor-pointer">
+          <button className={`d-flex items-center text-24 arrow-right-hover ${navNextClass} cursor-pointer`}>
             <i className="icon icon-arrow-right" />
           </button>
         </div>

@@ -15,6 +15,7 @@ import WhyChooseUs from "../main-components/common/WhyChooseUs";
 import Testimonial from "../main-components/common/Testimonial";
 import Brand2 from "../main-components/common/Brand2";
 import CallToActions from "../main-components/common/CallToActions";
+import PageLoader from "../main-components/PageLoader";
 
 function HomePage() {
   const [packages, setPackages] = useState([]);
@@ -90,7 +91,7 @@ function HomePage() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show loading indicator
+    return <PageLoader />;
   }
 
   return (
@@ -98,7 +99,7 @@ function HomePage() {
       <Hero />
 
       {/* ✅ Top: Hard-coded 'Most Popular Tours' Section */}
-      <section className="pt-50 pb-50 bg-gray">
+      <section className="pt-50 pb-50 bg-light-2">
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">
@@ -166,6 +167,7 @@ function HomePage() {
       {/* ✅ Dynamic sections by category */}
       {categories
         .filter((cat) => cat !== "Most Popular Tours")
+        .filter((cat) => (packagesByCategory[cat]?.length || 0) > 0) // ✅ only non-empty
         .map((category, index) => {
           const firstPkg = packagesByCategory[category]?.[0];
           const bgImage = getBannerImage(firstPkg);
@@ -200,7 +202,6 @@ function HomePage() {
                   </div>
                 </div>
 
-                {/* ✅ Carousel with Tours2 cards */}
                 <div className="row pt-40">
                   <div className="col-12">
                     <Tours2 category={category} indexColor={index} />
@@ -212,7 +213,7 @@ function HomePage() {
         })}
 
 
-      <section className="layout-pt-md layout-pb-md bg-white overflow-hidden" data-aos="fade-up">
+      <section className="layout-pt-md layout-pb-md bg-light-2 border overflow-hidden" data-aos="fade-up">
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">
@@ -246,7 +247,7 @@ function HomePage() {
       </section>
       {/* End Popular Destinations */}
 
-      <section className="section-bg bg-gray layout-pt-lg md:pt-0 md:pb-60 sm:pb-40 layout-pb-lg bg-blue-1-05">
+      <section className="section-bg bg-light-2 layout-pt-lg md:pt-0 md:pb-60 sm:pb-40 layout-pb-lg bg-blue-1-05">
         <WhyChooseUs />
       </section>
       {/* End whycosse Section */}

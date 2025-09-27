@@ -332,6 +332,7 @@ ul.horizontal {
   color: #6b7280;
   font-size: 14px;
   text-align: left;
+  text-transform: capitalize;
 }
 
 /* Bottom row */
@@ -499,7 +500,7 @@ ul.horizontal {
 
 /* Button & name */
 .userbtn {
-  padding: 6px 10px;
+  padding: 0;
   border-radius: 10px;
   transition: background .15s ease;
 }
@@ -509,7 +510,7 @@ ul.horizontal {
 }
 
 .username {
-  max-width: 140px;
+  max-width: 200px;
 }
 
 /* Dropdown */
@@ -576,7 +577,7 @@ ul.horizontal {
 }
 
 button.userbtn.d-flex.items-center.gap-10 {
-  background: rgba(255, 255, 255, 0.644);
+  background: transparent;
 }
 
 button.userbtn.d-flex.items-center.gap-10 {

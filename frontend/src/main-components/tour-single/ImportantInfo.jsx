@@ -40,18 +40,18 @@ const ImportantInfo = ({ tour }) => {
   if (!hasContent) return null;
 
   return (
-    <section className="pt-40 pb-40 bg-white">
+    <section className="pb-40 bg-white">
       <div className="container">
-        <div className="pt-40 border-top-light">
-          <div className="row x-gap-40 y-gap-40">
+        <div className="bg-light-2" style={{padding:"20px", borderRadius:"20px", boxShadow: "0 8px 30px rgba(16, 24, 40, .04)"}}>
+          <div className="row x-gap-40 y-gap-40 border-bottom">
             <div className="col-auto">
-              <h3 className="text-22 fw-500">Additional Information</h3>
+              <h3 className="text-22 fw-500" style={{color: "#EFA852"}}>Additional Information</h3>
             </div>
           </div>
 
           <div className="row x-gap-40 y-gap-40 justify-between pt-20 text-left">
             {isMeaningfulHTML(specialInstructions) && (
-              <div className="col-12">
+              <div className="col-12 border-bottom">
                 <div className="fw-600 mb-10">Special Instructions</div>
                 <div
                   className="text-15"
@@ -61,7 +61,7 @@ const ImportantInfo = ({ tour }) => {
             )}
 
             {isMeaningfulHTML(conditionsOfTravel) && (
-              <div className="col-12">
+              <div className="col-12 border-bottom">
                 <div className="fw-600 mb-10">Conditions of Travel</div>
                 <div
                   className="text-15"
@@ -71,7 +71,7 @@ const ImportantInfo = ({ tour }) => {
             )}
 
             {isMeaningfulHTML(thingsToMaintain) && (
-              <div className="col-12">
+              <div className="col-12 border-bottom">
                 <div className="fw-600 mb-10">Things to Maintain</div>
                 <div
                   className="text-15"
@@ -81,7 +81,7 @@ const ImportantInfo = ({ tour }) => {
             )}
 
             {isMeaningfulHTML(policies) && (
-              <div className="col-12">
+              <div className="col-12 border-bottom">
                 <div className="fw-600 mb-10">Policies</div>
                 <div
                   className="text-15"

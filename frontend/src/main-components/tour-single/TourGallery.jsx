@@ -5,6 +5,7 @@ import TourSnapShot from "./TourSnapShot";
 import { Gallery, Item } from "react-photoswipe-gallery";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import ImportantInfo from "../../main-components/tour-single/ImportantInfo";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -22,8 +23,8 @@ export default function TourGallery({ tour }) {
         onClose={() => setOpen(false)}
       />
 
-      <section className="pt-20 js-pin-container bg-white">
-        <div className="container">
+      <section className="js-pin-container bg-white">
+        <div className="container" style={{position:"relative", top:"-60px"}}>
           <div className="row y-gap-30">
             <div className="col-xl-8">
               <div className="relative d-flex justify-center overflow-hidden js-section-slider">
@@ -112,6 +113,8 @@ export default function TourGallery({ tour }) {
           {/* End .row */}
         </div>
         {/* End container */}
+
+        <ImportantInfo tour={tour} />
       </section>
     </>
   );

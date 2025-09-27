@@ -12,16 +12,16 @@ import Tours from "../../../main-components/tours/Tours2";
 import Faq from "../../../main-components/faq/Faq";
 import { Link, useParams } from "react-router-dom";
 import Itinerary from "../../../main-components/tour-single/itinerary";
-import ImportantInfo from "../../../main-components/tour-single/ImportantInfo";
 import TourGallery from "../../../main-components/tour-single/TourGallery";
+import PageLoader from "../../../main-components/PageLoader";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 import MetaComponent from "../../../main-components/common/MetaComponent";
 
 const metadata = {
-  title: "Tour Single || GoTrip - Travel & Tour ReactJs Template",
-  description: "GoTrip - Travel & Tour ReactJs Template",
+  title: "The Pilgrim Beez",
+  description: "The Pilgrim Beez",
 };
 
 const TourSingleV1Dynamic = () => {
@@ -29,36 +29,45 @@ const TourSingleV1Dynamic = () => {
   const [tour, setTour] = useState(null);
   const [stateName, setStateName] = useState(null);
   const [countryName, setCountryName] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // 1. Get the travel package
-        const packageRes = await axios.get(`${process.env.REACT_APP_API_URL}/packages/id/${id}`);
+        const packageRes = await axios.get(
+          `${process.env.REACT_APP_API_URL}/packages/id/${id}`
+        );
         const packageData = packageRes.data;
         setTour(packageData);
 
         // 2. Get all states
-        const statesRes = await axios.get(`${process.env.REACT_APP_API_URL}/states`);
+        const statesRes = await axios.get(
+          `${process.env.REACT_APP_API_URL}/states`
+        );
         const allStates = statesRes.data;
 
         // Find the state that contains this packageId
-        const matchingState = allStates.find(state =>
-          Array.isArray(JSON.parse(state.package_ids || "[]")) &&
-          JSON.parse(state.package_ids).includes(packageData.packageId)
+        const matchingState = allStates.find(
+          (state) =>
+            Array.isArray(JSON.parse(state.package_ids || "[]")) &&
+            JSON.parse(state.package_ids).includes(packageData.packageId)
         );
 
         if (matchingState) {
           setStateName(matchingState.name);
 
           // 3. Get all countries
-          const countriesRes = await axios.get(`${process.env.REACT_APP_API_URL}/countries`);
+          const countriesRes = await axios.get(
+            `${process.env.REACT_APP_API_URL}/countries`
+          );
           const allCountries = countriesRes.data;
 
           // Match country by checking if state's name exists in its "states" array
-          const matchingCountry = allCountries.find(country =>
-            Array.isArray(JSON.parse(country.states || "[]")) &&
-            JSON.parse(country.states).includes(matchingState.name)
+          const matchingCountry = allCountries.find(
+            (country) =>
+              Array.isArray(JSON.parse(country.states || "[]")) &&
+              JSON.parse(country.states).includes(matchingState.name)
           );
 
           if (matchingCountry) {
@@ -67,13 +76,15 @@ const TourSingleV1Dynamic = () => {
         }
       } catch (err) {
         console.error("Error loading data:", err);
+      } finally {
+        setLoading(false); // ⬅️ stop loader
       }
     };
 
     fetchData();
   }, [id]);
 
-  if (!tour) return <div>Loading...</div>;
+  if (loading) return <PageLoader />;
 
   return (
     <>
@@ -83,7 +94,7 @@ const TourSingleV1Dynamic = () => {
       {/* <TopBreadCrumb tour={{ tour, stateName, countryName }} /> */}
       {/* End top breadcrumb */}
 
-      <section className="bg-white padding_top">
+      <section className="bg-light-2 padding_top pb-80">
         <div className="container">
           <div className="row y-gap-20 justify-between items-end">
             <div className="col-auto">
@@ -162,7 +173,6 @@ const TourSingleV1Dynamic = () => {
       {/* End gallery grid wrapper */}
 
       <TourGallery tour={tour} />
-      <ImportantInfo tour={tour} />
 
       {/* <section className="border-top-light pt-40 pb-40 bg-white">
         <div className="container">

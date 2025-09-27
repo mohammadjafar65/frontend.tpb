@@ -6,8 +6,8 @@ import StepperBooking from "../../main-components/booking-page/stepper-booking";
 import MetaComponent from "../../main-components/common/MetaComponent";
 
 const metadata = {
-  title: "Hotel Booking Page || GoTrip - Travel & Tour ReactJs Template",
-  description: "GoTrip - Travel & Tour ReactJs Template",
+  title: "The Pilgrim Beez",
+  description: "The Pilgrim Beez",
 };
 
 const BookingPage = () => {

@@ -57,18 +57,15 @@ const PopularDestinations = () => {
       <Swiper
         spaceBetween={30}
         modules={[Scrollbar, Navigation]}
-        navigation={{
-          nextEl: nextRef.current,
-          prevEl: prevRef.current,
-        }}
-        scrollbar={{
-          draggable: true,
-          el: scrollbarRef.current,
-        }}
+        // attach dummy selectors initially
+        navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+        scrollbar={{ el: scrollbarRef.current, draggable: true }}
         onInit={(swiper) => {
+          // re-assign refs after mount
           swiper.params.navigation.prevEl = prevRef.current;
           swiper.params.navigation.nextEl = nextRef.current;
           swiper.params.scrollbar.el = scrollbarRef.current;
+
           swiper.navigation.init();
           swiper.navigation.update();
           swiper.scrollbar.init();
@@ -100,14 +97,10 @@ const PopularDestinations = () => {
                 <div className="citiesCard__content d-flex flex-column justify-between text-center pt-30 pb-20 px-20">
                   <div className="citiesCard__bg" />
                   <div className="citiesCard__top">
-                    <div className="text-14 text-white">
-                      {pkgCount} Packages
-                    </div>
+                    <div className="text-14 text-white">{pkgCount} Packages</div>
                   </div>
                   <div className="citiesCard__bottom">
-                    <h4 className="text-26 md:text-20 lh-13 text-white mb-20">
-                      {item.name}
-                    </h4>
+                    <h4 className="text-26 md:text-20 lh-13 text-white mb-20">{item.name}</h4>
                     <button className="button col-12 h-60 -blue-1 bg-white text-dark-1">
                       Discover
                     </button>
@@ -119,25 +112,20 @@ const PopularDestinations = () => {
         })}
       </Swiper>
 
-      {/* Navigation buttons */}
-      <div>
-        <button
-          ref={prevRef}
-          className="section-slider-nav -prev flex-center button -blue-1 bg-white shadow-1 size-40 rounded-full sm:d-none js-destination-prev"
-        >
-          <i className="icon icon-chevron-left text-12" />
-        </button>
-        <button
-          ref={nextRef}
-          className="section-slider-nav -next flex-center button -blue-1 bg-white shadow-1 size-40 rounded-full sm:d-none js-destination-next"
-        >
-          <i className="icon icon-chevron-right text-12" />
-        </button>
-        <div
-          ref={scrollbarRef}
-          className="slider-scrollbar bg-light-2 mt-40 js-popular-destination-scrollbar"
-        />
-      </div>
+      {/* Navigation buttons & scrollbar */}
+      <button
+        ref={prevRef}
+        className="section-slider-nav -prev flex-center button -blue-1 bg-white shadow-1 size-40 rounded-full sm:d-none"
+      >
+        <i className="icon icon-chevron-left text-12" />
+      </button>
+      <button
+        ref={nextRef}
+        className="section-slider-nav -next flex-center button -blue-1 bg-white shadow-1 size-40 rounded-full sm:d-none"
+      >
+        <i className="icon icon-chevron-right text-12" />
+      </button>
+      <div ref={scrollbarRef} className="slider-scrollbar bg-light-2 mt-40" />
     </div>
   );
 };

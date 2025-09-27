@@ -2,11 +2,11 @@
 :root {
     --ink: #0b1021;
     --muted: #6b7280;
-    --bg-soft: #f7f7fb;
-    --brand: #0b5fff;
+    --bg-soft: #fff;
+    --brand: #eca651;
     --ring: rgba(11, 95, 255, .15);
     --radius: 16px;
-    --shadow: 0 8px 30px rgba(16, 24, 40, .06);
+    --shadow: 0 8px 30px rgba(16, 24, 40, .01);
 }
 
 .about-hero {
@@ -231,8 +231,8 @@
 /* CTA */
 .cta-card {
     margin-top: clamp(24px, 5vw, 64px);
-    background: linear-gradient(180deg, #f6f9ff 0%, #ffffff 100%);
-    border: 1px solid #eef2ff;
+    background: linear-gradient(180deg, #f4f4f4 0%, #ffffff 100%);
+    border: 1px solid #ccc;
     border-radius: calc(var(--radius) + 4px);
     padding: clamp(20px, 4vw, 36px);
     box-shadow: var(--shadow);
@@ -283,7 +283,7 @@
 a.talk {
     padding: 15px 26px;
     border-radius: 8px;
-    background-color: #edaa58;
+    background-color: #eca651;
     /* background-image: linear-gradient(90deg, rgb(177, 108, 234) 20%, rgb(255, 94, 105) 60%, rgb(255, 138, 86) 80%, rgb(255, 168, 75) 90%); */
     color: rgb(255, 255, 255);
     font-size: 16px;

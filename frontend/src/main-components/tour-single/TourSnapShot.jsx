@@ -12,7 +12,7 @@ const TourSnapShot = ({ tour }) => {
       </div>
       {/* End .col */}
 
-      <div className="col-md-auto col-6">
+      {/* <div className="col-md-auto col-6">
         <div className="d-flex">
           <i className="icon-customer text-22 text-blue-1 mr-10"></i>
           <div className="text-15 lh-15">
@@ -20,7 +20,7 @@ const TourSnapShot = ({ tour }) => {
             <br /> {tour?.groupSize}
           </div>
         </div>
-      </div>
+      </div> */}
       {/* End .col */}
 
       <div className="col-md-auto col-6">

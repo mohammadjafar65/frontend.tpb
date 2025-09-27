@@ -9,10 +9,11 @@ import TourProperties from "../../../main-components/tour-list/tour-list-v2/Tour
 // import Pagination from "../../../main-components/tour-list/common/Pagination";
 import Sidebar from "../../../main-components/tour-list/tour-list-v2/Sidebar";
 import MetaComponent from "../../../main-components/common/MetaComponent";
+import PageLoader from "../../../main-components/PageLoader";
 
 const metadata = {
-  title: "Tour List v2 || GoTrip - Travel & Tour ReactJs Template",
-  description: "GoTrip - Travel & Tour ReactJs Template",
+  title: "The Pilgrim Beez",
+  description: "The Pilgrim Beez",
 };
 
 const TourListPage2 = () => {
@@ -25,33 +26,43 @@ const TourListPage2 = () => {
   // For label display
   const [stateName, setStateName] = useState(queryState || "");
   const [selectedState, setSelectedState] = useState(""); // Only numeric
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!queryState) {
-      setStateName("");
-      setSelectedState("");
-      return;
-    }
-    // If query param is not a number, look up its ID from backend
-    if (isNaN(queryState)) {
-      axios.get(`${process.env.REACT_APP_API_URL}/states/name/${encodeURIComponent(queryState)}`)
-        .then(res => {
+    const fetchState = async () => {
+      try {
+        if (!queryState) {
+          setStateName("");
+          setSelectedState("");
+          return;
+        }
+
+        if (isNaN(queryState)) {
+          const res = await axios.get(
+            `${process.env.REACT_APP_API_URL}/states/name/${encodeURIComponent(queryState)}`
+          );
           setStateName(res.data.name || queryState);
           setSelectedState(res.data.id ? String(res.data.id) : "");
-        })
-        .catch(() => {
-          setStateName(queryState);
-          setSelectedState("");
-        });
-    } else {
-      setStateName(""); // Can fetch name if needed
-      setSelectedState(queryState); // Use as ID
-    }
+        } else {
+          setStateName("");
+          setSelectedState(queryState);
+        }
+      } catch (err) {
+        setStateName(queryState);
+        setSelectedState("");
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchState();
   }, [queryState]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
+
+  if (loading) return <PageLoader />;
 
   return (
     <>
@@ -116,7 +127,7 @@ const TourListPage2 = () => {
       </section>
 
       <CallToActions />
-      <DefaultFooter />
+      {/* <DefaultFooter /> */}
     </>
   );
 };

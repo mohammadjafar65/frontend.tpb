@@ -111,11 +111,11 @@ const Header = ({ setShowAuth = () => { } }) => {
                           {initials(user?.name, user?.email)}
                         </span>
                         {/* ✅ Show user name with character limit */}
-                        <span className="username text-dark-1 text-14 fw-500 max-w-120 truncate hidden sm:inline">
-                          {(user?.name || user?.email)?.length > 15
-                            ? (user?.name || user?.email).slice(0, 15) + "…"
+                        {/* <span className="username text-dark-1 text-14 fw-500 max-w-120 truncate hidden sm:inline">
+                          {(user?.name || user?.email)?.length > 20
+                            ? (user?.name || user?.email).slice(0, 20) + "…"
                             : user?.name || user?.email}
-                        </span>
+                        </span> */}
                         <i
                           className={`icon-chevron-down text-12 text-dark-1 caret ${menuOpen ? "open" : ""
                             }`}

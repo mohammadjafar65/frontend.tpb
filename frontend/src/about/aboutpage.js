@@ -20,7 +20,7 @@ function AboutPage() {
                 </div>
             </section>
             {/* Main About */}
-            <section id="about_us" className="about">
+            <section id="about_us" className="about bg-light-2">
                 <div className="container">
                     {/* What we do / Why we started */}
                     <div className="about-grid">
@@ -54,7 +54,7 @@ function AboutPage() {
                                 <span className="fi" aria-hidden>✓</span>
                                 <div className="fi-content">
                                     <h4>Locals, not guesswork.</h4>
-                                    <p>Handpicked guides, drivers, and stays <br/>vetted on the ground.</p>
+                                    <p>Handpicked guides, drivers, and stays <br />vetted on the ground.</p>
                                 </div>
                             </li>
 
@@ -62,7 +62,7 @@ function AboutPage() {
                                 <span className="fi" aria-hidden>✓</span>
                                 <div className="fi-content">
                                     <h4>Clarity by design.</h4>
-                                    <p>Upfront pricing, no hidden fees, live availability, <br/>instant vouchers.</p>
+                                    <p>Upfront pricing, no hidden fees, live availability, <br />instant vouchers.</p>
                                 </div>
                             </li>
 
@@ -70,7 +70,7 @@ function AboutPage() {
                                 <span className="fi" aria-hidden>✓</span>
                                 <div className="fi-content">
                                     <h4>Support that shows up.</h4>
-                                    <p>24/7 WhatsApp & calls, proactive updates <br/>when plans change.</p>
+                                    <p>24/7 WhatsApp & calls, proactive updates <br />when plans change.</p>
                                 </div>
                             </li>
 
@@ -78,7 +78,7 @@ function AboutPage() {
                                 <span className="fi" aria-hidden>✓</span>
                                 <div className="fi-content">
                                     <h4>Safe & seamless.</h4>
-                                    <p>Secure payments, verified partners, <br/>reliable logistics.</p>
+                                    <p>Secure payments, verified partners, <br />reliable logistics.</p>
                                 </div>
                             </li>
 
@@ -86,7 +86,7 @@ function AboutPage() {
                                 <span className="fi" aria-hidden>✓</span>
                                 <div className="fi-content">
                                     <h4>Built for you.</h4>
-                                    <p>Pilgrimages, family trips, honeymoons, corporate <br/>offsites tailored, not templated.</p>
+                                    <p>Pilgrimages, family trips, honeymoons, corporate <br />offsites tailored, not templated.</p>
                                 </div>
                             </li>
                         </ul>
@@ -94,7 +94,7 @@ function AboutPage() {
 
 
                     {/* Numbers */}
-                    <div className="stat-grid">
+                    {/* <div className="stat-grid">
                         <div className="stat-card">
                             <div className="stat-number">25,000+</div>
                             <div className="stat-label">Travellers served</div>
@@ -111,7 +111,7 @@ function AboutPage() {
                             <div className="stat-number">4.9/5</div>
                             <div className="stat-label">Average trip rating</div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Sustainability + Promise */}
                     <div className="about-grid about-grid--two">
@@ -138,7 +138,7 @@ function AboutPage() {
                         <h3 className="cta-title">Ready when you are.</h3>
                         <p className="cta-sub">
                             Plan a pilgrimage, a weekend reset, or a once in a lifetime
-                            journey <strong>your way, without the hassle.</strong>
+                            journey <strong style={{ color: "#eca651" }}>your way, without the hassle.</strong>
                         </p>
                         <div className="cta-actions">
                             <a href="/contact" className="talk">Talk to a travel expert</a>
@@ -148,7 +148,7 @@ function AboutPage() {
                 </div>
             </section>
 
-            <Footer />
+            {/* <Footer /> */}
         </>
     );
 }

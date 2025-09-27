@@ -47,7 +47,7 @@ const ContactPage = () => {
   return (
     <>
       <Header />
-      <section id="banner" className="about">
+      <section id="banner" className="about bg-light-2">
         <div className="css-zixqbe e7svxqc1"></div>
         <div className="container">
           <div className="row">
@@ -59,9 +59,9 @@ const ContactPage = () => {
           </div>
         </div>
       </section>
-      <section className="contact-form bg-white">
+      <section className="contact-form bg-light-2">
         <div className="container">
-          <div className="row bg-form">
+          <div className="row bg-form bg-white">
             <div className="col-lg-6 pr-5 col-md-6 col-12">
               <h2 className="mb-3">
                 Get in touch
@@ -113,8 +113,8 @@ const ContactPage = () => {
               </div> */}
             </div>
             <div className="col-lg-6 col-md-6 col-12">
-              <form onSubmit={handleSubmit}>
-                <h3>Send us a message</h3>
+              <form onSubmit={handleSubmit} className="bg-light-2">
+                <h2 className="mb-3">Send us a message</h2>
                 <div className="form-row">
                   <input
                     className="form-control"
@@ -162,7 +162,7 @@ const ContactPage = () => {
           </div>
         </div>
       </section>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
