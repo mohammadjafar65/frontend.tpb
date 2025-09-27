@@ -229,9 +229,12 @@ module.exports = (app, db) => {
       // ---- safe slug (avoid null/long)
       const base = original.slug || original.packageName || "package";
       const safeBase = slugify(base);
+
       // keep room for suffix; adjust 191/255 depending on your column
       const MAX = 191;
-      const suffix = `-${Date.now()}`;
+
+      // Use timestamp + random short id to avoid collisions on rapid duplicates
+      const suffix = `-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       let newSlug = (safeBase + suffix).slice(0, MAX);
 
       // If you have a UNIQUE index on slug and want to be extra safe:
