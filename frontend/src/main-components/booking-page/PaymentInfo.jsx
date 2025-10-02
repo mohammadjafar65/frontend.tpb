@@ -125,6 +125,7 @@ export default function PaymentInfo({
       });
 
       const { order } = data;
+      console.log("ORDER ID", order.id);
       const rzp = new window.Razorpay({
         key: process.env.REACT_APP_RAZORPAY_KEY_ID,
         amount: order.amount,        // paise (server now sends subtotal * 100)
