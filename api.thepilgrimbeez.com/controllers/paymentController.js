@@ -116,6 +116,8 @@ module.exports = (app, db) => {
           },
         });
 
+        console.log("Backend created order:", order);
+
         await conn.query(
           `INSERT INTO tpb_orders
    (order_id, receipt, user_id, package_id, booking_id, amount_paise, currency, status, notes_json, created_at, updated_at)
